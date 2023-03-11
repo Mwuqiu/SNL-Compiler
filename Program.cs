@@ -14,6 +14,7 @@ namespace CompilationPrinciple
             Application.Run(new Form1());*/
             Scanner scanner = new Scanner();
             scanner.DirectSteeringMethod();
+            scanner.outPutTokenList();
         }
     }
 }

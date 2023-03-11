@@ -45,7 +45,7 @@ namespace CompilationPrinciple
         Factor, Variable, VariMore, FieldVar,
         FieldVarMore, CmpOp, AddOp, MultOp
     };
-
+    
     public class Token
     {
         public int line { get; set; } //行数
@@ -57,6 +57,7 @@ namespace CompilationPrinciple
     {
         public Dictionarys()
         {
+            //Provide the conversion from identifier to identifier type 
             reservedWords = new Dictionary<String, LexType>()
             {
                 {"program",LexType.PROGRAM},{"type", LexType.TYPE},
@@ -72,19 +73,7 @@ namespace CompilationPrinciple
                 {"integer", LexType.INTEGER_T},
             };
 
-/*            lexName = new Dictionary<LexType, String>() {
-                {LexType.PROGRAM, "PROGRAM"},{LexType.TYPE, "TYPE"},{LexType.VAR, "VAR"},{LexType.PROCEDURE, "PROCEDURE"},
-                {LexType.BEGIN, "BEGIN"},{LexType.END, "END"},{LexType.ARRAY, "ARRAY"},{LexType.OF, "OF"},
-                {LexType.RECORD, "RECORD"},{LexType.IF, "IF"},{LexType.THEN, "THEN"},{LexType.ELSE, "ELSE"},
-                {LexType.FI, "FI"},{LexType.WHILE, "WHILE"},{LexType.DO, "DO"},{LexType.ENDWH, "ENDWH"},
-                {LexType.READ, "READ"},{LexType.WRITE, "WRITE"},{LexType.RETURN, "RETURN"},{LexType.INTEGER_T, "INTEGER"},
-                {LexType.CHAR_T, "CHAR"},{LexType.ID, "ID"},{LexType.INTC_VAL, "INTC_VAL"},{LexType.CHARC_VAL, "CHAR_VAL"},
-                {LexType.ASSIGN, "ASSIGN"},{LexType.EQ, "EQ"},{LexType.LT, "LT"},{LexType.PLUS, "PLUS"},{LexType.MINUS, "MINUS"},
-                {LexType.TIMES, "TIMES"},{LexType.DIVIDE, "DIVIDE"}, {LexType.LPAREN, "LPAREN"},{LexType.RPAREN, "RPAREN"},
-                {LexType.DOT, "DOT"},{LexType.COLON, "COLON"},{LexType.SEMI, "SEMI"},{LexType.COMMA, "COMMA"},{LexType.LMIDPAREN, "LMIDPAREN"},
-                {LexType.RMIDPAREN, "RMIDPAREN"},{LexType.UNDERRANGE, "UNDERRANGE"},{LexType.ENDFILE, "EOF"},{LexType.ERROR, "ERROR"}
-            };*/
-
+            //Provide the conversion from separatorWords to separatorWords type 
             separatorWords = new Dictionary<char, LexType>() {
                 {'+', LexType.PLUS},   {'-', LexType.MINUS},     {'*', LexType.TIMES},
                 {'/', LexType.DIVIDE}, {'(', LexType.LPAREN},    {')', LexType.RPAREN},
@@ -94,8 +83,6 @@ namespace CompilationPrinciple
         }
 
         public Dictionary<String,LexType> reservedWords;
-
-        /*public Dictionary<LexType,String> lexName;*/
 
         public Dictionary<char, LexType> separatorWords;
     }
