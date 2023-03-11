@@ -50,20 +50,18 @@ namespace CompilationPrinciple
             String line;
             try
             {
-                StreamReader sr = new StreamReader("C:\\Users\\rog\\Desktop\\编译原理\\CompilationPrinciple\\SNL-Compiler-Designs\\SimpleExample.txt");
+                //StreamReader sr = new StreamReader(Properties.Resources.SimpleExample);
+                String[] strs = Properties.Resources.SimpleExample.Split("\r\n");
                 //Read the first line of text
-                line = sr.ReadLine();
-                while (line != null)
+                //line = sr.ReadLine();
+                for(int i = 0; i < strs.Length; i++)
                 {
+                    line = strs[i];
                     lineNumber++;
-
                     //Each line of characters is processed here
                     Console.WriteLine(line);
                     DSLine(line);
-                    line = sr.ReadLine();
-                }
-                //close the file
-                sr.Close();                
+                }             
             }
             catch (Exception e)
             {
@@ -230,7 +228,7 @@ namespace CompilationPrinciple
         //State transition table method to achieve lexical analysis
         public void StateTransitionTableMethod()
         {
-
+            
         }
 
 

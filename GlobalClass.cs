@@ -46,6 +46,16 @@ namespace CompilationPrinciple
         FieldVarMore, CmpOp, AddOp, MultOp
     };
     
+    public enum LexStatus
+    {
+        START,INID,INNUM,DONE,INASSIGN,INCOMMENT,INRANGE,INCHAR,ERROR,FINISH
+    }
+
+    public enum LexUnit
+    {
+        Letter,Number,SingleSep,AssignFirst,AssignSecond,LeftCurly,RightCurly,Dot,SingleQuo,Space
+    }
+
     public class Token
     {
         public int line { get; set; } //行数
@@ -85,6 +95,53 @@ namespace CompilationPrinciple
         public Dictionary<String,LexType> reservedWords;
 
         public Dictionary<char, LexType> separatorWords;
+    }
+
+    public class ConvertTable
+    {
+        int[,] convertTable;
+
+        public ConvertTable()
+        {
+
+            convertTable = new int[8, 10];
+
+            convertTable[(int)LexStatus.START, (int)LexUnit.Letter] = (int)LexStatus.INID;
+            convertTable[(int)LexStatus.START, (int)LexUnit.Number] = (int)LexStatus.INNUM;
+            convertTable[(int)LexStatus.START, (int)LexUnit.SingleSep] = (int)LexStatus.DONE;
+            convertTable[(int)LexStatus.START, (int)LexUnit.AssignFirst] = (int)LexStatus.INASSIGN;
+            convertTable[(int)LexStatus.START, (int)LexUnit.LeftCurly] = (int)LexStatus.INCOMMENT;
+            convertTable[(int)LexStatus.START, (int)LexUnit.Dot] = (int)LexStatus.INRANGE;
+            convertTable[(int)LexStatus.START, (int)LexUnit.SingleQuo] = (int)LexStatus.INCHAR;
+            convertTable[(int)LexStatus.START, (int)LexUnit.Space] = (int)LexStatus.START;
+
+            convertTable[(int)LexStatus.INID, (int)LexUnit.Letter] = (int)LexStatus.INID;
+            convertTable[(int)LexStatus.INID, (int)LexUnit.Number] = (int)LexStatus.INID;
+            convertTable[(int)LexStatus.INID, (int)LexUnit.SingleSep] = (int)LexStatus.START;
+            convertTable[(int)LexStatus.INID, (int)LexUnit.AssignFirst] = (int)LexStatus.START;
+            convertTable[(int)LexStatus.INID, (int)LexUnit.LeftCurly] = (int)LexStatus.START;
+            convertTable[(int)LexStatus.INID, (int)LexUnit.Dot] = (int)LexStatus.START;
+            convertTable[(int)LexStatus.INID, (int)LexUnit.SingleQuo] = (int)LexStatus.START;
+            convertTable[(int)LexStatus.INID, (int)LexUnit.Space] = (int)LexStatus.START;
+
+            convertTable[(int)LexStatus.INNUM, (int)LexUnit.Letter] = (int)LexStatus.ERROR;
+            convertTable[(int)LexStatus.INNUM, (int)LexUnit.Number] = (int)LexStatus.INNUM;
+            convertTable[(int)LexStatus.INNUM, (int)LexUnit.SingleSep] = (int)LexStatus.START;
+            convertTable[(int)LexStatus.INNUM, (int)LexUnit.AssignFirst] = (int)LexStatus.START;
+            convertTable[(int)LexStatus.INNUM, (int)LexUnit.LeftCurly] = (int)LexStatus.ERROR;
+            convertTable[(int)LexStatus.INNUM, (int)LexUnit.Dot] = (int)LexStatus.START;
+            convertTable[(int)LexStatus.INNUM, (int)LexUnit.SingleQuo] = (int)LexStatus.ERROR;
+            convertTable[(int)LexStatus.INNUM, (int)LexUnit.Space] = (int)LexStatus.START;
+
+
+
+
+
+
+        }
+
+        
+
     }
 
 }

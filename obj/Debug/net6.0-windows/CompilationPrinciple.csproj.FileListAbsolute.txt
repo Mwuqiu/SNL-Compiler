@@ -32,3 +32,4 @@ C:\Users\rog\Desktop\编译原理\CompilationPrinciple\SNL-Compiler-Designs\bin\
 C:\Users\rog\Desktop\编译原理\CompilationPrinciple\SNL-Compiler-Designs\bin\Debug\net6.0-windows\CompilationPrinciple.pdb
 C:\Users\rog\Desktop\编译原理\CompilationPrinciple\SNL-Compiler-Designs\obj\Debug\net6.0-windows\CompilationPrinciple.genruntimeconfig.cache
 C:\Users\rog\Desktop\编译原理\CompilationPrinciple\SNL-Compiler-Designs\obj\Debug\net6.0-windows\ref\CompilationPrinciple.dll
+C:\Users\rog\Desktop\编译原理\CompilationPrinciple\SNL-Compiler-Designs\obj\Debug\net6.0-windows\CompilationPrinciple.Properties.Resources.resources
