@@ -9,9 +9,11 @@ namespace CompilationPrinciple {
             // see https://aka.ms/applicationconfiguration.
             /*            ApplicationConfiguration.Initialize();
                         Application.Run(new Form1());*/
-            Scanner scanner = new Scanner();
+/*            Scanner scanner = new Scanner();
             scanner.DirectSteeringMethod();
-            scanner.outPutTokenList();
-        }
+            scanner.outPutTokenList();*/
+
+            LL1Supporter lL1Supporter = new LL1Supporter();
+                    }
     }
 }
