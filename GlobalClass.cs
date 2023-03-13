@@ -6,10 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
-namespace CompilationPrinciple
-{
-    public enum LexType
-    {
+namespace CompilationPrinciple {
+    public enum LexType {
         //簿记单词符号
         ENDFILE, ERROR,
         //保留字
@@ -45,28 +43,23 @@ namespace CompilationPrinciple
         Factor, Variable, VariMore, FieldVar,
         FieldVarMore, CmpOp, AddOp, MultOp
     };
-    
-    public enum LexStatus
-    {
-        START,INID,INNUM,DONE,INASSIGN,INCOMMENT,INRANGE,INCHAR,ERROR,FINISH
+
+    public enum LexStatus {
+        START, INID, INNUM, DONE, INASSIGN, INCOMMENT, INRANGE, INCHAR, ERROR, FINISH
     }
 
-    public enum LexUnit
-    {
-        Letter,Number,SingleSep,AssignFirst,AssignSecond,LeftCurly,RightCurly,Dot,SingleQuo,Space
+    public enum LexUnit {
+        Letter, Number, SingleSep, AssignFirst, AssignSecond, LeftCurly, RightCurly, Dot, SingleQuo, Space
     }
 
-    public class Token
-    {
+    public class Token {
         public int line { get; set; } //行数
         public LexType lex { get; set; } //词法信息
         public String sem { get; set; } //语义信息
     }
 
-    public class Dictionarys
-    {
-        public Dictionarys()
-        {
+    public class Dictionarys {
+        public Dictionarys() {
             //Provide the conversion from identifier to identifier type 
             reservedWords = new Dictionary<String, LexType>()
             {
@@ -88,21 +81,19 @@ namespace CompilationPrinciple
                 {'+', LexType.PLUS},   {'-', LexType.MINUS},     {'*', LexType.TIMES},
                 {'/', LexType.DIVIDE}, {'(', LexType.LPAREN},    {')', LexType.RPAREN},
                 {';', LexType.SEMI},   {'[', LexType.LMIDPAREN}, {']', LexType.RMIDPAREN},
-                {'=', LexType.EQ},     {'<', LexType.LT},        {',', LexType.COMMA}                            
+                {'=', LexType.EQ},     {'<', LexType.LT},        {',', LexType.COMMA}
             };
         }
 
-        public Dictionary<String,LexType> reservedWords;
+        public Dictionary<String, LexType> reservedWords;
 
         public Dictionary<char, LexType> separatorWords;
     }
 
-    public class ConvertTable
-    {
+    public class ConvertTable {
         int[,] convertTable;
 
-        public ConvertTable()
-        {
+        public ConvertTable() {
 
             convertTable = new int[8, 10];
 
@@ -140,7 +131,7 @@ namespace CompilationPrinciple
 
         }
 
-        
+
 
     }
 

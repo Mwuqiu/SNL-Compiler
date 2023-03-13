@@ -5,136 +5,110 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace CompilationPrinciple
-{
-    public class Scanner
-    {
-        public Scanner()
-        {
+namespace CompilationPrinciple {
+    public class Scanner {
+        public Scanner() {
             lineNumber = 0;
             getWorng = false;
             tokenList = new List<Token>();
         }
 
         static bool IsChar(char c) => (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
-        static bool IsDigit(char c) { return c >= '0' && c <= '9'; }
+        static bool IsDigit(char c) => c >= '0' && c <= '9';
         static bool IsSingleSep(char c) => c == '+' || c == '-' || c == '*' || c == '/' || c == '(' || c == ')' ||
         c == ';' || c == '[' || c == ']' || c == '=' || c == '<' || c == ',';
-        
-        Token createIDToken(String str)
-        {
+
+        Token createIDToken(String str) {
             Token token = new Token();
 
             token.line = lineNumber;
             token.sem = str;
-            
+
             Dictionarys dictionarys = new Dictionarys();
 
             //Determine if an identifier is a reserved word
-            if (dictionarys.reservedWords.ContainsKey(str))
-            {
+            if (dictionarys.reservedWords.ContainsKey(str)) {
                 token.lex = dictionarys.reservedWords[str];
             }
             //not a reserved word
-            else
-            {
+            else {
                 token.lex = LexType.ID;
             }
             return token;
         }
 
         //Direct steering method to achieve lexical analysis
-        public void DirectSteeringMethod()
-        {
+        public void DirectSteeringMethod() {
             //Read input by line
             String line;
-            try
-            {
+            try {
                 //StreamReader sr = new StreamReader(Properties.Resources.SimpleExample);
-                String[] strs = Properties.Resources.SimpleExample.Split("\r\n");
+                String[] strs = Properties.Resources.Simple4.Split("\r\n");
                 //Read the first line of text
                 //line = sr.ReadLine();
-                for(int i = 0; i < strs.Length; i++)
-                {
+                for (int i = 0; i < strs.Length; i++) {
                     line = strs[i];
                     lineNumber++;
                     //Each line of characters is processed here
                     Console.WriteLine(line);
                     DSLine(line);
-                }             
-            }
-            catch (Exception e)
-            {
+                }
+            } catch (Exception e) {
                 Console.WriteLine("Exception: " + e.Message);
-            }
-            finally
-            {
+            } finally {
                 Console.WriteLine("Executing finally block.");
             }
 
         }
-       
-        void DSLine(string line)
-        {
+
+        void DSLine(string line) {
             int index = 0;
-            while(index < line.Length && !getWorng)
-            {
+            while (index < line.Length && !getWorng) {
                 //Identifiers
-                if (IsChar(line[index]))
-                {
+                if (IsChar(line[index])) {
                     string idBuff = line[index++].ToString();
-                    while (index < line.Length && (IsChar(line[index]) || IsDigit(line[index])))
-                    {
+                    while (index < line.Length && (IsChar(line[index]) || IsDigit(line[index]))) {
                         idBuff += line[index].ToString();
                         index++;
                     }
-                    tokenList.Add(createIDToken(idBuff));                                       
+                    tokenList.Add(createIDToken(idBuff));
                 }
                 //Digital
-                else if (IsDigit(line[index]))
-                {
+                else if (IsDigit(line[index])) {
                     string diBuff = line[index++].ToString();
-                    while (index < line.Length && IsDigit(line[index]))
-                    {
+                    while (index < line.Length && IsDigit(line[index])) {
                         diBuff += line[index].ToString();
                         index++;
                     }
-                    tokenList.Add(new Token { line = lineNumber, lex = LexType.INTC_VAL,sem = diBuff});
+                    tokenList.Add(new Token { line = lineNumber, lex = LexType.INTC_VAL, sem = diBuff });
                 }
                 //Single-byte separator
-                else if (IsSingleSep(line[index])){
+                else if (IsSingleSep(line[index])) {
                     Token token = new Token();
                     token.line = lineNumber;
                     token.sem = line[index].ToString();
                     // get lex type from separatorWords dictionary
                     Dictionarys dictionarys = new Dictionarys();
-                    token.lex =  dictionarys.separatorWords[line[index]];
+                    token.lex = dictionarys.separatorWords[line[index]];
 
                     tokenList.Add(token);
                     index++;
                 }
                 //Special characters processing
-                else
-                {
+                else {
                     switch (line[index]) {
                         //Determine if an assignment symbol can be combined with "="
                         case ':':
-                             if(index + 1 < line.Length)
-                            {
+                            if (index + 1 < line.Length) {
                                 char nextChar = line[++index];
-                                if (nextChar != '=')
-                                {
+                                if (nextChar != '=') {
                                     Console.WriteLine("ERROR FOUND IN LINE " + lineNumber + "MISS FOUND \"=\" AFTER \":\"");
                                     getWorng = true;
-                                }
-                                else
-                                {
+                                } else {
                                     tokenList.Add(new Token { line = lineNumber, lex = LexType.ASSIGN, sem = ":=" });
                                     index++;
                                 }
-                            }
-                            else
-                            {
+                            } else {
                                 Console.WriteLine("ERROR FOUND IN LINE " + lineNumber + "MISS FOUND \"=\" AFTER \":\"");
                                 getWorng = true;
                             }
@@ -142,8 +116,7 @@ namespace CompilationPrinciple
                         //There must be a '}' after the '{ ' and circled by them is the comment text
                         case '{':
                             string commentText = "";
-                            while (index < line.Length && line[index] != '}')
-                            {
+                            while (index < line.Length && line[index] != '}') {
                                 if (line[index] == '{')
                                     continue;
                                 commentText += line[index].ToString();
@@ -154,68 +127,50 @@ namespace CompilationPrinciple
                             break;
                         //determine whether it is '..' (array lower bound flag) or '.' (end-of-program flag) or 'd.x' (member symbols flag)
                         case '.':
-                            if(index + 1 < line.Length)
-                            {
+                            if (index + 1 < line.Length) {
                                 char nextChar = line[index + 1];
-                                if (nextChar == '.')
-                                {
+                                if (nextChar == '.') {
                                     //array lower bound flag
                                     tokenList.Add(new Token { line = lineNumber, lex = LexType.UNDERRANGE, sem = ".." });
                                     index += 2;
-                                }
-                                else
-                                {
+                                } else {
                                     //member symbols
                                     tokenList.Add(new Token { line = lineNumber, lex = LexType.DOT, sem = ".（member symbols flag)" });
-                                    index++; 
+                                    index++;
                                 }
-                            }
-                            else
-                            {
+                            } else {
                                 // end-of-program flag
                                 tokenList.Add(new Token { line = lineNumber, lex = LexType.DOT, sem = ".（end-of-program flag)" });
                                 index++;
                             }
                             break;
                         //If the word is ' , the next character read in will be CHAR
-                        case '\'' :
-                            if(index + 2 < line.Length)
-                            {
+                        case '\'':
+                            if (index + 2 < line.Length) {
                                 char nextChar = line[index + 1];
-                                if (IsChar(nextChar) || IsDigit(nextChar))
-                                {
+                                if (IsChar(nextChar) || IsDigit(nextChar)) {
                                     char nexNextChar = line[index + 2];
-                                    if (nexNextChar == '\'')
-                                    {
+                                    if (nexNextChar == '\'') {
                                         tokenList.Add(new Token { line = lineNumber, lex = LexType.CHAR_T, sem = nextChar.ToString() });
                                         index += 3;
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         Console.WriteLine("ERROE : More than one character after a single quote or missing another single quote");
                                         getWorng = true;
                                     }
-                                }
-                                else
-                                {
+                                } else {
                                     Console.WriteLine("No characters after single quotes");
                                     getWorng = true;
                                 }
-                            }
-                            else
-                            {
+                            } else {
                                 Console.WriteLine("ERROE : More than one character after a single quote or missing another single quote");
                                 getWorng = true;
-                            }                            
+                            }
                             break;
                         default:
-                            if (' ' != line[index] && 32 != line[index] && 9 != line[index])
-                            {
+                            if (' ' != line[index] && 32 != line[index] && 9 != line[index]) {
                                 Console.WriteLine("Unexpected Char : " + line[index] + "in line : " + lineNumber);
                                 getWorng = true;
-                            }
-                            else
-                            {
+                            } else {
                                 index++;
                             }
                             break;
@@ -226,22 +181,19 @@ namespace CompilationPrinciple
         }
 
         //State transition table method to achieve lexical analysis
-        public void StateTransitionTableMethod()
-        {
-            
+        public void StateTransitionTableMethod() {
+
         }
 
 
-        public void outPutTokenList()
-        {
-            for(int i = 0;i < tokenList.Count; i++)
-            {                
+        public void outPutTokenList() {
+            for (int i = 0; i < tokenList.Count; i++) {
                 Console.WriteLine(tokenList[i].line + "  " + Enum.GetName(typeof(LexType), tokenList[i].lex) + "  " + tokenList[i].sem);
             }
         }
 
         private int lineNumber;
         bool getWorng;
-        List<Token> tokenList;
+        public List<Token> tokenList { get; set; }
     }
 }
