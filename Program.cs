@@ -9,11 +9,12 @@ namespace CompilationPrinciple {
             // see https://aka.ms/applicationconfiguration.
             /*            ApplicationConfiguration.Initialize();
                         Application.Run(new Form1());*/
-/*            Scanner scanner = new Scanner();
+            Scanner scanner = new Scanner();
             scanner.DirectSteeringMethod();
-            scanner.outPutTokenList();*/
-
-            LL1Supporter lL1Supporter = new LL1Supporter();
-                    }
+            scanner.outPutTokenList();
+            SyntaxAnalysiser s = new SyntaxAnalysiser(scanner.tokenList);
+            SyntaxClass.SyntaxTreeNode? syntaxTreeNode = s.Parse();
+            if(syntaxTreeNode != null) syntaxTreeNode.PrintTree(0);
+        }
     }
 }

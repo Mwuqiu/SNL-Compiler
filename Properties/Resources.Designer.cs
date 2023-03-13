@@ -62,6 +62,105 @@ namespace CompilationPrinciple.Properties {
         
         /// <summary>
         ///   查找类似 program p
+        ///type t = integer;
+        ///p = integer;
+        ///begin
+        ///end.
+        /// 的本地化字符串。
+        /// </summary>
+        internal static string Simple1 {
+            get {
+                return ResourceManager.GetString("Simple1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 program p
+        ///type t1 = integer;
+        ///p1 = integer;
+        ///a1 = array [0..10] of integer;
+        ///r1 = record
+        ///		integer x;
+        ///		integer y;
+        ///	end;
+        ///a2 = array [0..10] of integer;
+        ///r2 = record
+        ///		integer x;
+        ///		integer y;
+        ///	end;
+        ///p2 = integer;
+        ///begin
+        ///end.
+        /// 的本地化字符串。
+        /// </summary>
+        internal static string Simple2 {
+            get {
+                return ResourceManager.GetString("Simple2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 program p
+        ///type t1 = integer;
+        ///p1 = integer;
+        ///a1 = array [0..10] of integer;
+        ///r1 = record
+        ///		integer x;
+        ///		integer y;
+        ///	end;
+        ///a2 = array [0..10] of integer;
+        ///r2 = record
+        ///		integer x;
+        ///		integer y;
+        ///	end;
+        ///p2 = integer;
+        ///r3 = r2;
+        ///p3 = p2;
+        ///begin
+        ///end.
+        /// 的本地化字符串。
+        /// </summary>
+        internal static string Simple3 {
+            get {
+                return ResourceManager.GetString("Simple3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 program p
+        ///type
+        ///	t1 = integer;
+        ///	p1 = integer;
+        ///	a1 = array[0..10]of integer;
+        ///	r1 = record
+        ///		integer x;
+        ///		integer y;
+        ///	end;
+        ///	a2 = array[0..10]of integer;
+        ///	r2 = record
+        ///		integer x;
+        ///		integer y;
+        ///	end;
+        ///	p2 = integer;
+        ///	r3 = r2;
+        ///	p3 = p2;
+        ///var
+        ///	integer v1;
+        ///	p1 v2;
+        ///	a1 v3;
+        ///	r2 v4;
+        ///begin
+        ///end.
+        /// 的本地化字符串。
+        /// </summary>
+        internal static string Simple4 {
+            get {
+                return ResourceManager.GetString("Simple4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 program p
         ///	type t = integer;
         ///	var t V1;
         ///		char V2;

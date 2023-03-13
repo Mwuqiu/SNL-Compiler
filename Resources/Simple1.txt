@@ -1,0 +1,5 @@
+program p
+type t = integer;
+p = integer;
+begin
+end.

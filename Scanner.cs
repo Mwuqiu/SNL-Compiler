@@ -14,7 +14,7 @@ namespace CompilationPrinciple {
         }
 
         static bool IsChar(char c) => (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
-        static bool IsDigit(char c) { return c >= '0' && c <= '9'; }
+        static bool IsDigit(char c) => c >= '0' && c <= '9';
         static bool IsSingleSep(char c) => c == '+' || c == '-' || c == '*' || c == '/' || c == '(' || c == ')' ||
         c == ';' || c == '[' || c == ']' || c == '=' || c == '<' || c == ',';
 
@@ -45,7 +45,7 @@ namespace CompilationPrinciple {
             String line;
             try {
                 //StreamReader sr = new StreamReader(Properties.Resources.SimpleExample);
-                String[] strs = Properties.Resources.SimpleExample.Split("\r\n");
+                String[] strs = Properties.Resources.Simple4.Split("\r\n");
                 //Read the first line of text
                 //line = sr.ReadLine();
                 for (int i = 0; i < strs.Length; i++) {
@@ -198,6 +198,6 @@ namespace CompilationPrinciple {
 
         private int lineNumber;
         bool getWorng;
-        List<Token> tokenList;
+        public List<Token> tokenList { get; set; }
     }
 }
