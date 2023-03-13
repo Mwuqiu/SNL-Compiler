@@ -61,6 +61,50 @@ namespace CompilationPrinciple.Properties {
         }
         
         /// <summary>
+        ///   查找类似 program bubble
+        ///var
+        ///	integer temp;
+        ///	integer i, j, num;
+        ///	array[1..20]of integer a;
+        ///procedure q(integer num);
+        ///	var
+        ///		integer i, j, k;
+        ///		integer t;
+        ///	begin
+        ///		i := 1;
+        ///		while i&lt;num do
+        ///			j := num-i+1;
+        ///			k := 1;
+        ///			while k&lt;j do
+        ///				if a[k+1]&lt;a[k] then
+        ///					t := a[k];
+        ///					a[k] := a[k+1];
+        ///					a[k+1] := t
+        ///				else
+        ///					temp := 0
+        ///				fi;
+        ///				k := k+1
+        ///			endwh;
+        ///			i := i+1
+        ///		endwh
+        ///	end
+        ///begin
+        ///	read(num);
+        ///	i := 1;
+        ///	while i&lt;num+1 do
+        ///		read(j);
+        ///		a[i] := j;
+        ///		i := i+1
+        ///	endwh;
+        ///	q(num);        /// [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string bubble {
+            get {
+                return ResourceManager.GetString("bubble", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 program p
         ///type t = integer;
         ///p = integer;
@@ -156,6 +200,43 @@ namespace CompilationPrinciple.Properties {
         internal static string Simple4 {
             get {
                 return ResourceManager.GetString("Simple4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 program p
+        ///type
+        ///	t = integer;
+        ///var
+        ///	t t1;
+        ///begin
+        ///	read(t1)
+        ///end.
+        /// 的本地化字符串。
+        /// </summary>
+        internal static string Simple5 {
+            get {
+                return ResourceManager.GetString("Simple5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 program p
+        ///type
+        ///	t = integer;
+        ///var
+        ///	t V1;
+        ///	char v2;
+        ///begin
+        ///	read(v1);
+        ///	V1 := V1+10;
+        ///	write(v1)
+        ///end.
+        /// 的本地化字符串。
+        /// </summary>
+        internal static string Simple6 {
+            get {
+                return ResourceManager.GetString("Simple6", resourceCulture);
             }
         }
         

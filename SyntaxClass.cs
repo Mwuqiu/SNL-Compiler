@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static CompilationPrinciple.SyntaxClass.SyntaxTreeNode;
+using static CompilationPrinciple.SyntaxClass.SyntaxTreeNode.Attr;
+using static CompilationPrinciple.SyntaxClass.SyntaxTreeNode.Attr.ExpAttr;
 
 namespace CompilationPrinciple {
     public class SyntaxClass {
         public class SyntaxTreeNode {
             public SyntaxTreeNode[] child { get; set; }
             // 指向子语法树节点指针，为语法树节点指针类型
-            public SyntaxTreeNode sibling { get; set; }
+            public SyntaxTreeNode? sibling { get; set; }
             // 指向兄弟语法树节点指针，为语法树节点指针类型。
 
             public int lineno;
@@ -27,8 +30,7 @@ namespace CompilationPrinciple {
 
             public StmtKind stmtKind;
             //记录语法树节点的语句类型，当 nodekind = StmtK 时有效，
-            //取值 IfK, WhileK, AssignK, ReadK, WriteK, CallK, ReturnK，为语
-            //法树节点语句类型。
+            //取值 IfK, WhileK, AssignK, ReadK, WriteK, CallK, ReturnK，为语法树节点语句类型。
 
             public ExpKind  expKind;
             //记录语法树节点的表达式类型，当 nodekind=ExpK 时有效，
@@ -43,7 +45,7 @@ namespace CompilationPrinciple {
             // public addr table[]
             // TODO 标志符在符号表的入口
 
-            public string typeName;
+            public string? typeName;
             //记录类型名，当节点为声明类型，且类型是由类型标志符表示时有效。
 
             public class Attr {
@@ -53,7 +55,8 @@ namespace CompilationPrinciple {
                     public int low, up;
                     public string? childType;
                     //记录数组的成员类型
-                    public string ToString() {
+                    
+                    override public string ToString() {
                         return low + "  " + up + "  " + childType;
                     }
                 }
@@ -78,9 +81,9 @@ namespace CompilationPrinciple {
                     //记录语法树节点的数值,当语法树节点为“数字
                     //因子”对应的语法树节点时有效,为整数类型。
                     public enum VarKind {
-                        IdV, ArrayMembVFieldMembV
+                        Error, IdV, ArrayMembVFieldMembV
                     }
-                    public VarKind? varKind;
+                    public VarKind varKind;
                     public string? type;
                     //记 录 语 法 树 节 点 的 检 查 类 型 ， 取 值 Void,
                     //Integer,Boolean,为类型检查 ExpType 类型。
@@ -104,6 +107,14 @@ namespace CompilationPrinciple {
             public SyntaxTreeNode(NodeKind n) : this(){
                 nodeKind = n;
             }
+            static public SyntaxTreeNode NewExpKindIdK() {
+                SyntaxTreeNode t = new SyntaxTreeNode(NodeKind.ExpK) {
+                    expKind = ExpKind.IdK,
+                    attr = new Attr()
+                };
+                t.attr.expAttr.varKind = VarKind.IdV;
+                return t;
+            }
             public void PrintTree(int space) {
                 for (int i = 0; i < space; i++)
                     Console.Write(" ");
@@ -124,6 +135,9 @@ namespace CompilationPrinciple {
                 }
                 if(nodeKind == NodeKind.DecK && decKind == DecKind.ArrayK) {
                     Console.Write(attr.arrayAttr.ToString());
+                }
+                if(nodeKind == NodeKind.ExpK && attr != null && attr.expAttr.varKind != Attr.ExpAttr.VarKind.Error) {
+                    Console.Write(Enum.GetName(typeof(VarKind), attr.expAttr.varKind) + "  ");
                 }
                 Console.WriteLine();
                 for(int i = 0; i < 3; i++) {

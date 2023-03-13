@@ -400,6 +400,7 @@ namespace CompilationPrinciple {
                     break;
                 case LexType.ID:
                     string tmp = GetCurrent().sem;
+                    Match(LexType.ID);
                     t = AssCall(tmp);
                     break;
                 default:
@@ -426,22 +427,25 @@ namespace CompilationPrinciple {
         public SyntaxTreeNode AssignmentRest(string tmp) {
             SyntaxTreeNode t = new SyntaxTreeNode(NodeKind.StmtK);
             t.stmtKind = StmtKind.AssignK;
-            Match(LexType.EQ);
-            t.child[0] = Exp();
-            t.name[t.idnum++] = tmp;
+            SyntaxTreeNode child0 = SyntaxTreeNode.NewExpKindIdK();
+            child0.name[child0.idnum++] = tmp;
+            t.child[0] = child0;
+            Match(LexType.ASSIGN);
+            t.child[1] = Exp();
             return t;
         }
         public SyntaxTreeNode ConditionalStm() {
             SyntaxTreeNode t = new SyntaxTreeNode(NodeKind.StmtK);
             t.stmtKind = StmtKind.IfK;
             Match(LexType.IF);
+            t.lineno = GetCurrent().line;
             t.child[0] = Exp(); // IF语句的条件表达式
             Match(LexType.THEN);
-            t.child[1] = StmL();
+            t.child[1] = StmList();
             //条件为真的处理语句
             if (GetCurrent().lex == LexType.ELSE) {
                 Match(LexType.ELSE);
-                t.child[2] = StmL();
+                t.child[2] = StmList();
                 //条件为假的处理语句
             }
             Match(LexType.FI);
@@ -463,10 +467,10 @@ namespace CompilationPrinciple {
             SyntaxTreeNode t = new SyntaxTreeNode(NodeKind.StmtK);
             t.stmtKind = StmtKind.ReadK;
             Match(LexType.READ);
-            Match(LexType.RPAREN);
+            Match(LexType.LPAREN);
             t.name[t.idnum++] = GetCurrent().sem;
             Match(LexType.ID);
-            Match(LexType.LPAREN);
+            Match(LexType.RPAREN);
             return t;
         }
         public SyntaxTreeNode OutputStm() {
@@ -475,6 +479,7 @@ namespace CompilationPrinciple {
             Match(LexType.WRITE);
             Match(LexType.LPAREN);
             t.child[0] = Exp();
+            Match(LexType.RPAREN);
             return t;
         }
         public SyntaxTreeNode ReturnStm() {
@@ -590,6 +595,7 @@ namespace CompilationPrinciple {
                 case LexType.INTC_VAL:
                     t = new SyntaxTreeNode(NodeKind.ExpK);
                     t.expKind = ExpKind.ConstK;
+                    Match(LexType.INTC_VAL);
                     break;
                 case LexType.ID:
                     t = variable();
@@ -606,8 +612,8 @@ namespace CompilationPrinciple {
             return t;
         }
         public SyntaxTreeNode variable() {
-            SyntaxTreeNode t = new SyntaxTreeNode(NodeKind.ExpK);
-            t.expKind = ExpKind.IdK;
+            SyntaxTreeNode t = SyntaxTreeNode.NewExpKindIdK();
+            
             if (GetCurrent().lex == LexType.ID) {
                 t.name[t.idnum++] = GetCurrent().sem;
                 Match(LexType.ID);
@@ -643,7 +649,7 @@ namespace CompilationPrinciple {
                     break;
                 case LexType.DOT: // 为 .
                     Match(LexType.DOT);
-                    //t.child[0] = fieldVar();
+                    t.child[0] = fieldVar();
                     t.attr.expAttr.varKind = ExpAttr.VarKind.ArrayMembVFieldMembV;
                     t.child[0].attr.expAttr.varKind = ExpAttr.VarKind.IdV;
                     break;
@@ -651,6 +657,46 @@ namespace CompilationPrinciple {
                     // 错误信息, 读入下一个token
                     break;
             }
+        }
+        public SyntaxTreeNode fieldVar() {
+            SyntaxTreeNode t = SyntaxTreeNode.NewExpKindIdK();
+            t.name[t.idnum++] = GetCurrent().sem;
+            t.lineno = GetCurrent().line;
+            Match(LexType.ID);
+            fieldvarMore(t);
+            return t;
+        }
+        void fieldvarMore(SyntaxTreeNode t) {
+            switch (GetCurrent().lex) {
+                case LexType.ASSIGN:
+                case LexType.TIMES:
+                case LexType.EQ:
+                case LexType.LT:
+                case LexType.PLUS:
+                case LexType.MINUS:
+                case LexType.DIVIDE:
+                case LexType.RPAREN:
+                case LexType.RMIDPAREN:
+                case LexType.SEMI:
+                case LexType.COMMA:
+                case LexType.THEN:
+                case LexType.ELSE:
+                case LexType.FI:
+                case LexType.DO:
+                case LexType.ENDWH:
+                case LexType.END:
+                    break;
+                case LexType.LMIDPAREN:
+                    Match(LexType.LMIDPAREN);
+                    t.child[0] = Exp();
+                    t.child[0].attr.expAttr.varKind = ExpAttr.VarKind.ArrayMembVFieldMembV;
+                    Match(LexType.RMIDPAREN);
+                    break;
+                default:
+                    //读入下一个token， 并提示错误信息
+                    break;
+            }
+
         }
     }
 }
