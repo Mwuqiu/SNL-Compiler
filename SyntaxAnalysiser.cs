@@ -44,7 +44,7 @@ namespace CompilationPrinciple {
 
         }
 
-        SyntaxTreeNode SyntaxProgram() {
+        public SyntaxTreeNode SyntaxProgram() {
             try {
                 SyntaxTreeNode root = new SyntaxTreeNode(NodeKind.ProK);
                 root.child[0] = ProgramHead();
@@ -58,13 +58,13 @@ namespace CompilationPrinciple {
             }
 
         }
-        SyntaxTreeNode ProgramHead() {
+        public SyntaxTreeNode ProgramHead() {
             SyntaxTreeNode pheadK = new SyntaxTreeNode(NodeKind.PheadK);
             Match(LexType.PROGRAM);
             pheadK.name[pheadK.idnum++] = Match(LexType.ID);
             return pheadK;
         }
-        SyntaxTreeNode? DeclarePart() {
+        public SyntaxTreeNode? DeclarePart() {
             /*注意, 为null不算错误*/
             SyntaxTreeNode typeP = new SyntaxTreeNode(NodeKind.TypeK);
             typeP.child[0] = TypeDec();

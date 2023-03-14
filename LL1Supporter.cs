@@ -16,6 +16,16 @@ namespace CompilationPrinciple {
         OtherRelE, Exp, OtherTerm, Term, OtherFactor, Factor, Variable, VariMore, FieldVar, FieldVarMore, CmpOp, AddOp, MultOp,
     }
 
+
+    // All ultimate characters in the SNL language
+    public enum Ultimate {
+        ENDFILE, ERROR,PROGRAM, PROCEDURE, TYPE, VAR, IF,
+        THEN, ELSE, FI, WHILE, DO,ENDWH, BEGIN, END, READ, WRITE,
+        ARRAY, OF, RECORD, RETURN,INTEGER_T, CHAR_T,ID, INTC_VAL, CHARC_VAL,
+        ASSIGN, EQ, LT, PLUS, MINUS,TIMES, DIVIDE, LPAREN, RPAREN, DOT,
+        COLON, SEMI, COMMA, LMIDPAREN, RMIDPAREN,UNDERRANGE
+    }
+
     internal class LL1Supporter {
         
         public LL1Supporter() {
@@ -273,7 +283,7 @@ namespace CompilationPrinciple {
         }
 
         //the table of ll1 syntax analysis
-        int[,] LL1Table;
+        public int[,] LL1Table;
 
     }
 }

@@ -42,6 +42,7 @@ namespace CompilationPrinciple {
         Factor, Variable, VariMore, FieldVar,
         FieldVarMore, CmpOp, AddOp, MultOp
     };
+    
 
     public enum LexStatus {
         START, INID, INNUM, DONE, INASSIGN, INCOMMENT, INRANGE, INCHAR, ERROR, FINISH

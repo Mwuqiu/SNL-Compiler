@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Projects\\SNL-Compiler\\CompilationPrinciple.csproj": {}
+    "C:\\Users\\rog\\Desktop\\编译原理\\CompilationPrinciple\\SNL-Compiler-Designs\\CompilationPrinciple.csproj": {}
   },
   "projects": {
-    "D:\\Projects\\SNL-Compiler\\CompilationPrinciple.csproj": {
+    "C:\\Users\\rog\\Desktop\\编译原理\\CompilationPrinciple\\SNL-Compiler-Designs\\CompilationPrinciple.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Projects\\SNL-Compiler\\CompilationPrinciple.csproj",
+        "projectUniqueName": "C:\\Users\\rog\\Desktop\\编译原理\\CompilationPrinciple\\SNL-Compiler-Designs\\CompilationPrinciple.csproj",
         "projectName": "CompilationPrinciple",
-        "projectPath": "D:\\Projects\\SNL-Compiler\\CompilationPrinciple.csproj",
-        "packagesPath": "C:\\Users\\zxx16\\.nuget\\packages\\",
-        "outputPath": "D:\\Projects\\SNL-Compiler\\obj\\",
+        "projectPath": "C:\\Users\\rog\\Desktop\\编译原理\\CompilationPrinciple\\SNL-Compiler-Designs\\CompilationPrinciple.csproj",
+        "packagesPath": "C:\\Users\\rog\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\rog\\Desktop\\编译原理\\CompilationPrinciple\\SNL-Compiler-Designs\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\zxx16\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\rog\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,6 +26,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
