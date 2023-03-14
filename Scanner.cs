@@ -18,10 +18,12 @@ namespace CompilationPrinciple {
         static bool IsSingleSep(char c) => c == '+' || c == '-' || c == '*' || c == '/' || c == '(' || c == ')' ||
         c == ';' || c == '[' || c == ']' || c == '=' || c == '<' || c == ',';
 
-        Token createIDToken(String str) {
+        Token createIDToken(String str,int index) {
             Token token = new Token();
 
             token.line = lineNumber;
+            token.column = index;
+
             token.sem = str;
 
             Dictionarys dictionarys = new Dictionarys();
@@ -66,26 +68,29 @@ namespace CompilationPrinciple {
             while (index < line.Length && !getWorng) {
                 //Identifiers
                 if (IsChar(line[index])) {
+                    int startIndex = index;
                     string idBuff = line[index++].ToString();
                     while (index < line.Length && (IsChar(line[index]) || IsDigit(line[index]))) {
                         idBuff += line[index].ToString();
                         index++;
                     }
-                    tokenList.Add(createIDToken(idBuff));
+                    tokenList.Add(createIDToken(idBuff, startIndex));
                 }
                 //Digital
                 else if (IsDigit(line[index])) {
+                    int startIndex = index;
                     string diBuff = line[index++].ToString();
                     while (index < line.Length && IsDigit(line[index])) {
                         diBuff += line[index].ToString();
                         index++;
                     }
-                    tokenList.Add(new Token { line = lineNumber, lex = LexType.INTC_VAL, sem = diBuff });
+                    tokenList.Add(new Token { line = lineNumber,column = startIndex, lex = LexType.INTC_VAL, sem = diBuff });
                 }
                 //Single-byte separator
                 else if (IsSingleSep(line[index])) {
                     Token token = new Token();
                     token.line = lineNumber;
+                    token.column = index;
                     token.sem = line[index].ToString();
                     // get lex type from separatorWords dictionary
                     Dictionarys dictionarys = new Dictionarys();
@@ -105,7 +110,7 @@ namespace CompilationPrinciple {
                                     Console.WriteLine("ERROR FOUND IN LINE " + lineNumber + "MISS FOUND \"=\" AFTER \":\"");
                                     getWorng = true;
                                 } else {
-                                    tokenList.Add(new Token { line = lineNumber, lex = LexType.ASSIGN, sem = ":=" });
+                                    tokenList.Add(new Token { line = lineNumber,column = index, lex = LexType.ASSIGN, sem = ":=" });
                                     index++;
                                 }
                             } else {
@@ -131,16 +136,16 @@ namespace CompilationPrinciple {
                                 char nextChar = line[index + 1];
                                 if (nextChar == '.') {
                                     //array lower bound flag
-                                    tokenList.Add(new Token { line = lineNumber, lex = LexType.UNDERRANGE, sem = ".." });
+                                    tokenList.Add(new Token { line = lineNumber,column = index, lex = LexType.UNDERRANGE, sem = ".." });
                                     index += 2;
                                 } else {
                                     //member symbols
-                                    tokenList.Add(new Token { line = lineNumber, lex = LexType.DOT, sem = ".（member symbols flag)" });
+                                    tokenList.Add(new Token { line = lineNumber,column = index, lex = LexType.DOT, sem = ".（member symbols flag)" });
                                     index++;
                                 }
                             } else {
                                 // end-of-program flag
-                                tokenList.Add(new Token { line = lineNumber, lex = LexType.DOT, sem = ".（end-of-program flag)" });
+                                tokenList.Add(new Token { line = lineNumber,column = index, lex = LexType.DOT, sem = ".（end-of-program flag)" });
                                 index++;
                             }
                             break;
@@ -151,7 +156,7 @@ namespace CompilationPrinciple {
                                 if (IsChar(nextChar) || IsDigit(nextChar)) {
                                     char nexNextChar = line[index + 2];
                                     if (nexNextChar == '\'') {
-                                        tokenList.Add(new Token { line = lineNumber, lex = LexType.CHAR_T, sem = nextChar.ToString() });
+                                        tokenList.Add(new Token { line = lineNumber,column = index, lex = LexType.CHAR_T, sem = nextChar.ToString() });
                                         index += 3;
                                     } else {
                                         Console.WriteLine("ERROE : More than one character after a single quote or missing another single quote");
@@ -185,10 +190,9 @@ namespace CompilationPrinciple {
 
         }
 
-
         public void outPutTokenList() {
             for (int i = 0; i < tokenList.Count; i++) {
-                Console.WriteLine(tokenList[i].line + "  " + Enum.GetName(typeof(LexType), tokenList[i].lex) + "  " + tokenList[i].sem);
+                Console.WriteLine(tokenList[i].line + "  " + tokenList[i].column + "   " + Enum.GetName(typeof(LexType), tokenList[i].lex) + "  " + tokenList[i].sem);
             }
         }
 

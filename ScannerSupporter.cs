@@ -8,23 +8,22 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace CompilationPrinciple {
     public enum LexType {
-        //簿记单词符号
         ENDFILE, ERROR,
-        //保留字
+        //Reserved words
         PROGRAM, PROCEDURE, TYPE, VAR, IF,
         THEN, ELSE, FI, WHILE, DO,
         ENDWH, BEGIN, END, READ, WRITE,
         ARRAY, OF, RECORD, RETURN,
-        //类型
+        //Type
         INTEGER_T, CHAR_T,
-        //多字符单词符号
+        //Multi-Character Word Symbols
         ID, INTC_VAL, CHARC_VAL,
-        //特殊符号
+        //Special Symbols
         ASSIGN, EQ, LT, PLUS, MINUS,
         TIMES, DIVIDE, LPAREN, RPAREN, DOT,
         COLON, SEMI, COMMA, LMIDPAREN, RMIDPAREN,
         UNDERRANGE,
-        //非终结符
+        //Non-Terminators
         Program, ProgramHead, ProgramName, DeclarePart,
         TypeDec, TypeDeclaration, TypeDecList, TypeDecMore,
         TypeId, TypeName, BaseType, StructureType,
@@ -53,9 +52,10 @@ namespace CompilationPrinciple {
     }
 
     public class Token {
-        public int line { get; set; } //行数
-        public LexType lex { get; set; } //词法信息
-        public String sem { get; set; } //语义信息
+        public int line { get; set; } 
+        public int column { get; set; } 
+        public LexType lex { get; set; } // Lexical Type of token
+        public String sem { get; set; } // Semantic Info of token
     }
 
     public class Dictionarys {
@@ -90,6 +90,7 @@ namespace CompilationPrinciple {
         public Dictionary<char, LexType> separatorWords;
     }
 
+    //TODO  : Finish The Design Of State Transition Table 
     public class ConvertTable {
         int[,] convertTable;
 
@@ -123,16 +124,6 @@ namespace CompilationPrinciple {
             convertTable[(int)LexStatus.INNUM, (int)LexUnit.Dot] = (int)LexStatus.START;
             convertTable[(int)LexStatus.INNUM, (int)LexUnit.SingleQuo] = (int)LexStatus.ERROR;
             convertTable[(int)LexStatus.INNUM, (int)LexUnit.Space] = (int)LexStatus.START;
-
-
-
-
-
-
         }
-
-
-
     }
-
 }
