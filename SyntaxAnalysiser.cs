@@ -171,13 +171,12 @@ namespace CompilationPrinciple {
             Match(LexType.ARRAY);
             Match(LexType.LMIDPAREN);
             if (GetCurrent().lex == LexType.INTC_VAL) {
-                t.attr = new SyntaxTreeNode.Attr();
+                t.attr = new SyntaxTreeNode.Attr("array");
                 t.attr.arrayAttr.low = int.Parse(GetCurrent().sem);
             }
             Match(LexType.INTC_VAL);
             Match(LexType.UNDERRANGE);
             if (GetCurrent().lex == LexType.INTC_VAL) {
-                t.attr = new SyntaxTreeNode.Attr();
                 t.attr.arrayAttr.up = int.Parse(GetCurrent().sem);
             }
             Match(LexType.INTC_VAL);
@@ -371,7 +370,9 @@ namespace CompilationPrinciple {
             SyntaxTreeNode t = null;
             switch (GetCurrent().lex) {
                 case LexType.END:
+                    break;
                 case LexType.ENDWH:
+                    Match(LexType.ENDWH);
                     break;
                 case LexType.SEMI:
                     Match(LexType.SEMI);
@@ -413,6 +414,8 @@ namespace CompilationPrinciple {
             SyntaxTreeNode t = null;
             switch (GetCurrent().lex) {
                 case LexType.ASSIGN:
+                case LexType.LMIDPAREN:
+                case LexType.DOT:
                     t = AssignmentRest(tmp);
                     break;
                 case LexType.LPAREN:
@@ -429,6 +432,7 @@ namespace CompilationPrinciple {
             t.stmtKind = StmtKind.AssignK;
             SyntaxTreeNode child0 = SyntaxTreeNode.NewExpKindIdK();
             child0.name[child0.idnum++] = tmp;
+            variMore(child0);
             t.child[0] = child0;
             Match(LexType.ASSIGN);
             t.child[1] = Exp();
@@ -536,7 +540,7 @@ namespace CompilationPrinciple {
             if (lex == LexType.LT || lex == LexType.EQ) {
                 SyntaxTreeNode p = new SyntaxTreeNode(NodeKind.ExpK);
                 p.expKind = ExpKind.OpK;
-                p.attr = new SyntaxTreeNode.Attr();
+                p.attr = new SyntaxTreeNode.Attr("exp");
                 p.attr.expAttr = new ExpAttr();
                 p.child[0] = t; // 运算表达式的左运算简式
                 p.attr.expAttr.op = GetCurrent().sem;
@@ -555,7 +559,7 @@ namespace CompilationPrinciple {
                 if (lex == LexType.PLUS || lex == LexType.MINUS) {
                     SyntaxTreeNode p = new SyntaxTreeNode(NodeKind.ExpK);
                     p.expKind = ExpKind.OpK;
-                    p.attr = new SyntaxTreeNode.Attr();
+                    p.attr = new SyntaxTreeNode.Attr("exp");
                     p.attr.expAttr = new ExpAttr();
                     p.child[0] = t; // 左运算项
                     p.attr.expAttr.op = GetCurrent().sem;
@@ -575,7 +579,7 @@ namespace CompilationPrinciple {
                 if (lex == LexType.TIMES || lex == LexType.DIVIDE) {
                     SyntaxTreeNode p = new SyntaxTreeNode(NodeKind.ExpK);
                     p.expKind = ExpKind.OpK;
-                    p.attr = new SyntaxTreeNode.Attr();
+                    p.attr = new SyntaxTreeNode.Attr("exp");
                     p.attr.expAttr = new ExpAttr();
                     p.child[0] = t; // 左运算项
                     p.attr.expAttr.op = GetCurrent().sem;
@@ -594,7 +598,9 @@ namespace CompilationPrinciple {
             switch (GetCurrent().lex) {
                 case LexType.INTC_VAL:
                     t = new SyntaxTreeNode(NodeKind.ExpK);
+                    t.attr = new SyntaxTreeNode.Attr("exp");
                     t.expKind = ExpKind.ConstK;
+                    t.attr.expAttr.val = int.Parse(GetCurrent().sem);
                     Match(LexType.INTC_VAL);
                     break;
                 case LexType.ID:
@@ -646,6 +652,7 @@ namespace CompilationPrinciple {
                     t.child[0] = Exp();
                     t.attr.expAttr.varKind = ExpAttr.VarKind.ArrayMembVFieldMembV;
                     t.child[0].attr.expAttr.varKind = ExpAttr.VarKind.IdV;
+                    Match(LexType.RMIDPAREN);
                     break;
                 case LexType.DOT: // 为 .
                     Match(LexType.DOT);

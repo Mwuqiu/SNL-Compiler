@@ -241,6 +241,39 @@ namespace CompilationPrinciple.Properties {
         }
         
         /// <summary>
+        ///   查找类似 program pp
+        ///var
+        ///	integer i, n, m, j, k, r;
+        ///	array[1..10]of integer a;
+        ///begin
+        ///	i := 0;
+        ///	j := 0;
+        ///	k := 0;
+        ///	while k&lt;3 do
+        ///		while i&lt;5 do
+        ///			a[k] := k;
+        ///			m := 10*(5+j);
+        ///			m := k+5;
+        ///			n := i;
+        ///			write(n);
+        ///			i := i+1
+        ///		endwh;
+        ///		i := 0;
+        ///		k := k+1
+        ///	endwh;
+        ///	write(m);
+        ///	write(a[1]);
+        ///	write(a[2])
+        ///end.
+        /// 的本地化字符串。
+        /// </summary>
+        internal static string Simple7 {
+            get {
+                return ResourceManager.GetString("Simple7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 program p
         ///	type t = integer;
         ///	var t V1;
