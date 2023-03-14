@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -54,11 +55,10 @@ namespace CompilationPrinciple {
                     //记录数组类型的属性。
                     public int low, up;
                     public string? childType;
-                    //记录数组的成员类型
-                    
-                    override public string ToString() {
+                    public override string ToString() {
                         return low + "  " + up + "  " + childType;
                     }
+                    //记录数组的成员类型
                 }
                 public class ProcAttr {
                     //记录过程的属性
@@ -66,6 +66,11 @@ namespace CompilationPrinciple {
                     //记 录 过 程 的 参 数 类 型 ， 值 为 枚 举 类 型
                     //valparamtype 或者 varparamtype，表示过程的参数
                     //是值参还是变参。
+                    public override string ToString() {
+                        if (paramt == null)
+                            return "";
+                        return paramt.ToString();
+                    }
                 }
                 public class ExpAttr {
                     //记录表达式的属性
@@ -88,13 +93,23 @@ namespace CompilationPrinciple {
                     //记 录 语 法 树 节 点 的 检 查 类 型 ， 取 值 Void,
                     //Integer,Boolean,为类型检查 ExpType 类型。
                 }
-                public ArrayAttr arrayAttr;
-                public ProcAttr procAttr;
-                public ExpAttr expAttr;
-                public Attr() {
-                    arrayAttr = new ArrayAttr();
-                    procAttr = new ProcAttr();
-                    expAttr = new ExpAttr();
+                public ArrayAttr? arrayAttr;
+                public ProcAttr? procAttr;
+                public ExpAttr? expAttr;
+                public Attr(string attrType) {
+                    switch (attrType) {
+                        case "array":
+                            arrayAttr = new ArrayAttr();
+                            break;
+                        case "proc":
+                            procAttr = new ProcAttr();
+                            break;
+                        case "exp":
+                            expAttr = new ExpAttr();
+                            break;
+                        default:
+                            throw new Exception("错误, 未知的名字 " + attrType);
+                    }
                 }
             }
             public Attr? attr;
@@ -110,12 +125,13 @@ namespace CompilationPrinciple {
             static public SyntaxTreeNode NewExpKindIdK() {
                 SyntaxTreeNode t = new SyntaxTreeNode(NodeKind.ExpK) {
                     expKind = ExpKind.IdK,
-                    attr = new Attr()
+                    attr = new Attr("exp")
                 };
                 t.attr.expAttr.varKind = VarKind.IdV;
                 return t;
             }
             public void PrintTree(int space) {
+
                 for (int i = 0; i < space; i++)
                     Console.Write(" ");
                 Console.Write(Enum.GetName(typeof(NodeKind), nodeKind) + "  ");
@@ -130,15 +146,34 @@ namespace CompilationPrinciple {
                         Console.Write(Enum.GetName(typeof(ExpKind), expKind) + "  ");
                         break;
                 }
+                if (nodeKind == NodeKind.DecK && expKind == ExpKind.IdK) {
+                    Console.Write(typeName + "  ");
+                }
                 for(int i = 0; i< idnum; i++) {
                     Console.Write(name[i] + "  ");
                 }
-                if(nodeKind == NodeKind.DecK && decKind == DecKind.ArrayK) {
-                    Console.Write(attr.arrayAttr.ToString());
+                if(attr != null) {
+                    if(attr.arrayAttr != null) {
+                        Console.Write(attr.arrayAttr);
+                    }
+                    if (attr.procAttr != null) {
+                        Console.Write(attr.procAttr);
+                    }
+                    if (attr.expAttr != null) {
+                        switch (expKind) {
+                            case ExpKind.OpK:
+                                Console.Write(attr.expAttr.op + "  ");
+                                break;
+                            case ExpKind.ConstK:
+                                Console.Write(attr.expAttr.val + "  ");
+                                break;
+                            case ExpKind.IdK:
+                                Console.Write(Enum.GetName(typeof(VarKind), attr.expAttr.varKind) + "  ");
+                                break;
+                        }
+                    }
                 }
-                if(nodeKind == NodeKind.ExpK && attr != null && attr.expAttr.varKind != Attr.ExpAttr.VarKind.Error) {
-                    Console.Write(Enum.GetName(typeof(VarKind), attr.expAttr.varKind) + "  ");
-                }
+                
                 Console.WriteLine();
                 for(int i = 0; i < 3; i++) {
                     if (child[i] != null) {
