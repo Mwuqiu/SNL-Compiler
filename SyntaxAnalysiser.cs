@@ -650,14 +650,16 @@ namespace CompilationPrinciple {
                 case LexType.LMIDPAREN:
                     Match(LexType.LMIDPAREN);
                     t.child[0] = Exp();
-                    t.attr.expAttr.varKind = ExpAttr.VarKind.ArrayMembVFieldMembV;
+                    //woring type  ArrayMembVFieldMembV !!! it should be ArrayMembV and FieldMembV!!
+                    //t.attr.expAttr.varKind = ExpAttr.VarKind.ArrayMembVFieldMembV;
                     t.child[0].attr.expAttr.varKind = ExpAttr.VarKind.IdV;
                     Match(LexType.RMIDPAREN);
                     break;
                 case LexType.DOT: // 为 .
                     Match(LexType.DOT);
                     t.child[0] = fieldVar();
-                    t.attr.expAttr.varKind = ExpAttr.VarKind.ArrayMembVFieldMembV;
+                    //woring type  ArrayMembVFieldMembV !!! it should be ArrayMembV and FieldMembV!!
+                    //t.attr.expAttr.varKind = ExpAttr.VarKind.ArrayMembVFieldMembV;
                     t.child[0].attr.expAttr.varKind = ExpAttr.VarKind.IdV;
                     break;
                 default:
@@ -696,7 +698,8 @@ namespace CompilationPrinciple {
                 case LexType.LMIDPAREN:
                     Match(LexType.LMIDPAREN);
                     t.child[0] = Exp();
-                    t.child[0].attr.expAttr.varKind = ExpAttr.VarKind.ArrayMembVFieldMembV;
+                    //woring type  ArrayMembVFieldMembV !!! it should be ArrayMembV and FieldMembV!!
+                    //t.child[0].attr.expAttr.varKind = ExpAttr.VarKind.ArrayMembVFieldMembV;
                     Match(LexType.RMIDPAREN);
                     break;
                 default:

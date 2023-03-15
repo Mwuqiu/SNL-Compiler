@@ -12,9 +12,14 @@ namespace CompilationPrinciple {
             Scanner scanner = new Scanner();
             scanner.DirectSteeringMethod();
             scanner.outPutTokenList();
-            SyntaxAnalysiser s = new SyntaxAnalysiser(scanner.tokenList);
-            SyntaxClass.SyntaxTreeNode? syntaxTreeNode = s.Parse();
-            if(syntaxTreeNode != null) syntaxTreeNode.PrintTree(0);
+            //SyntaxAnalysiser s = new SyntaxAnalysiser(scanner.tokenList);
+
+            LL1SyntaxAnalysis ll1 = new LL1SyntaxAnalysis(scanner.tokenList);
+            ll1.parse();
+
+            //SyntaxClass.SyntaxTreeNode? syntaxTreeNode = s.Parse();
+
+            //if(syntaxTreeNode != null) syntaxTreeNode.PrintTree(0);
         }
     }
 }

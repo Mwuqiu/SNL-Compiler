@@ -86,7 +86,7 @@ namespace CompilationPrinciple {
                     //记录语法树节点的数值,当语法树节点为“数字
                     //因子”对应的语法树节点时有效,为整数类型。
                     public enum VarKind {
-                        Error, IdV, ArrayMembVFieldMembV
+                        Error, IdV, ArrayMembV, FieldMembV
                     }
                     public VarKind varKind;
                     public string? type;
@@ -117,6 +117,9 @@ namespace CompilationPrinciple {
                 // 私有, 防止没有设置NodeKind
                 idnum = 0;
                 child = new SyntaxTreeNode[3];
+                //child[0] = new SyntaxTreeNode();
+                //child[1] = new SyntaxTreeNode();
+                //child[2] = new SyntaxTreeNode();
                 name = new string[10];
             }
             public SyntaxTreeNode(NodeKind n) : this(){
@@ -183,6 +186,26 @@ namespace CompilationPrinciple {
                 if (sibling != null)
                     sibling.PrintTree(space);
             }
+
+            public void deepCopy(SyntaxTreeNode currentNode) {
+                //copy child
+                child[0] = currentNode.child[0];
+                child[1] = currentNode.child[1];
+                child[2] = currentNode.child[2];
+                //copy sibling
+                sibling = currentNode.sibling;
+
+                lineno = currentNode.lineno;
+                nodeKind = currentNode.nodeKind;
+                decKind = currentNode.decKind;
+                stmtKind = currentNode.stmtKind;
+                expKind = currentNode.expKind;
+                idnum = currentNode.idnum;
+                name = currentNode.name;
+                typeName = currentNode.typeName;
+                attr = currentNode.attr;
+            }
+
         }
     }
     public enum NodeKind {
