@@ -12,15 +12,19 @@ namespace CompilationPrinciple {
             Scanner scanner = new Scanner();
             scanner.DirectSteeringMethod();
             scanner.outPutTokenList();
-            //SyntaxAnalysiser s = new SyntaxAnalysiser(scanner.tokenList);
+            bool ll1SyntaxAnalysis = true;
+            if (ll1SyntaxAnalysis) {
+                LL1SyntaxAnalysis ll1 = new LL1SyntaxAnalysis(scanner.tokenList);
+                ll1.parse();
+                ll1.root.PrintTree(0);
+            } else {
+                SyntaxAnalysiser s = new SyntaxAnalysiser(scanner.tokenList);
+                SyntaxClass.SyntaxTreeNode? syntaxTreeNode = s.Parse();
+                if (syntaxTreeNode != null) syntaxTreeNode.PrintTree(0);
+            }
+            
 
-            LL1SyntaxAnalysis ll1 = new LL1SyntaxAnalysis(scanner.tokenList);
-            ll1.parse();
-            ll1.root.PrintTree(0);
 
-            //SyntaxClass.SyntaxTreeNode? syntaxTreeNode = s.Parse();
-
-            //if(syntaxTreeNode != null) syntaxTreeNode.PrintTree(0);
         }
     }
 }
