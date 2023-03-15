@@ -16,6 +16,7 @@ namespace CompilationPrinciple {
 
             LL1SyntaxAnalysis ll1 = new LL1SyntaxAnalysis(scanner.tokenList);
             ll1.parse();
+            ll1.root.PrintTree(0);
 
             //SyntaxClass.SyntaxTreeNode? syntaxTreeNode = s.Parse();
 
