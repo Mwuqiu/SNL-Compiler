@@ -683,22 +683,18 @@ namespace CompilationPrinciple {
                 case LexType.LMIDPAREN:
                     Match(LexType.LMIDPAREN);
                     t.child[0] = Exp();
-<<<<<<< Updated upstream
-                    t.attr.expAttr.varKind = ExpAttr.VarKind.ArrayMembVFieldMembV;
-=======
+
                     t.attr.expAttr.varKind = ExpAttr.VarKind.ArrayMembV;
->>>>>>> Stashed changes
+
                     t.child[0].attr.expAttr.varKind = ExpAttr.VarKind.IdV;
                     Match(LexType.RMIDPAREN);
                     break;
                 case LexType.DOT: // 为 .
                     Match(LexType.DOT);
                     t.child[0] = fieldVar();
-<<<<<<< Updated upstream
-                    t.attr.expAttr.varKind = ExpAttr.VarKind.ArrayMembVFieldMembV;
-=======
+
                     t.attr.expAttr.varKind = ExpAttr.VarKind.ArrayMembV;
->>>>>>> Stashed changes
+
                     t.child[0].attr.expAttr.varKind = ExpAttr.VarKind.IdV;
                     break;
                 default:
@@ -737,7 +733,7 @@ namespace CompilationPrinciple {
                 case LexType.LMIDPAREN:
                     Match(LexType.LMIDPAREN);
                     t.child[0] = Exp();
-                    t.child[0].attr.expAttr.varKind = ExpAttr.VarKind.ArrayMembVFieldMembV;
+                    t.child[0].attr.expAttr.varKind = ExpAttr.VarKind.ArrayMembV;
                     Match(LexType.RMIDPAREN);
                     break;
                 default:

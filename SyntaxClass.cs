@@ -86,7 +86,7 @@ namespace CompilationPrinciple {
                     //记录语法树节点的数值,当语法树节点为“数字
                     //因子”对应的语法树节点时有效,为整数类型。
                     public enum VarKind {
-                        Error, IdV, ArrayMembVFieldMembV
+                        Error, IdV, ArrayMembV, FieldMembV
                     }
                     public VarKind varKind;
                     public string? type;
