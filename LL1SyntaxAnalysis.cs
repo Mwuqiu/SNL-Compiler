@@ -154,7 +154,7 @@ namespace CompilationPrinciple {
                     break;
                 //<TypeDecMore> ::= ε
                 case 9:
-                    //pop the sibling node of the last type declaration node , complete the type section
+                    //pop the sibling node of the last type declaration node , complete the type section                    
                     syntaxTreeStack.Pop();
                     Debug.WriteLine("pop at case 9");
                     break;
@@ -184,8 +184,15 @@ namespace CompilationPrinciple {
                     break;
                 //<BaseType> ::= INTEGER 
                 case 15:
-                    symbolStack.Push(LexType.INTEGER_T);
-                    currentP.decKind = DecKind.IntegerK;
+                    symbolStack.Push(LexType.INTEGER_T);                    
+                    if(currentP.decKind == DecKind.ArrayK ) {
+                        if(currentP.attr == null) {
+                            currentP.attr = new SyntaxTreeNode.Attr("array");
+                        }
+                        currentP.attr.arrayAttr.childType = "IntegerK";
+                    } else {
+                        currentP.decKind = DecKind.IntegerK;
+                    }                    
                     break;
                 //< BaseType > ::= CHAR
                 case 16:
@@ -314,8 +321,8 @@ namespace CompilationPrinciple {
                     symbolStack.Push(LexType.VarIdList);
                     symbolStack.Push(LexType.TypeName);
                     currentP = syntaxTreeStack.Pop();
+                    currentP.sibling = new SyntaxTreeNode();                    
                     currentP.nodeKind = NodeKind.DecK;
-                    currentP.sibling = new SyntaxTreeNode();
                     syntaxTreeStack.Push(currentP.sibling);
                     Debug.WriteLine("pop at case 33");
                     break;

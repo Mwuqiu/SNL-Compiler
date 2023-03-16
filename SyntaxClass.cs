@@ -9,7 +9,7 @@ using static CompilationPrinciple.SyntaxClass.SyntaxTreeNode.Attr;
 using static CompilationPrinciple.SyntaxClass.SyntaxTreeNode.Attr.ExpAttr;
 
 namespace CompilationPrinciple {
-    public class SyntaxClass {
+    public class SyntaxClass  {
         public class SyntaxTreeNode {
             public SyntaxTreeNode[] child { get; set; }
             // 指向子语法树节点指针，为语法树节点指针类型
@@ -117,9 +117,6 @@ namespace CompilationPrinciple {
                 // 私有, 防止没有设置NodeKind
                 idnum = 0;
                 child = new SyntaxTreeNode[3];
-                //child[0] = new SyntaxTreeNode();
-                //child[1] = new SyntaxTreeNode();
-                //child[2] = new SyntaxTreeNode();
                 name = new string[10];
             }
             public SyntaxTreeNode(NodeKind n) : this(){
@@ -187,6 +184,61 @@ namespace CompilationPrinciple {
                     sibling.PrintTree(space);
             }
 
+            public void PrintLL1BuiltTree(int space) {
+
+                for (int i = 0; i < space; i++)
+                    Console.Write(" ");
+
+                Console.Write(Enum.GetName(typeof(NodeKind), nodeKind) + "  ");
+                switch (nodeKind) {
+                    case NodeKind.DecK:
+                        Console.Write(Enum.GetName(typeof(DecKind), decKind) + "  ");
+                        break;
+                    case NodeKind.StmtK:
+                        Console.Write(Enum.GetName(typeof(StmtKind), stmtKind) + "  ");
+                        break;
+                    case NodeKind.ExpK:
+                        Console.Write(Enum.GetName(typeof(ExpKind), expKind) + "  ");
+                        break;
+                }
+                if (nodeKind == NodeKind.DecK && expKind == ExpKind.IdK) {
+                    Console.Write(typeName + "  ");
+                }
+                for (int i = 0; i < idnum; i++) {
+                    Console.Write(name[i] + "  ");
+                }
+                if (attr != null) {
+                    if (attr.arrayAttr != null) {
+                        Console.Write(attr.arrayAttr);
+                    }
+                    if (attr.procAttr != null) {
+                        Console.Write(attr.procAttr);
+                    }
+                    if (attr.expAttr != null) {
+                        switch (expKind) {
+                            case ExpKind.OpK:
+                                Console.Write(attr.expAttr.op + "  ");
+                                break;
+                            case ExpKind.ConstK:
+                                Console.Write(attr.expAttr.val + "  ");
+                                break;
+                            case ExpKind.IdK:
+                                Console.Write(Enum.GetName(typeof(VarKind), attr.expAttr.varKind) + "  ");
+                                break;
+                        }
+                    }
+                }
+
+                Console.WriteLine();
+                for (int i = 0; i < 3; i++) {
+                    if (child[i] != null) {
+                        child[i].PrintTree(space + 4);
+                    }
+                }
+                if (sibling != null && sibling.nodeKind != NodeKind.Error)
+                    sibling.PrintTree(space);
+            }
+
             public void deepCopy(SyntaxTreeNode currentNode) {
                 //copy child
                 child[0] = currentNode.child[0];
@@ -205,7 +257,6 @@ namespace CompilationPrinciple {
                 typeName = currentNode.typeName;
                 attr = currentNode.attr;
             }
-
         }
     }
     public enum NodeKind {
