@@ -368,7 +368,9 @@ namespace CompilationPrinciple {
             }
         }
 
-        //   TO DO 过程声明 25-34
+        //   TO DO
+        //   过程声明
+        //   25-34
         public SyntaxTreeNode ProcDec() {
             SyntaxTreeNode t = null;
             switch (GetCurrent().lex) {
@@ -384,9 +386,122 @@ namespace CompilationPrinciple {
             return t;
         }
         public SyntaxTreeNode ProcDeclaration() {
-            SyntaxTreeNode t = new SyntaxTreeNode();
-            return null;
+            SyntaxTreeNode t = new SyntaxTreeNode(NodeKind.ProcDecK);
+            Match(LexType.PROCEDURE);
+            if (GetCurrent().lex == LexType.ID) {
+                t.name[t.idnum++] = GetCurrent().sem;
+                Match(LexType.ID);
+            }
+            Match(LexType.LPAREN);
+            ParamList(t);
+            Match(LexType.RPAREN);
+            Match(LexType.SEMI);
+            t.child[1] = ProcDecPart();
+            t.child[2] = ProcBody();
+            t.sibling = ProcDec();
+            return t;
         }
+        public void ParamList(SyntaxTreeNode t) {
+            SyntaxTreeNode p = null;
+            switch (GetCurrent().lex) {
+                case LexType.RPAREN:
+                    break;
+                case LexType.INTEGER_T:
+                case LexType.CHAR_T:
+                case LexType.ARRAY:
+                case LexType.RECORD:
+                case LexType.ID:
+                case LexType.VAR:
+                    p = ParamDecList();
+                    t.child[0] = p;
+                    break;
+                default:
+                    // 读入下一个单词 ?
+                    break;
+            }
+        }
+        public SyntaxTreeNode ParamDecList() {
+            SyntaxTreeNode t = Param();
+            t.sibling = ParamMore();
+            return t;
+        }
+        public SyntaxTreeNode? ParamMore() {
+            SyntaxTreeNode? t = null;
+            switch (GetCurrent().lex) {
+                case LexType.RPAREN:
+                    break;
+                case LexType.SEMI:
+                    Match(LexType.SEMI);
+                    t = ParamDecList();
+                    if (t == null) {
+                        // ERROR: Param needs a declaration
+                    }
+                    break;
+                default:
+                    // 读入下一个单词 ?
+                    break;
+
+            }
+            return t;
+        }
+        public SyntaxTreeNode Param() {
+            SyntaxTreeNode t = new SyntaxTreeNode(NodeKind.DecK);
+            t.attr = new SyntaxTreeNode.Attr("proc");
+            switch (GetCurrent().lex) {
+                case LexType.INTEGER_T:
+                case LexType.CHAR_T:
+                case LexType.ARRAY:
+                case LexType.RECORD:
+                case LexType.ID:
+                    t.attr.procAttr.paramt = ProcAttr.ParamType.Valparamtype;
+                    TypeName(t);
+                    FormList(t);
+                    break;
+                case LexType.VAR:
+                    Match(LexType.VAR);
+                    t.attr.procAttr.paramt = ProcAttr.ParamType.Varparamtype;
+                    TypeName(t);
+                    FormList(t);
+                    break;
+                default:
+                    // 读入下一个单词 ?
+                    break;
+            }
+            return t;
+        }
+        public void FormList(SyntaxTreeNode t) {
+            if (GetCurrent().lex == LexType.ID) {
+                t.name[t.idnum++] = GetCurrent().sem;
+                Match(LexType.ID);
+            }
+            FidMore(t);
+        }
+        public void FidMore(SyntaxTreeNode t) {
+            switch (GetCurrent().lex) {
+                case LexType.SEMI:
+                case LexType.RPAREN:
+                    break;
+                case LexType.COMMA:
+                    Match(LexType.COMMA);
+                    FormList(t);
+                    break;
+                default:
+                    // 读入下一个单词 ?
+                    break;
+            }
+        }
+        public SyntaxTreeNode? ProcDecPart() {
+            return DeclarePart();
+        }
+
+        public SyntaxTreeNode? ProcBody() {
+            SyntaxTreeNode t = ProgramBody();
+            if(t == null) {
+                // 报错 program needs a body
+            }
+            return t;
+        }
+        // 
         public SyntaxTreeNode ProgramBody() {
             SyntaxTreeNode t = new SyntaxTreeNode(NodeKind.StmLK);
             Match(LexType.BEGIN);
@@ -394,13 +509,14 @@ namespace CompilationPrinciple {
             Match(LexType.END);
             return t;
         }
+
         public SyntaxTreeNode StmList() {
             SyntaxTreeNode t = Stm();
             t.sibling = StmMore();
             return t;
         }
         public SyntaxTreeNode StmMore() {
-            SyntaxTreeNode t = null;
+            SyntaxTreeNode? t = null;
             switch (GetCurrent().lex) {
                 case LexType.END:
                     break;

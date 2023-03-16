@@ -142,6 +142,9 @@
   <data name="Simple7" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Simple7.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
+  <data name="Simple8" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Simple8.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
   <data name="SimpleExample" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\SimpleExample.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
