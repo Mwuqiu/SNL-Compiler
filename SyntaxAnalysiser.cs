@@ -66,13 +66,30 @@ namespace CompilationPrinciple {
         }
         SyntaxTreeNode? DeclarePart() {
             /*注意, 为null不算错误*/
-            SyntaxTreeNode typeP = new SyntaxTreeNode(NodeKind.TypeK);
+            SyntaxTreeNode? typeP = new SyntaxTreeNode(NodeKind.TypeK);
+            SyntaxTreeNode pp = typeP;
+
             typeP.child[0] = TypeDec();
-            SyntaxTreeNode varP = new SyntaxTreeNode(NodeKind.VarK);
+            if (typeP.child[0] == null)
+                typeP = null;
+
+            SyntaxTreeNode? varP = new SyntaxTreeNode(NodeKind.VarK);
             varP.child[0] = VarDec();
-            typeP.sibling = varP;
-            // todo
-            return typeP;
+            if (varP.child[0] == null)
+                varP = null;
+
+            SyntaxTreeNode s = ProcDec();
+            if (varP == null)
+                varP = s;
+            if (typeP == null)
+                pp = typeP = varP;
+            if (typeP != varP)
+                typeP.sibling = varP;
+            if (varP != s)
+                varP.sibling = s;
+            // 考虑typeP, varP, s为空的情形
+            // 以sibling 按顺序连接非空的 typeP, varP, s
+            return pp;
         }
         SyntaxTreeNode? TypeDec() {
             switch (GetCurrent().lex) {
@@ -352,8 +369,24 @@ namespace CompilationPrinciple {
         }
 
         //   TO DO 过程声明 25-34
-
-
+        public SyntaxTreeNode ProcDec() {
+            SyntaxTreeNode t = null;
+            switch (GetCurrent().lex) {
+                case LexType.BEGIN:
+                    break;
+                case LexType.PROCEDURE:
+                    t = ProcDeclaration();
+                    break;
+                default:
+                    // 读入下一个单词 ?
+                    break;
+            }
+            return t;
+        }
+        public SyntaxTreeNode ProcDeclaration() {
+            SyntaxTreeNode t = new SyntaxTreeNode();
+            return null;
+        }
         public SyntaxTreeNode ProgramBody() {
             SyntaxTreeNode t = new SyntaxTreeNode(NodeKind.StmLK);
             Match(LexType.BEGIN);
@@ -650,14 +683,22 @@ namespace CompilationPrinciple {
                 case LexType.LMIDPAREN:
                     Match(LexType.LMIDPAREN);
                     t.child[0] = Exp();
+<<<<<<< Updated upstream
                     t.attr.expAttr.varKind = ExpAttr.VarKind.ArrayMembVFieldMembV;
+=======
+                    t.attr.expAttr.varKind = ExpAttr.VarKind.ArrayMembV;
+>>>>>>> Stashed changes
                     t.child[0].attr.expAttr.varKind = ExpAttr.VarKind.IdV;
                     Match(LexType.RMIDPAREN);
                     break;
                 case LexType.DOT: // 为 .
                     Match(LexType.DOT);
                     t.child[0] = fieldVar();
+<<<<<<< Updated upstream
                     t.attr.expAttr.varKind = ExpAttr.VarKind.ArrayMembVFieldMembV;
+=======
+                    t.attr.expAttr.varKind = ExpAttr.VarKind.ArrayMembV;
+>>>>>>> Stashed changes
                     t.child[0].attr.expAttr.varKind = ExpAttr.VarKind.IdV;
                     break;
                 default:
