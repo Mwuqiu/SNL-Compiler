@@ -33,7 +33,7 @@ namespace CompilationPrinciple {
         }
         public SyntaxTreeNode? Parse() {
             try {
-                SyntaxTreeNode t = SyntaxProgram();
+                SyntaxTreeNode? t = SyntaxProgram();
                 // 如果当前和ENDFILE匹配, 则正常结束.
                 // 否则报错
                 return t;
@@ -44,7 +44,7 @@ namespace CompilationPrinciple {
 
         }
 
-        SyntaxTreeNode SyntaxProgram() {
+        SyntaxTreeNode? SyntaxProgram() {
             try {
                 SyntaxTreeNode root = new SyntaxTreeNode(NodeKind.ProK);
                 root.child[0] = ProgramHead();
@@ -92,10 +92,10 @@ namespace CompilationPrinciple {
             return pp;
         }
         SyntaxTreeNode? TypeDec() {
+            SyntaxTreeNode? t = null;
             switch (GetCurrent().lex) {
                 case LexType.TYPE:
-                    SyntaxTreeNode t = TypeDeclaration();
-                    return t;
+                    t = TypeDeclaration();
                     break;
                 case LexType.VAR:
                 case LexType.PROCEDURE:
@@ -105,11 +105,11 @@ namespace CompilationPrinciple {
                     //读入下一个单词，跳过此单词 ?
                     break;
             }
-            return null;
+            return t;
         }
         public SyntaxTreeNode? TypeDeclaration() {
             Match(LexType.TYPE);
-            SyntaxTreeNode t = TypeDecList();
+            SyntaxTreeNode? t = TypeDecList();
             if (t == null) {
                 //显示提示信息, 不是报错
             }
@@ -121,7 +121,7 @@ namespace CompilationPrinciple {
             Match(LexType.EQ);
             TypeName(decK);
             Match(LexType.SEMI);
-            SyntaxTreeNode p = TypeDecMore();
+            SyntaxTreeNode? p = TypeDecMore();
             if (p != null)
                 decK.sibling = p;
 
@@ -147,7 +147,8 @@ namespace CompilationPrinciple {
                     break;
                 case LexType.ID:
                     t.decKind = DecKind.IdK;
-                    t.name[t.idnum++] = GetCurrent().sem;
+                    // t.name[t.idnum++] = GetCurrent().sem;
+                    t.typeName = GetCurrent().sem;
                     Match(LexType.ID);
                     break;
                 default:
@@ -217,7 +218,7 @@ namespace CompilationPrinciple {
         }
         public SyntaxTreeNode FieldDecList() {
             SyntaxTreeNode t = new SyntaxTreeNode(NodeKind.DecK);
-            SyntaxTreeNode p = null;
+            SyntaxTreeNode? p = null;
             switch (GetCurrent().lex) {
                 case LexType.INTEGER_T:
                 case LexType.CHAR_T:
@@ -261,7 +262,7 @@ namespace CompilationPrinciple {
             }
         }
         public SyntaxTreeNode FieldDecMore() {
-            SyntaxTreeNode t = null;
+            SyntaxTreeNode? t = null;
             switch (GetCurrent().lex) {
                 case LexType.ID:
                     break;
@@ -276,7 +277,7 @@ namespace CompilationPrinciple {
             }
             return t;
         }
-        public SyntaxTreeNode TypeDecMore() {
+        public SyntaxTreeNode? TypeDecMore() {
             switch (GetCurrent().lex) {
                 case LexType.ID:
                     return TypeDecList();
@@ -292,7 +293,7 @@ namespace CompilationPrinciple {
         }
 
         public SyntaxTreeNode VarDec() {
-            SyntaxTreeNode t = null;
+            SyntaxTreeNode? t = null;
             switch (GetCurrent().lex) {
                 case LexType.PROCEDURE:
                 case LexType.BEGIN:
@@ -324,7 +325,7 @@ namespace CompilationPrinciple {
             return t;
         }
         public SyntaxTreeNode VarDecMore() {
-            SyntaxTreeNode t = null;
+            SyntaxTreeNode? t = null;
             switch (GetCurrent().lex) {
                 case LexType.PROCEDURE:
                 case LexType.BEGIN:
@@ -372,7 +373,7 @@ namespace CompilationPrinciple {
         //   过程声明
         //   25-34
         public SyntaxTreeNode ProcDec() {
-            SyntaxTreeNode t = null;
+            SyntaxTreeNode? t = null;
             switch (GetCurrent().lex) {
                 case LexType.BEGIN:
                     break;
@@ -402,7 +403,7 @@ namespace CompilationPrinciple {
             return t;
         }
         public void ParamList(SyntaxTreeNode t) {
-            SyntaxTreeNode p = null;
+            SyntaxTreeNode? p;
             switch (GetCurrent().lex) {
                 case LexType.RPAREN:
                     break;
@@ -531,7 +532,7 @@ namespace CompilationPrinciple {
             return t;
         }
         public SyntaxTreeNode Stm() {
-            SyntaxTreeNode t = null;
+            SyntaxTreeNode? t = null;
             switch (GetCurrent().lex) {
                 case LexType.IF:
                     t = ConditionalStm();
@@ -560,7 +561,7 @@ namespace CompilationPrinciple {
             return t;
         }
         public SyntaxTreeNode AssCall(string tmp) {
-            SyntaxTreeNode t = null;
+            SyntaxTreeNode? t = null;
             switch (GetCurrent().lex) {
                 case LexType.ASSIGN:
                 case LexType.LMIDPAREN:
@@ -577,19 +578,21 @@ namespace CompilationPrinciple {
             return t;
         }
         public SyntaxTreeNode AssignmentRest(string tmp) {
-            SyntaxTreeNode t = new SyntaxTreeNode(NodeKind.StmtK);
-            t.stmtKind = StmtKind.AssignK;
+            SyntaxTreeNode t = new SyntaxTreeNode(NodeKind.StmtK) {
+                stmtKind = StmtKind.AssignK
+            };
             SyntaxTreeNode child0 = SyntaxTreeNode.NewExpKindIdK();
             child0.name[child0.idnum++] = tmp;
-            variMore(child0);
+            VariMore(child0);
             t.child[0] = child0;
             Match(LexType.ASSIGN);
             t.child[1] = Exp();
             return t;
         }
         public SyntaxTreeNode ConditionalStm() {
-            SyntaxTreeNode t = new SyntaxTreeNode(NodeKind.StmtK);
-            t.stmtKind = StmtKind.IfK;
+            SyntaxTreeNode t = new SyntaxTreeNode(NodeKind.StmtK) {
+                stmtKind = StmtKind.IfK
+            };
             Match(LexType.IF);
             t.lineno = GetCurrent().line;
             t.child[0] = Exp(); // IF语句的条件表达式
@@ -606,8 +609,9 @@ namespace CompilationPrinciple {
         }
 
         public SyntaxTreeNode LoopStm() {
-            SyntaxTreeNode t = new SyntaxTreeNode(NodeKind.StmtK);
-            t.stmtKind = StmtKind.WhileK;
+            SyntaxTreeNode t = new SyntaxTreeNode(NodeKind.StmtK) {
+                stmtKind = StmtKind.WhileK
+            };
             Match(LexType.WHILE);
             t.child[0] = Exp(); // WHILE语句的条件表达式
             Match(LexType.DO);
@@ -617,8 +621,9 @@ namespace CompilationPrinciple {
 
         public SyntaxTreeNode InputStm() {
             // READ
-            SyntaxTreeNode t = new SyntaxTreeNode(NodeKind.StmtK);
-            t.stmtKind = StmtKind.ReadK;
+            SyntaxTreeNode t = new SyntaxTreeNode(NodeKind.StmtK) {
+                stmtKind = StmtKind.ReadK
+            };
             Match(LexType.READ);
             Match(LexType.LPAREN);
             t.name[t.idnum++] = GetCurrent().sem;
@@ -627,8 +632,9 @@ namespace CompilationPrinciple {
             return t;
         }
         public SyntaxTreeNode OutputStm() {
-            SyntaxTreeNode t = new SyntaxTreeNode(NodeKind.StmtK);
-            t.stmtKind = StmtKind.WriteK;
+            SyntaxTreeNode t = new SyntaxTreeNode(NodeKind.StmtK) {
+                stmtKind = StmtKind.WriteK
+            };
             Match(LexType.WRITE);
             Match(LexType.LPAREN);
             t.child[0] = Exp();
@@ -636,14 +642,16 @@ namespace CompilationPrinciple {
             return t;
         }
         public SyntaxTreeNode ReturnStm() {
-            SyntaxTreeNode t = new SyntaxTreeNode(NodeKind.StmtK);
-            t.stmtKind = StmtKind.ReturnK;
+            SyntaxTreeNode t = new SyntaxTreeNode(NodeKind.StmtK) {
+                stmtKind = StmtKind.ReturnK
+            };
             Match(LexType.RETURN);
             return t;
         }
         public SyntaxTreeNode CallStmRest(string tmp) {
-            SyntaxTreeNode t = new SyntaxTreeNode(NodeKind.StmtK);
-            t.stmtKind = StmtKind.CallK;
+            SyntaxTreeNode t = new SyntaxTreeNode(NodeKind.StmtK) {
+                stmtKind = StmtKind.CallK
+            };
             Match(LexType.LPAREN);
             t.child[0] = ActParamList();
             t.name[t.idnum++] = tmp;
@@ -652,7 +660,7 @@ namespace CompilationPrinciple {
         }
 
         public SyntaxTreeNode ActParamList() {
-            SyntaxTreeNode t = null;
+            SyntaxTreeNode? t = null;
             switch (GetCurrent().lex) {
                 case LexType.RPAREN:
                     break;
@@ -669,7 +677,7 @@ namespace CompilationPrinciple {
             return t;
         }
         public SyntaxTreeNode ActParamMore() {
-            SyntaxTreeNode t = null;
+            SyntaxTreeNode? t = null;
             switch (GetCurrent().lex) {
                 case LexType.RPAREN:
                     break;
@@ -684,57 +692,60 @@ namespace CompilationPrinciple {
             return t;
         }
         public SyntaxTreeNode Exp() {
-            SyntaxTreeNode t = simple_exp();
+            SyntaxTreeNode t = Simple_exp();
             LexType lex = GetCurrent().lex;
             if (lex == LexType.LT || lex == LexType.EQ) {
-                SyntaxTreeNode p = new SyntaxTreeNode(NodeKind.ExpK);
-                p.expKind = ExpKind.OpK;
-                p.attr = new SyntaxTreeNode.Attr("exp");
+                SyntaxTreeNode p = new SyntaxTreeNode(NodeKind.ExpK) {
+                    expKind = ExpKind.OpK,
+                    attr = new SyntaxTreeNode.Attr("exp")
+                };
                 p.attr.expAttr = new ExpAttr();
                 p.child[0] = t; // 运算表达式的左运算简式
                 p.attr.expAttr.op = GetCurrent().sem;
                 t = p;
                 index++; // 匹配当前单词LT/EQ
                 if (t != null) {
-                    t.child[1] = simple_exp(); // 右运算简式
+                    t.child[1] = Simple_exp(); // 右运算简式
                 }
             }
             return t;
         }
-        public SyntaxTreeNode simple_exp() {
-            SyntaxTreeNode t = term();
+        public SyntaxTreeNode Simple_exp() {
+            SyntaxTreeNode t = Term();
             while (true) {
                 LexType lex = GetCurrent().lex;
                 if (lex == LexType.PLUS || lex == LexType.MINUS) {
-                    SyntaxTreeNode p = new SyntaxTreeNode(NodeKind.ExpK);
-                    p.expKind = ExpKind.OpK;
-                    p.attr = new SyntaxTreeNode.Attr("exp");
+                    SyntaxTreeNode p = new SyntaxTreeNode(NodeKind.ExpK) {
+                        expKind = ExpKind.OpK,
+                        attr = new SyntaxTreeNode.Attr("exp")
+                    };
                     p.attr.expAttr = new ExpAttr();
                     p.child[0] = t; // 左运算项
                     p.attr.expAttr.op = GetCurrent().sem;
                     t = p;
                     index++; // 匹配当前单词 + -
-                    t.child[1] = term(); // 右运算项
+                    t.child[1] = Term(); // 右运算项
                 } else {
                     break;
                 }
             }
             return t;
         }
-        public SyntaxTreeNode term() {
-            SyntaxTreeNode t = factor();
+        public SyntaxTreeNode Term() {
+            SyntaxTreeNode t = Factor();
             while (true) {
                 LexType lex = GetCurrent().lex;
                 if (lex == LexType.TIMES || lex == LexType.DIVIDE) {
-                    SyntaxTreeNode p = new SyntaxTreeNode(NodeKind.ExpK);
-                    p.expKind = ExpKind.OpK;
-                    p.attr = new SyntaxTreeNode.Attr("exp");
+                    SyntaxTreeNode p = new SyntaxTreeNode(NodeKind.ExpK) {
+                        expKind = ExpKind.OpK,
+                        attr = new SyntaxTreeNode.Attr("exp")
+                    };
                     p.attr.expAttr = new ExpAttr();
                     p.child[0] = t; // 左运算项
                     p.attr.expAttr.op = GetCurrent().sem;
                     t = p;
                     index++; // 匹配当前单词 * /
-                    t.child[1] = factor(); // 右运算项
+                    t.child[1] = Factor(); // 右运算项
                 } else {
                     break;
                 }
@@ -742,7 +753,7 @@ namespace CompilationPrinciple {
             return t;
         }
 
-        public SyntaxTreeNode factor() {
+        public SyntaxTreeNode Factor() {
             SyntaxTreeNode t = null;
             switch (GetCurrent().lex) {
                 case LexType.INTC_VAL:
@@ -753,7 +764,7 @@ namespace CompilationPrinciple {
                     Match(LexType.INTC_VAL);
                     break;
                 case LexType.ID:
-                    t = variable();
+                    t = Variable();
                     break;
                 case LexType.LPAREN:
                     Match(LexType.LPAREN);
@@ -766,17 +777,17 @@ namespace CompilationPrinciple {
             }
             return t;
         }
-        public SyntaxTreeNode variable() {
+        public SyntaxTreeNode Variable() {
             SyntaxTreeNode t = SyntaxTreeNode.NewExpKindIdK();
             
             if (GetCurrent().lex == LexType.ID) {
                 t.name[t.idnum++] = GetCurrent().sem;
                 Match(LexType.ID);
-                variMore(t);
+                VariMore(t);
             }
             return t;
         }
-        public void variMore(SyntaxTreeNode t) {
+        public void VariMore(SyntaxTreeNode t) {
             switch (GetCurrent().lex) {
                 case LexType.ASSIGN:
                 case LexType.TIMES:
@@ -799,18 +810,15 @@ namespace CompilationPrinciple {
                 case LexType.LMIDPAREN:
                     Match(LexType.LMIDPAREN);
                     t.child[0] = Exp();
-
                     t.attr.expAttr.varKind = ExpAttr.VarKind.ArrayMembV;
-
                     t.child[0].attr.expAttr.varKind = ExpAttr.VarKind.IdV;
                     Match(LexType.RMIDPAREN);
                     break;
                 case LexType.DOT: // 为 .
                     Match(LexType.DOT);
-                    t.child[0] = fieldVar();
+                    t.child[0] = FieldVar();
 
                     t.attr.expAttr.varKind = ExpAttr.VarKind.ArrayMembV;
-
                     t.child[0].attr.expAttr.varKind = ExpAttr.VarKind.IdV;
                     break;
                 default:
@@ -818,15 +826,15 @@ namespace CompilationPrinciple {
                     break;
             }
         }
-        public SyntaxTreeNode fieldVar() {
+        public SyntaxTreeNode FieldVar() {
             SyntaxTreeNode t = SyntaxTreeNode.NewExpKindIdK();
             t.name[t.idnum++] = GetCurrent().sem;
             t.lineno = GetCurrent().line;
             Match(LexType.ID);
-            fieldvarMore(t);
+            FieldvarMore(t);
             return t;
         }
-        void fieldvarMore(SyntaxTreeNode t) {
+        void FieldvarMore(SyntaxTreeNode t) {
             switch (GetCurrent().lex) {
                 case LexType.ASSIGN:
                 case LexType.TIMES:

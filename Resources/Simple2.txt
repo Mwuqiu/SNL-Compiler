@@ -13,4 +13,5 @@ r2 = record
 	end;
 p2 = integer;
 begin
+	read(p1)
 end.

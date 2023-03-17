@@ -11,7 +11,7 @@ using static CompilationPrinciple.SyntaxClass.SyntaxTreeNode.Attr.ExpAttr;
 namespace CompilationPrinciple {
     public class SyntaxClass {
         public class SyntaxTreeNode {
-            public SyntaxTreeNode?[] child { get; set; }
+            public SyntaxTreeNode[] child { get; set; }
             // 指向子语法树节点指针，为语法树节点指针类型
             public SyntaxTreeNode? sibling { get; set; }
             // 指向兄弟语法树节点指针，为语法树节点指针类型。
@@ -147,7 +147,7 @@ namespace CompilationPrinciple {
                         Console.Write(Enum.GetName(typeof(ExpKind), expKind) + "  ");
                         break;
                 }
-                if (nodeKind == NodeKind.DecK && expKind == ExpKind.IdK) {
+                if (nodeKind == NodeKind.DecK && decKind == DecKind.IdK) {
                     Console.Write(typeName + "  ");
                 }
                 for(int i = 0; i< idnum; i++) {
