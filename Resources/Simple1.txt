@@ -1,5 +1,8 @@
-program p
-type t = integer;
-p = integer;
+program pp
+var
+	integer k;
+	array[1..10]of integer a;
 begin
+	k := 0;
+	a[k] := k;
 end.

@@ -33,7 +33,7 @@ namespace CompilationPrinciple {
             //记录语法树节点的语句类型，当 nodekind = StmtK 时有效，
             //取值 IfK, WhileK, AssignK, ReadK, WriteK, CallK, ReturnK，为语法树节点语句类型。
 
-            public ExpKind  expKind;
+            public ExpKind  expKind ;
             //记录语法树节点的表达式类型，当 nodekind=ExpK 时有效，
             //取值 OpK, ConstK, IdK，为语法树节点表达式类型。
             
@@ -131,7 +131,6 @@ namespace CompilationPrinciple {
                 return t;
             }
             public void PrintTree(int space) {
-
                 for (int i = 0; i < space; i++)
                     Console.Write(" ");
                 Console.Write(Enum.GetName(typeof(NodeKind), nodeKind) + "  ");
@@ -146,10 +145,17 @@ namespace CompilationPrinciple {
                         Console.Write(Enum.GetName(typeof(ExpKind), expKind) + "  ");
                         break;
                 }
+
+                // why to check the value of expKind when the nodeType is DecKind ??
                 if (nodeKind == NodeKind.DecK && expKind == ExpKind.IdK) {
                     Console.Write(typeName + "  ");
                 }
-                for(int i = 0; i< idnum; i++) {
+                
+                if (nodeKind == NodeKind.DecK && decKind == DecKind.IdK) {
+                    Console.Write(typeName + "  ");
+                }
+
+                for (int i = 0; i< idnum; i++) {
                     Console.Write(name[i] + "  ");
                 }
                 if(attr != null) {
@@ -177,68 +183,21 @@ namespace CompilationPrinciple {
                 Console.WriteLine();
                 for(int i = 0; i < 3; i++) {
                     if (child[i] != null) {
-                        child[i].PrintTree(space + 4);
-                    }
-                }
-                if (sibling != null)
-                    sibling.PrintTree(space);
-            }
-
-            public void PrintLL1BuiltTree(int space) {
-
-                for (int i = 0; i < space; i++)
-                    Console.Write(" ");
-
-                Console.Write(Enum.GetName(typeof(NodeKind), nodeKind) + "  ");
-                switch (nodeKind) {
-                    case NodeKind.DecK:
-                        Console.Write(Enum.GetName(typeof(DecKind), decKind) + "  ");
-                        break;
-                    case NodeKind.StmtK:
-                        Console.Write(Enum.GetName(typeof(StmtKind), stmtKind) + "  ");
-                        break;
-                    case NodeKind.ExpK:
-                        Console.Write(Enum.GetName(typeof(ExpKind), expKind) + "  ");
-                        break;
-                }
-                if (nodeKind == NodeKind.DecK && expKind == ExpKind.IdK) {
-                    Console.Write(typeName + "  ");
-                }
-                for (int i = 0; i < idnum; i++) {
-                    Console.Write(name[i] + "  ");
-                }
-                if (attr != null) {
-                    if (attr.arrayAttr != null) {
-                        Console.Write(attr.arrayAttr);
-                    }
-                    if (attr.procAttr != null) {
-                        Console.Write(attr.procAttr);
-                    }
-                    if (attr.expAttr != null) {
-                        switch (expKind) {
-                            case ExpKind.OpK:
-                                Console.Write(attr.expAttr.op + "  ");
-                                break;
-                            case ExpKind.ConstK:
-                                Console.Write(attr.expAttr.val + "  ");
-                                break;
-                            case ExpKind.IdK:
-                                Console.Write(Enum.GetName(typeof(VarKind), attr.expAttr.varKind) + "  ");
-                                break;
+                        if (child[i].nodeKind == NodeKind.Error) {
+                            child[i] = null;
+                        } else {
+                            child[i].PrintTree(space + 4);
                         }
                     }
                 }
-
-                Console.WriteLine();
-                for (int i = 0; i < 3; i++) {
-                    if (child[i] != null) {
-                        child[i].PrintTree(space + 4);
+                if (sibling != null) {
+                    if (sibling.nodeKind == NodeKind.Error) {
+                        sibling = null;
+                    } else {
+                        sibling.PrintTree(space);
                     }
                 }
-                if (sibling != null && sibling.nodeKind != NodeKind.Error)
-                    sibling.PrintTree(space);
             }
-
             public void deepCopy(SyntaxTreeNode currentNode) {
                 //copy child
                 child[0] = currentNode.child[0];

@@ -1,5 +1,7 @@
-program p
-type 
-	t = integer;
+program pp
+var
+	array[1..10]of integer a;
 begin
+	write(a[1]);
+	write(a[2])
 end.

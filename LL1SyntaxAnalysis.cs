@@ -41,6 +41,7 @@ namespace CompilationPrinciple {
 
         //save the node poped for syntax stack
         SyntaxTreeNode currentP;
+        SyntaxTreeNode varibleNode;
         SyntaxTreeNode saveP;
         Stack<LexType> symbolStack;
 
@@ -54,7 +55,7 @@ namespace CompilationPrinciple {
         //used for bracket match
         int expflag = 0;
 
-        bool getExpresult = false;
+        bool getExpresult = true;
         bool getExpresult2 = false;
 
         //returns the priority of the operator,the higher the return value the higher the priority
@@ -154,7 +155,7 @@ namespace CompilationPrinciple {
                     break;
                 //<TypeDecMore> ::= ε
                 case 9:
-                    //pop the sibling node of the last type declaration node , complete the type section                    
+                    //pop the sibling node of the last type declaration node and set null
                     syntaxTreeStack.Pop();
                     Debug.WriteLine("pop at case 9");
                     break;
@@ -488,7 +489,7 @@ namespace CompilationPrinciple {
                     break;
                 //<StmMore> ::= ε
                 case 59:
-                    syntaxTreeStack.Pop();
+                    currentP = syntaxTreeStack.Pop();
                     break;
                 //< StmMore > ::= ; StmList
                 case 60:
@@ -517,7 +518,7 @@ namespace CompilationPrinciple {
                 case 63:
                     symbolStack.Push(LexType.InputStm);
                     currentP = syntaxTreeStack.Pop();
-                    currentP.nodeKind = NodeKind.StmLK;
+                    currentP.nodeKind = NodeKind.StmtK;
                     currentP.stmtKind = StmtKind.ReadK;
                     currentP.sibling = new SyntaxTreeNode();
                     syntaxTreeStack.Push(currentP.sibling);
@@ -526,7 +527,7 @@ namespace CompilationPrinciple {
                 case 64:
                     symbolStack.Push(LexType.OutputStm);
                     currentP = syntaxTreeStack.Pop();
-                    currentP.nodeKind = NodeKind.StmLK;
+                    currentP.nodeKind = NodeKind.StmtK;
                     currentP.stmtKind = StmtKind.WriteK;
                     currentP.sibling = new SyntaxTreeNode();
                     syntaxTreeStack.Push(currentP.sibling);
@@ -548,6 +549,10 @@ namespace CompilationPrinciple {
                     //Create a variable expression node that Record the left part of the assignment
                     SyntaxTreeNode variableExpression = new SyntaxTreeNode(NodeKind.ExpK);
                     variableExpression.expKind = ExpKind.IdK;
+/*                    if(variableExpression.attr == null) {
+                        variableExpression.attr = new SyntaxTreeNode.Attr("exp");
+                    }                    
+                    variableExpression.attr.expAttr.varKind = SyntaxTreeNode.Attr.ExpAttr.VarKind.IdV;*/
                     variableExpression.name[0] = tokenList.First().sem;
                     variableExpression.idnum++;
                     
@@ -578,7 +583,7 @@ namespace CompilationPrinciple {
                     //Assign right child node pointer to the stack
                     currentP.child[1] = new SyntaxTreeNode();
                     syntaxTreeStack.Push(currentP.child[1]);
-                    //Change current node pointer to assignment Right child node
+                    //Change current node pointer to assignment Right child node                  
                     currentP = currentP.child[0];
 
                     //Pressing in special stack bottom flags
@@ -703,6 +708,7 @@ namespace CompilationPrinciple {
                     specialFlags = new SyntaxTreeNode(NodeKind.ExpK);
                     specialFlags.expKind = ExpKind.OpK;
                     if (specialFlags.attr == null) {
+
                         specialFlags.attr = new SyntaxTreeNode.Attr("exp");
                     }
                     specialFlags.attr.expAttr.op = "END";
@@ -745,36 +751,37 @@ namespace CompilationPrinciple {
                         while ((LexType)Enum.Parse(typeof(LexType), opStack.Peek().attr.expAttr.op)
                             != LexType.LPAREN) {
                             //Pops up a contents of the operator stack
-                            currentP = opStack.Pop();
+                            SyntaxTreeNode topOperator = opStack.Pop();
                             //Pops up tow numbers of the number stack
                             SyntaxTreeNode Rnum = numStack.Pop();
                             SyntaxTreeNode Lnum = numStack.Pop();
 
-                            currentP.child[1] = Rnum;
-                            currentP.child[0] = Lnum;
-                            numStack.Push(currentP);
+                            topOperator.child[1] = Rnum;
+                            topOperator.child[0] = Lnum;
+                            numStack.Push(topOperator);
                         }
                         //Pops up the left bracket
                         opStack.Pop();
                         expflag--;
                     } else {
-                        if (getExpresult == true || getExpresult2) {
+                        if (getExpresult == true || getExpresult2 == true) {
                             while ((LexType)Enum.Parse(typeof(LexType), opStack.Peek().attr.expAttr.op)
                                 != LexType.END) {
                                 //Pops up a contents of the operator stack
-                                currentP = opStack.Pop();
+                                SyntaxTreeNode topOperator = opStack.Pop();
                                 //Pops up tow numbers of the number stack
                                 SyntaxTreeNode Rnum = numStack.Pop();
                                 SyntaxTreeNode Lnum = numStack.Pop();
 
-                                currentP.child[1] = Rnum;
-                                currentP.child[0] = Lnum;
-                                numStack.Push(currentP);
+                                topOperator.child[1] = Rnum;
+                                topOperator.child[0] = Lnum;
+                                numStack.Push(topOperator);
                             }
                             //Pop up the bottom of the stack flag
                             opStack.Pop();
                             currentP = syntaxTreeStack.Pop();
                             currentP.deepCopy(numStack.Pop());
+                            //currentP.name[0] = numStack.Pop().name[0];
                             //restore the flag
                             if (getExpresult2 == true) {
                                 getExpresult2 = false;
@@ -787,12 +794,12 @@ namespace CompilationPrinciple {
                     symbolStack.Push(LexType.Exp);
                     symbolStack.Push(LexType.AddOp);
 
-                    currentP = new SyntaxTreeNode(NodeKind.ExpK);
-                    currentP.expKind = ExpKind.OpK;
-                    if (currentP.attr == null) {
-                        currentP.attr = new SyntaxTreeNode.Attr("exp");
+                    SyntaxTreeNode opAddNode = new SyntaxTreeNode(NodeKind.ExpK);
+                    opAddNode.expKind = ExpKind.OpK;
+                    if (opAddNode.attr == null) {
+                        opAddNode.attr = new SyntaxTreeNode.Attr("exp");
                     }
-                    currentP.attr.expAttr.op = Enum.GetName(typeof(LexType), tokenList.First().lex);
+                    opAddNode.attr.expAttr.op = Enum.GetName(typeof(LexType), tokenList.First().lex);
                     sTop = (LexType)Enum.Parse(typeof(LexType), opStack.Peek().attr.expAttr.op);
                     while (priosity(sTop) >= priosity(tokenList.First().lex)) {
                         SyntaxTreeNode temp = opStack.Pop();
@@ -803,7 +810,7 @@ namespace CompilationPrinciple {
                         numStack.Push(temp);
                         sTop = (LexType)Enum.Parse(typeof(LexType), opStack.Peek().attr.expAttr.op);
                     }
-                    opStack.Push(currentP);
+                    opStack.Push(opAddNode);
                     break;
                 //<Term> ::= Factor OtherFactor 
                 case 86:
@@ -842,25 +849,26 @@ namespace CompilationPrinciple {
                     symbolStack.Push(LexType.Exp);
                     symbolStack.Push(LexType.LPAREN);
                     //Push the left bracket into the stack
-                    currentP = new SyntaxTreeNode(NodeKind.ExpK);
-                    currentP.expKind = ExpKind.OpK;
-                    if (currentP.attr == null) {
-                        currentP.attr = new SyntaxTreeNode.Attr("exp");
+                    SyntaxTreeNode leftBracketNode = new SyntaxTreeNode(NodeKind.ExpK);
+                    leftBracketNode.expKind = ExpKind.OpK;
+                    if (leftBracketNode.attr == null) {
+                        leftBracketNode.attr = new SyntaxTreeNode.Attr("exp");
                     }
-                    currentP.attr.expAttr.op = Enum.GetName(typeof(LexType), tokenList.First().lex);
-                    opStack.Push(currentP);
+                    leftBracketNode.attr.expAttr.op = Enum.GetName(typeof(LexType), tokenList.First().lex);
+                    opStack.Push(leftBracketNode);
                     expflag++;
                     break;
                 //<Factor> ::= INTC 
                 case 90:
                     symbolStack.Push(LexType.INTC_VAL);
-                    currentP = new SyntaxTreeNode(NodeKind.ExpK);
-                    currentP.expKind = ExpKind.ConstK;
-                    if (currentP.attr == null) {
-                        currentP.attr = new SyntaxTreeNode.Attr("exp");
+                    SyntaxTreeNode numNode = new SyntaxTreeNode();
+                    numNode.nodeKind = NodeKind.ExpK;
+                    numNode.expKind = ExpKind.ConstK;
+                    if (numNode.attr == null) {
+                        numNode.attr = new SyntaxTreeNode.Attr("exp");
                     }
-                    currentP.attr.expAttr.val = int.Parse(tokenList.First().sem);
-                    numStack.Push(currentP);
+                    numNode.attr.expAttr.val = int.Parse(tokenList.First().sem);
+                    numStack.Push(numNode);
                     break;
                 //<Factor> ::= Variable 
                 case 91:
@@ -870,40 +878,69 @@ namespace CompilationPrinciple {
                 case 92:
                     symbolStack.Push(LexType.VariMore);
                     symbolStack.Push(LexType.ID);
-                    currentP = new SyntaxTreeNode(NodeKind.ExpK);
-                    currentP.name[0] = tokenList.First().sem;
-                    currentP.idnum++;
-                    numStack.Push(currentP);
+                    varibleNode = new SyntaxTreeNode(NodeKind.ExpK);
+                    varibleNode.expKind = ExpKind.IdK;
+                    varibleNode.name[0] = tokenList.First().sem;
+                    if (varibleNode.attr == null) {
+                        varibleNode.attr = new SyntaxTreeNode.Attr("exp");
+                        varibleNode.attr.expAttr.varKind = SyntaxTreeNode.Attr.ExpAttr.VarKind.IdV;
+                    }
+                    varibleNode.idnum++;
+                    numStack.Push(varibleNode);
                     break;
                 //<VariMore> ::= ε
                 case 93:
-                    if (currentP.attr == null) {
-                        currentP.attr = new SyntaxTreeNode.Attr("exp");
+    /*                if (varibleNode != null && varibleNode.attr == null) {
+                        varibleNode.expKind = ExpKind.IdK;
+                        varibleNode.attr = new SyntaxTreeNode.Attr("exp");
+                        varibleNode.attr.expAttr.varKind = SyntaxTreeNode.Attr.ExpAttr.VarKind.IdV;
                     }
-                    currentP.attr.expAttr.varKind = SyntaxTreeNode.Attr.ExpAttr.VarKind.IdV;
+*/                  if(currentP.attr == null) {
+                        currentP.nodeKind = NodeKind.ExpK;
+                        currentP.expKind = ExpKind.IdK;
+                        currentP.attr = new SyntaxTreeNode.Attr("exp");
+                        currentP.attr.expAttr.varKind = SyntaxTreeNode.Attr.ExpAttr.VarKind.IdV;
+                    }
                     break;
                 //<VariMore> ::= [ Exp ]
                 case 94:
                     symbolStack.Push(LexType.RMIDPAREN);
                     symbolStack.Push(LexType.Exp);
                     symbolStack.Push(LexType.LMIDPAREN);
-
+                    //change currentP to currentP.child[0]
+                    /*                    currentP.child[0] = new SyntaxTreeNode(NodeKind.ExpK);
+                                        currentP.child[0].expKind = ExpKind.IdK;
+                                        if (numStack.Count > 0) {
+                                            currentP.child[0].name[0] = numStack.Peek().name[0];
+                                            currentP.child[0].idnum++;
+                                        }
+                                        if (currentP.child[0].attr == null) {
+                                            currentP.child[0].attr = new SyntaxTreeNode.Attr("exp");
+                                        }
+                                        currentP.child[0].attr.expAttr.varKind = SyntaxTreeNode.Attr.ExpAttr.VarKind.ArrayMembV;
+                                        currentP = currentP.child[0];
+                                        currentP.child[0] = new SyntaxTreeNode();
+                                        syntaxTreeStack.Push(currentP.child[0]);*/
+                    currentP.nodeKind = NodeKind.ExpK;
+                    currentP.expKind = ExpKind.IdK;
+                    if (numStack.Count > 0) {
+                        currentP.name[0] = numStack.Peek().name[0];
+                        currentP.idnum++;
+                    }
                     if (currentP.attr == null) {
                         currentP.attr = new SyntaxTreeNode.Attr("exp");
                     }
                     currentP.attr.expAttr.varKind = SyntaxTreeNode.Attr.ExpAttr.VarKind.ArrayMembV;
-
                     currentP.child[0] = new SyntaxTreeNode();
-                    
                     syntaxTreeStack.Push(currentP.child[0]);
 
-                    currentP = new SyntaxTreeNode(NodeKind.ExpK);
-                    currentP.expKind = ExpKind.OpK;
-                    if (currentP.attr == null) {
-                        currentP.attr = new SyntaxTreeNode.Attr("exp");
+                    SyntaxTreeNode operatorNode = new SyntaxTreeNode(NodeKind.ExpK);
+                    operatorNode.expKind = ExpKind.OpK;
+                    if (operatorNode.attr == null) {
+                        operatorNode.attr = new SyntaxTreeNode.Attr("exp");
                     }
-                    currentP.attr.expAttr.op = "END";
-                    opStack.Push(currentP);
+                    operatorNode.attr.expAttr.op = "END";
+                    opStack.Push(operatorNode);
                     getExpresult2 = true;
                     break;
                 //<VariMore> ::= . FieldVar
