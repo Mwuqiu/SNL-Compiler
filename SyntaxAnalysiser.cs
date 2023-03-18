@@ -1,5 +1,10 @@
-﻿using System;
+﻿#pragma warning disable CS8601
+
+
+using Microsoft.VisualBasic;
+using System;
 using System.Configuration;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -12,56 +17,80 @@ using System.Threading.Tasks;
 using static CompilationPrinciple.SyntaxClass;
 using static CompilationPrinciple.SyntaxClass.SyntaxTreeNode.Attr;
 
+
+
 namespace CompilationPrinciple {
+    /*public class SyntaxException : Exception {
+        string stackTrace = "";
+        public SyntaxException(string message) : base(message) {
+            stackTrace = new StackTrace().ToString();
+        }
+    }*/
     public class SyntaxAnalysiser {
         public List<Token> tokenList;
         public int index;
+        public List<string> errorList;
+        public List<string> warningList;
         public SyntaxAnalysiser(List<Token> tokens) {
             tokenList = tokens;
+            errorList = new List<string>();
+            warningList = new List<string>();
             index = 0;
         }
         public Token GetCurrent() {
+            if (index >= tokenList.Count) {
+                string msg = "[Error] Type #2: Index out of range.";
+                throw new Exception(msg);
+            }
             return tokenList[index];
         }
-        public string Match(LexType lexType) {
+        public void Match(LexType lexType) {
             if (GetCurrent().lex == lexType) {
                 string res = GetCurrent().sem;
                 index++;
-                return res;
-            } else
-                throw new Exception("Match错误: 在 line=" + GetCurrent().line + " 匹配失败");
+            } else {
+                string msg = "[Error] Type #1: Match Wrong at line "
+                    + GetCurrent().line
+                    + ", col "
+                    + GetCurrent().column
+                    + ". Expected lexType \'"
+                    + Enum.GetName(typeof(LexType), lexType)
+                    + "\', but found \'"
+                    + GetCurrent().sem
+                    + "\' instead.";
+                errorList.Add(msg);
+                index++;
+            }
+
         }
         public SyntaxTreeNode? Parse() {
             try {
                 SyntaxTreeNode? t = SyntaxProgram();
+                Match(LexType.ENDFILE);
                 // 如果当前和ENDFILE匹配, 则正常结束.
                 // 否则报错
                 return t;
             } catch (Exception e) {
-                Console.WriteLine(e);
+                errorList.Add(e.Message);
                 return null;
             }
 
         }
 
         SyntaxTreeNode? SyntaxProgram() {
-            try {
-                SyntaxTreeNode root = new SyntaxTreeNode(NodeKind.ProK);
-                root.child[0] = ProgramHead();
-                root.child[1] = DeclarePart();
-                root.child[2] = ProgramBody();
-                Match(LexType.DOT);
-                return root;
-            } catch (Exception e) {
-                Console.WriteLine(e);
-                return null;
-            }
 
+            SyntaxTreeNode root = new SyntaxTreeNode(NodeKind.ProK);
+            root.child[0] = ProgramHead();
+            root.child[1] = DeclarePart();
+            root.child[2] = ProgramBody();
+            Match(LexType.DOT);
+            return root;
         }
         SyntaxTreeNode ProgramHead() {
             SyntaxTreeNode pheadK = new SyntaxTreeNode(NodeKind.PheadK);
             Match(LexType.PROGRAM);
-            pheadK.name[pheadK.idnum++] = Match(LexType.ID);
+            pheadK.name[pheadK.idnum++] = GetCurrent().sem;
+            Match(LexType.ID);
             return pheadK;
         }
         SyntaxTreeNode? DeclarePart() {
@@ -102,6 +131,12 @@ namespace CompilationPrinciple {
                 case LexType.BEGIN:
                     break;
                 default:
+                    errorList.Add("[Error] Type #3: Unexcepted token at line "
+                        + GetCurrent().line
+                        + ", col "
+                        + GetCurrent().column
+                        + ".");
+                    index++;
                     //读入下一个单词，跳过此单词 ?
                     break;
             }
@@ -112,6 +147,7 @@ namespace CompilationPrinciple {
             SyntaxTreeNode? t = TypeDecList();
             if (t == null) {
                 //显示提示信息, 不是报错
+                warningList.Add("[Warning] Type #3: TypeDeclaration is empty.");
             }
             return t;
         }
@@ -152,6 +188,12 @@ namespace CompilationPrinciple {
                     Match(LexType.ID);
                     break;
                 default:
+                    errorList.Add("[Error] Type #3: Unexcepted token at line "
+                         + GetCurrent().line
+                         + ", col "
+                         + GetCurrent().column
+                         + ".");
+                    index++;
                     //读入下一个单词  ?
                     break;
             }
@@ -167,6 +209,12 @@ namespace CompilationPrinciple {
                     t.decKind = DecKind.CharK;
                     break;
                 default:
+                    errorList.Add("[Error] Type #3: Unexcepted token at line "
+                        + GetCurrent().line
+                        + ", col "
+                        + GetCurrent().column
+                        + ".");
+                    index++;
                     // 读入下一个单词 ?
                     break;
             }
@@ -181,6 +229,12 @@ namespace CompilationPrinciple {
                     RecType(t);
                     break;
                 default:
+                    errorList.Add("[Error] Type #3: Unexcepted token at line "
+                        + GetCurrent().line
+                        + ", col "
+                        + GetCurrent().column
+                        + ".");
+                    index++;
                     // 读入下一个单词 ?
                     break;
             }
@@ -212,6 +266,12 @@ namespace CompilationPrinciple {
                 Match(LexType.END);
             } else {
                 //错误信息提示
+                errorList.Add("[Error] Type #4: A record body is REQUESTED at line "
+                        + GetCurrent().line
+                        + ", col "
+                        + GetCurrent().column
+                        + ".");
+                index++;
                 Match(LexType.END);
                 // throw (new Exception("错误: 在 line=" + GetCurrent().line));
             }
@@ -235,6 +295,12 @@ namespace CompilationPrinciple {
                     p = FieldDecMore();
                     break;
                 default:
+                    errorList.Add("[Error] Type #3: Unexcepted token at line "
+                        + GetCurrent().line
+                        + ", col "
+                        + GetCurrent().column
+                        + ".");
+                    index++;
                     //读入下一个单词 (?)
                     break;
             }
@@ -257,6 +323,12 @@ namespace CompilationPrinciple {
                     IdList(t);
                     break;
                 default:
+                    errorList.Add("[Error] Type #3: Unexcepted token at line "
+                        + GetCurrent().line
+                        + ", col "
+                        + GetCurrent().column
+                        + ".");
+                    index++;
                     //读入下一个单词 (?)
                     break;
             }
@@ -272,6 +344,12 @@ namespace CompilationPrinciple {
                     t = FieldDecList();
                     break;
                 default:
+                    errorList.Add("[Error] Type #3: Unexcepted token at line "
+                        + GetCurrent().line
+                        + ", col "
+                        + GetCurrent().column
+                        + ".");
+                    index++;
                     //读入下一个单词 (?)
                     break;
             }
@@ -286,6 +364,12 @@ namespace CompilationPrinciple {
                 case LexType.BEGIN:
                     break;
                 default:
+                    errorList.Add("[Error] Type #3: Unexcepted token at line "
+                        + GetCurrent().line
+                        + ", col "
+                        + GetCurrent().column
+                        + ".");
+                    index++;
                     //读入下一个单词 (?)
                     break;
             }
@@ -302,6 +386,12 @@ namespace CompilationPrinciple {
                     t = VarDeclaration();
                     break;
                 default:
+                    errorList.Add("[Error] Type #3: Unexcepted token at line "
+                        + GetCurrent().line
+                        + ", col "
+                        + GetCurrent().column
+                        + ".");
+                    index++;
                     //读入下一个单词 ?
                     break;
             }
@@ -312,7 +402,11 @@ namespace CompilationPrinciple {
             SyntaxTreeNode t = VarDecList();
             if (t == null) {
                 // 错误提示
-                throw new Exception("VarDeclaration错误");
+                errorList.Add("[Error] Type #5: A var declaration body is EXPECTED at line "
+                    + GetCurrent().line
+                    + ", col "
+                    + GetCurrent().column
+                    + ".");
             }
             return t;
         }
@@ -338,6 +432,12 @@ namespace CompilationPrinciple {
                     t = VarDecList();
                     break;
                 default:
+                    errorList.Add("[Error] Type #3: Unexcepted token at line "
+                        + GetCurrent().line
+                        + ", col "
+                        + GetCurrent().column
+                        + ".");
+                    index++;
                     // 读入下一个单词 ?
                     break;
             }
@@ -350,8 +450,12 @@ namespace CompilationPrinciple {
                     Match(LexType.ID);
                     break;
                 default:
-                    throw new Exception("VarIdList错误");
-                    // 错误提示
+                    errorList.Add("[Error] Type #6: A var id is EXPECTED at line "
+                    + GetCurrent().line
+                    + ", col "
+                    + GetCurrent().column
+                    + ".");
+                    break;
             }
             VarIdMore(t);
         }
@@ -365,6 +469,12 @@ namespace CompilationPrinciple {
                     break;
                 default:
                     // 读入下一个单词 ?
+                    errorList.Add("[Error] Type #3: Unexcepted token at line "
+                        + GetCurrent().line
+                        + ", col "
+                        + GetCurrent().column
+                        + ".");
+                    index++;
                     break;
             }
         }
@@ -381,6 +491,12 @@ namespace CompilationPrinciple {
                     t = ProcDeclaration();
                     break;
                 default:
+                    errorList.Add("[Error] Type #3: Unexcepted token at line "
+                        + GetCurrent().line
+                        + ", col "
+                        + GetCurrent().column
+                        + ".");
+                    index++;
                     // 读入下一个单词 ?
                     break;
             }
@@ -417,6 +533,12 @@ namespace CompilationPrinciple {
                     t.child[0] = p;
                     break;
                 default:
+                    errorList.Add("[Error] Type #3: Unexcepted token at line "
+                        + GetCurrent().line
+                        + ", col "
+                        + GetCurrent().column
+                        + ".");
+                    index++;
                     // 读入下一个单词 ?
                     break;
             }
@@ -435,6 +557,11 @@ namespace CompilationPrinciple {
                     Match(LexType.SEMI);
                     t = ParamDecList();
                     if (t == null) {
+                        errorList.Add("[Error] Type #7: A Param declaration is EXPECTED at line "
+                        + GetCurrent().line
+                        + ", col "
+                        + GetCurrent().column
+                        + ".");
                         // ERROR: Param needs a declaration
                     }
                     break;
@@ -465,6 +592,12 @@ namespace CompilationPrinciple {
                     FormList(t);
                     break;
                 default:
+                    errorList.Add("[Error] Type #3: Unexcepted token at line "
+                        + GetCurrent().line
+                        + ", col "
+                        + GetCurrent().column
+                        + ".");
+                    index++;
                     // 读入下一个单词 ?
                     break;
             }
@@ -487,6 +620,12 @@ namespace CompilationPrinciple {
                     FormList(t);
                     break;
                 default:
+                    errorList.Add("[Error] Type #3: Unexcepted token at line "
+                        + GetCurrent().line
+                        + ", col "
+                        + GetCurrent().column
+                        + ".");
+                    index++;
                     // 读入下一个单词 ?
                     break;
             }
@@ -497,7 +636,12 @@ namespace CompilationPrinciple {
 
         public SyntaxTreeNode? ProcBody() {
             SyntaxTreeNode t = ProgramBody();
-            if(t == null) {
+            if (t == null) {
+                errorList.Add("[Error] Type #8: A program body is REQUESTED at line "
+                    + GetCurrent().line
+                    + ", col "
+                    + GetCurrent().column
+                    + ".");
                 // 报错 program needs a body
             }
             return t;
@@ -555,6 +699,12 @@ namespace CompilationPrinciple {
                     t = AssCall(tmp);
                     break;
                 default:
+                    errorList.Add("[Error] Type #3: Unexcepted token at line "
+                        + GetCurrent().line
+                        + ", col "
+                        + GetCurrent().column
+                        + ".");
+                    index++;
                     // 跳过当前单词，读入下一个单词
                     break;
             }
@@ -572,6 +722,12 @@ namespace CompilationPrinciple {
                     t = CallStmRest(tmp);
                     break;
                 default:
+                    errorList.Add("[Error] Type #3: Unexcepted token at line "
+                        + GetCurrent().line
+                        + ", col "
+                        + GetCurrent().column
+                        + ".");
+                    index++;
                     // 读入下一个单词
                     break;
             }
@@ -653,8 +809,14 @@ namespace CompilationPrinciple {
                 stmtKind = StmtKind.CallK
             };
             Match(LexType.LPAREN);
-            t.child[0] = ActParamList();
-            t.name[t.idnum++] = tmp;
+            /*函数名为Exp结点*/
+            t.child[0] = new SyntaxTreeNode(NodeKind.ExpK) {
+                expKind = ExpKind.IdK
+            };
+            t.child[0].name[t.child[0].idnum++] = tmp;
+            t.child[0].attr = new SyntaxTreeNode.Attr("exp");
+            t.child[0].attr.expAttr.varKind = ExpAttr.VarKind.IdV;
+            t.child[1] = ActParamList();
             Match(LexType.RPAREN);
             return t;
         }
@@ -671,6 +833,12 @@ namespace CompilationPrinciple {
                         t.sibling = ActParamMore();
                     break;
                 default:
+                    errorList.Add("[Error] Type #3: Unexcepted token at line "
+                        + GetCurrent().line
+                        + ", col "
+                        + GetCurrent().column
+                        + ".");
+                    index++;
                     //读入下一个单词 ?
                     break;
             }
@@ -686,6 +854,12 @@ namespace CompilationPrinciple {
                     t = ActParamList();
                     break;
                 default:
+                    errorList.Add("[Error] Type #3: Unexcepted token at line "
+                        + GetCurrent().line
+                        + ", col "
+                        + GetCurrent().column
+                        + ".");
+                    index++;
                     //读入下一个单词 ?
                     break;
             }
@@ -772,6 +946,12 @@ namespace CompilationPrinciple {
                     Match(LexType.RPAREN);
                     break;
                 default:
+                    errorList.Add("[Error] Type #3: Unexcepted token at line "
+                        + GetCurrent().line
+                        + ", col "
+                        + GetCurrent().column
+                        + ".");
+                    index++;
                     //非期望单词错误,显示出错单词和信息.并读入下一单词
                     break;
             }
@@ -779,7 +959,7 @@ namespace CompilationPrinciple {
         }
         public SyntaxTreeNode Variable() {
             SyntaxTreeNode t = SyntaxTreeNode.NewExpKindIdK();
-            
+
             if (GetCurrent().lex == LexType.ID) {
                 t.name[t.idnum++] = GetCurrent().sem;
                 Match(LexType.ID);
@@ -822,6 +1002,12 @@ namespace CompilationPrinciple {
                     t.child[0].attr.expAttr.varKind = ExpAttr.VarKind.IdV;
                     break;
                 default:
+                    errorList.Add("[Error] Type #3: Unexcepted token at line "
+                        + GetCurrent().line
+                        + ", col "
+                        + GetCurrent().column
+                        + ".");
+                    index++;
                     // 错误信息, 读入下一个token
                     break;
             }
@@ -861,6 +1047,12 @@ namespace CompilationPrinciple {
                     Match(LexType.RMIDPAREN);
                     break;
                 default:
+                    errorList.Add("[Error] Type #3: Unexcepted token at line "
+                        + GetCurrent().line
+                        + ", col "
+                        + GetCurrent().column
+                        + ".");
+                    index++;
                     //读入下一个token， 并提示错误信息
                     break;
             }

@@ -15,6 +15,12 @@ namespace CompilationPrinciple {
             SyntaxAnalysiser s = new SyntaxAnalysiser(scanner.tokenList);
             SyntaxClass.SyntaxTreeNode? syntaxTreeNode = s.Parse();
             if(syntaxTreeNode != null) syntaxTreeNode.PrintTree(0);
+            else {
+                List<string> errors = s.errorList;
+                foreach(string error in errors) {
+                    Console.WriteLine(error);
+                }
+            }
         }
     }
 }

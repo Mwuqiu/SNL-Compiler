@@ -1,5 +1,6 @@
 program p
 type t = integer;
 p = integer;
+integer = p;
 begin
 end.
