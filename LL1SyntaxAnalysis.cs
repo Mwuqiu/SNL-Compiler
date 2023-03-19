@@ -380,9 +380,9 @@ namespace CompilationPrinciple {
                     currentP.child[1] = new SyntaxTreeNode();
                     currentP.child[2] = new SyntaxTreeNode();
                     syntaxTreeStack.Push(currentP.sibling);
-                    syntaxTreeStack.Push(currentP.child[0]);
-                    syntaxTreeStack.Push(currentP.child[1]);
                     syntaxTreeStack.Push(currentP.child[2]);
+                    syntaxTreeStack.Push(currentP.child[1]);
+                    syntaxTreeStack.Push(currentP.child[0]);
                     break;
                 //<ProcDecMore> ::= ε
                 case 42:
@@ -477,6 +477,7 @@ namespace CompilationPrinciple {
                     symbolStack.Push(LexType.END);
                     symbolStack.Push(LexType.StmList);
                     symbolStack.Push(LexType.BEGIN);
+                    syntaxTreeStack.Pop();
                     currentP = syntaxTreeStack.Pop();
                     currentP.nodeKind =NodeKind.StmLK;
                     currentP.child[0] = new SyntaxTreeNode();
@@ -489,7 +490,7 @@ namespace CompilationPrinciple {
                     break;
                 //<StmMore> ::= ε
                 case 59:
-                    currentP = syntaxTreeStack.Pop();
+                    syntaxTreeStack.Pop();
                     break;
                 //< StmMore > ::= ; StmList
                 case 60:
@@ -572,6 +573,9 @@ namespace CompilationPrinciple {
                 //<AssCall> ::= CallStmRest
                 case 68:
                     symbolStack.Push(LexType.CallStmRest);
+                    if (currentP.child[0].attr == null) {
+                        currentP.child[0].attr = new SyntaxTreeNode.Attr("exp");
+                    }
                     currentP.child[0].attr.expAttr.varKind = SyntaxTreeNode.Attr.ExpAttr.VarKind.IdV;
                     currentP.stmtKind = StmtKind.CallK;
                     break;

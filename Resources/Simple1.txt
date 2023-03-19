@@ -1,7 +1,12 @@
-program pp
+program bubble
 var
-	array[1..10]of integer a;
+	integer j;
+procedure q(integer num);
+	var
+		integer i;
+	begin
+		i := 1
+	end
 begin
-	write(m);
-	write(a[2])
+	j := 1
 end.
