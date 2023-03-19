@@ -9,7 +9,7 @@ using static CompilationPrinciple.SyntaxClass.SyntaxTreeNode.Attr;
 using static CompilationPrinciple.SyntaxClass.SyntaxTreeNode.Attr.ExpAttr;
 
 namespace CompilationPrinciple {
-    public class SyntaxClass  {
+    public class SyntaxClass {
         public class SyntaxTreeNode {
             public SyntaxTreeNode[] child { get; set; }
             // 指向子语法树节点指针，为语法树节点指针类型
@@ -24,7 +24,7 @@ namespace CompilationPrinciple {
             // 记录语法树节点类型，取值 ProK, PheadK, TypeK, VarK,
             // ProcDecK, StmLK, DecK, StmtK, ExpK,为语法树节点类型。
 
-            public DecKind  decKind;
+            public DecKind decKind;
             //记录语法树节点的声明类型，当 nodekind = DecK 时有效，取
             //值 ArrayK, CharK, IntegerK, RecordK, IdK，为语法树节点声明
             //类型。
@@ -33,10 +33,10 @@ namespace CompilationPrinciple {
             //记录语法树节点的语句类型，当 nodekind = StmtK 时有效，
             //取值 IfK, WhileK, AssignK, ReadK, WriteK, CallK, ReturnK，为语法树节点语句类型。
 
-            public ExpKind  expKind ;
+            public ExpKind expKind;
             //记录语法树节点的表达式类型，当 nodekind=ExpK 时有效，
             //取值 OpK, ConstK, IdK，为语法树节点表达式类型。
-            
+
             public int idnum;
             //记录一个节点中的标志符的个数
 
@@ -86,7 +86,7 @@ namespace CompilationPrinciple {
                     //记录语法树节点的数值,当语法树节点为“数字
                     //因子”对应的语法树节点时有效,为整数类型。
                     public enum VarKind {
-                        Error, IdV, ArrayMembV,FieldMembV
+                        Error, IdV, ArrayMembV, FieldMembV
                     }
                     public VarKind varKind;
                     public string? type;
@@ -119,7 +119,7 @@ namespace CompilationPrinciple {
                 child = new SyntaxTreeNode[3];
                 name = new string[10];
             }
-            public SyntaxTreeNode(NodeKind n) : this(){
+            public SyntaxTreeNode(NodeKind n) : this() {
                 nodeKind = n;
             }
             static public SyntaxTreeNode NewExpKindIdK() {
@@ -150,16 +150,16 @@ namespace CompilationPrinciple {
                 if (nodeKind == NodeKind.DecK && expKind == ExpKind.IdK) {
                     Console.Write(typeName + "  ");
                 }
-                
+
                 if (nodeKind == NodeKind.DecK && decKind == DecKind.IdK) {
                     Console.Write(typeName + "  ");
                 }
 
-                for (int i = 0; i< idnum; i++) {
+                for (int i = 0; i < idnum; i++) {
                     Console.Write(name[i] + "  ");
                 }
-                if(attr != null) {
-                    if(attr.arrayAttr != null) {
+                if (attr != null) {
+                    if (attr.arrayAttr != null) {
                         Console.Write(attr.arrayAttr);
                     }
                     if (attr.procAttr != null) {
@@ -179,9 +179,9 @@ namespace CompilationPrinciple {
                         }
                     }
                 }
-                
+
                 Console.WriteLine();
-                for(int i = 0; i < 3; i++) {
+                for (int i = 0; i < 3; i++) {
                     if (child[i] != null) {
                         if (child[i].nodeKind == NodeKind.Error) {
                             child[i] = null;
@@ -199,36 +199,31 @@ namespace CompilationPrinciple {
                 }
             }
             public void deepCopy(SyntaxTreeNode currentNode) {
-                //copy child
-                child[0] = currentNode.child[0];
-                child[1] = currentNode.child[1];
-                child[2] = currentNode.child[2];
-                //copy sibling
-                sibling = currentNode.sibling;
-
-                lineno = currentNode.lineno;
-                nodeKind = currentNode.nodeKind;
-                decKind = currentNode.decKind;
-                stmtKind = currentNode.stmtKind;
+                if (this.attr == null) {
+                    this.attr = currentNode.attr;
+                }
                 expKind = currentNode.expKind;
                 idnum = currentNode.idnum;
                 name = currentNode.name;
+                nodeKind = currentNode.nodeKind;
+                decKind = currentNode.decKind;
+                stmtKind = currentNode.stmtKind;
                 typeName = currentNode.typeName;
-                attr = currentNode.attr;
+                lineno = currentNode.lineno;
             }
         }
-    }
-    public enum NodeKind {
-        Error, ProK, PheadK, TypeK, VarK,
-        ProcDecK, StmLK, DecK, StmtK, ExpK
-    }
-    public enum DecKind {
-        Error, ArrayK, CharK, IntegerK, RecordK, IdK
-    }
-    public enum StmtKind {
-        Error, IfK, WhileK, AssignK, ReadK, WriteK, CallK, ReturnK
-    }
-    public enum ExpKind {
-        Error, OpK, ConstK, IdK
+        public enum NodeKind {
+            Error, ProK, PheadK, TypeK, VarK,
+            ProcDecK, StmLK, DecK, StmtK, ExpK
+        }
+        public enum DecKind {
+            Error, ArrayK, CharK, IntegerK, RecordK, IdK
+        }
+        public enum StmtKind {
+            Error, IfK, WhileK, AssignK, ReadK, WriteK, CallK, ReturnK
+        }
+        public enum ExpKind {
+            Error, OpK, ConstK, IdK
+        }
     }
 }
