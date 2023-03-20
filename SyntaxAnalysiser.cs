@@ -336,7 +336,7 @@ namespace CompilationPrinciple {
         public SyntaxTreeNode FieldDecMore() {
             SyntaxTreeNode? t = null;
             switch (GetCurrent().lex) {
-                case LexType.ID:
+                case LexType.END:
                     break;
                 case LexType.INTEGER_T:
                 case LexType.CHAR_T:

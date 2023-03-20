@@ -257,6 +257,10 @@ namespace CompilationPrinciple {
                     symbolStack.Push(LexType.BaseType);
                     currentP = syntaxTreeStack.Pop();
                     currentP.nodeKind = NodeKind.DecK;
+
+                    currentP.sibling = new SyntaxTreeNode();
+                    syntaxTreeStack.Push(currentP.sibling);
+
                     Debug.WriteLine("pop at case 23");
                     break;
                 //<FieldDecList> ::= ArrayType IdList ; FieldDecMore
@@ -431,7 +435,7 @@ namespace CompilationPrinciple {
                     if (currentP.attr == null) {
                         currentP.attr = new SyntaxTreeNode.Attr("proc");
                     }
-                    currentP.attr.procAttr.paramt = "valparamType";
+                    currentP.attr.procAttr.paramt = SyntaxTreeNode.Attr.ProcAttr.ParamType.Valparamtype;
                     currentP.sibling = new SyntaxTreeNode();
                     syntaxTreeStack.Push(currentP.sibling);
                     break;
@@ -445,7 +449,7 @@ namespace CompilationPrinciple {
                     if (currentP.attr == null) {
                         currentP.attr = new SyntaxTreeNode.Attr("proc");
                     }
-                    currentP.attr.procAttr.paramt = "varparamType";
+                    currentP.attr.procAttr.paramt = SyntaxTreeNode.Attr.ProcAttr.ParamType.Varparamtype;
                     currentP.sibling = new SyntaxTreeNode();
                     syntaxTreeStack.Push(currentP.sibling);
                     break;
@@ -656,7 +660,7 @@ namespace CompilationPrinciple {
                     currentP.child[0] = new SyntaxTreeNode();
                     syntaxTreeStack.Push(currentP.child[0]);
                     //self add ..
-                    currentP = currentP.child[0];
+                    //currentP = currentP.child[0];
 
                     //Pressing in a special operator, giving it the lowest priority
                     specialFlags = new SyntaxTreeNode(NodeKind.ExpK);
@@ -905,15 +909,17 @@ namespace CompilationPrinciple {
                     break;
                 //<VariMore> ::= ε
                 case 93:
-    /*                if (varibleNode != null && varibleNode.attr == null) {
+                   /* if (varibleNode != null && varibleNode.attr == null) {
                         varibleNode.expKind = ExpKind.IdK;
                         varibleNode.attr = new SyntaxTreeNode.Attr("exp");
                         varibleNode.attr.expAttr.varKind = SyntaxTreeNode.Attr.ExpAttr.VarKind.IdV;
-                    }
-*/                  if(currentP.attr == null) {
+                    }*/
+                    if(currentP.attr == null && (currentP.nodeKind == null || currentP.nodeKind == NodeKind.ExpK)) {
                         currentP.nodeKind = NodeKind.ExpK;
                         currentP.expKind = ExpKind.IdK;
                         currentP.attr = new SyntaxTreeNode.Attr("exp");
+                    }
+                    if (currentP.attr != null) {
                         currentP.attr.expAttr.varKind = SyntaxTreeNode.Attr.ExpAttr.VarKind.IdV;
                     }
                     break;
@@ -933,9 +939,11 @@ namespace CompilationPrinciple {
                         currentP.child[0].attr = new SyntaxTreeNode.Attr("exp");
                     }
                     currentP.child[0].attr.expAttr.varKind = SyntaxTreeNode.Attr.ExpAttr.VarKind.ArrayMembV;
-                    currentP = currentP.child[0];
+                    currentP = currentP.child[0];F
                     currentP.child[0] = new SyntaxTreeNode();
                     syntaxTreeStack.Push(currentP.child[0]);*/
+                    currentP.child[0] = new SyntaxTreeNode();
+                    currentP = currentP.child[0];
                     currentP.nodeKind = NodeKind.ExpK;
                     currentP.expKind = ExpKind.IdK;
                     if (currentP.attr == null) {

@@ -15,4 +15,5 @@ p2 = integer;
 r3 = r2;
 p3 = p2;
 begin
+	read(p1)
 end.

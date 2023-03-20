@@ -195,7 +195,9 @@ namespace CompilationPrinciple {
                 }
             }
             public void deepCopy(SyntaxTreeNode currentNode) {
-                this.child = currentNode.child;
+                if (this.child[0] == null) {
+                    this.child = currentNode.child;
+                }
                 if (this.attr == null) {
                     this.attr = currentNode.attr;
                 }
