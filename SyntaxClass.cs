@@ -62,14 +62,15 @@ namespace CompilationPrinciple {
                 }
                 public class ProcAttr {
                     //记录过程的属性
-                    public string? paramt;
-                    //记 录 过 程 的 参 数 类 型 ， 值 为 枚 举 类 型
-                    //valparamtype 或者 varparamtype，表示过程的参数
-                    //是值参还是变参。
+                    public enum ParamType {
+                        Error, Valparamtype, Varparamtype
+                    }
+                    public ParamType paramt;
+                    //记 录 过 程 的 参 数 类 型 ， 表示过程的参数是值参还是变参
+                   
                     public override string ToString() {
-                        if (paramt == null)
-                            return "";
-                        return paramt.ToString();
+                        return Enum.GetName(typeof(ParamType), paramt) + "  ";
+
                     }
                 }
                 public class ExpAttr {
@@ -144,11 +145,6 @@ namespace CompilationPrinciple {
                     case NodeKind.ExpK:
                         Console.Write(Enum.GetName(typeof(ExpKind), expKind) + "  ");
                         break;
-                }
-
-                // why to check the value of expKind when the nodeType is DecKind ??
-                if (nodeKind == NodeKind.DecK && expKind == ExpKind.IdK) {
-                    Console.Write(typeName + "  ");
                 }
 
                 if (nodeKind == NodeKind.DecK && decKind == DecKind.IdK) {
@@ -227,4 +223,5 @@ namespace CompilationPrinciple {
             Error, OpK, ConstK, IdK
         }
     }
+    
 }

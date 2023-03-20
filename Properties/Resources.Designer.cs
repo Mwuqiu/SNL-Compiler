@@ -252,7 +252,7 @@ namespace CompilationPrinciple.Properties {
         ///	while k&lt;3 do
         ///		while i&lt;5 do
         ///			a[k] := k;
-        ///			m := 10*(5+j);
+        ///			m := 1+2+3;
         ///			m := k+5;
         ///			n := i;
         ///			write(n);
@@ -270,6 +270,50 @@ namespace CompilationPrinciple.Properties {
         internal static string Simple7 {
             get {
                 return ResourceManager.GetString("Simple7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 program bubble
+        ///var
+        ///	integer temp;
+        ///	integer i, j, num;
+        ///	array[1..20]of integer a;
+        ///procedure q(integer num);
+        ///	var
+        ///		integer i, j, k;
+        ///		integer t;
+        ///	begin
+        ///		i := 1;
+        ///		while i&lt;num do
+        ///			j := num-i+1;
+        ///			k := 1;
+        ///			while k&lt;j do
+        ///				if a[k+1]&lt;a[k] then
+        ///					t := a[k];
+        ///					a[k] := a[k+1];
+        ///					a[k+1] := t
+        ///				else
+        ///					temp := 0
+        ///				fi;
+        ///				k := k+1
+        ///			endwh;
+        ///			i := i+1
+        ///		endwh
+        ///	end
+        ///begin
+        ///	read(num);
+        ///	i := 1;
+        ///	while i&lt;num+1 do
+        ///		read(j);
+        ///		a[i] := j;
+        ///		i := i+1
+        ///	endwh;
+        ///	q(num);        /// [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string Simple8 {
+            get {
+                return ResourceManager.GetString("Simple8", resourceCulture);
             }
         }
         

@@ -21,4 +21,5 @@ var
 	a1 v3;
 	r2 v4;
 begin
+	read(t1)
 end.
