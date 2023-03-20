@@ -659,8 +659,6 @@ namespace CompilationPrinciple {
                     //press the output statement's first son node pointer into syntax tree stack
                     currentP.child[0] = new SyntaxTreeNode();
                     syntaxTreeStack.Push(currentP.child[0]);
-                    //self add ..
-                    //currentP = currentP.child[0];
 
                     //Pressing in a special operator, giving it the lowest priority
                     specialFlags = new SyntaxTreeNode(NodeKind.ExpK);
@@ -942,7 +940,7 @@ namespace CompilationPrinciple {
                     currentP = currentP.child[0];F
                     currentP.child[0] = new SyntaxTreeNode();
                     syntaxTreeStack.Push(currentP.child[0]);*/
-                    currentP.child[0] = new SyntaxTreeNode();
+                    currentP.child[0] = syntaxTreeStack.Pop();
                     currentP = currentP.child[0];
                     currentP.nodeKind = NodeKind.ExpK;
                     currentP.expKind = ExpKind.IdK;
@@ -950,8 +948,10 @@ namespace CompilationPrinciple {
                         currentP.attr = new SyntaxTreeNode.Attr("exp");
                     }
                     currentP.attr.expAttr.varKind = SyntaxTreeNode.Attr.ExpAttr.VarKind.ArrayMembV;
+                    syntaxTreeStack.Push(currentP);
                     currentP.child[0] = new SyntaxTreeNode();
                     syntaxTreeStack.Push(currentP.child[0]);
+
                     SyntaxTreeNode operatorNode = new SyntaxTreeNode(NodeKind.ExpK);
                     operatorNode.expKind = ExpKind.OpK;
                     if (operatorNode.attr == null) {
