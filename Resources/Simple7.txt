@@ -2,5 +2,9 @@ program pp
 var
 	array[1..10]of integer a;
 begin
-	write(a[2])
+	t := t + 1;
+	write(m);
+	write(a[k+1]);
+	a[k+1] := t;
+	t := a[k+1]
 end.
