@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "eIjNMoRvL8aOUe21qeswVsC3RMVSgk0zW36fwHvZilrRvZBSzwwdedfQiKjhLDlhHgRr1UgbOtNk2CX2rdLeqA==",
+  "dgSpecHash": "IVyduAyEqrWubhNIHbatzoY/5dw127E9J7oz6WOszsg3ax57xNZ3hFAjPblYneRZyomM6NE/EMH4L+QaB/yVyA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\rog\\Desktop\\编译原理\\CompilationPrinciple\\SNL-Compiler-Designs\\CompilationPrinciple.csproj",
+  "projectFilePath": "D:\\Projects\\SNL-Compiler\\CompilationPrinciple.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
