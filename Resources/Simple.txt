@@ -1,0 +1,12 @@
+program bubble
+var
+	integer j;
+procedure q(integer num);
+	var
+		integer i;
+	begin
+		i := 1;
+	end
+begin
+	j := 1;
+end.

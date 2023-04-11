@@ -1,0 +1,8 @@
+program p
+type
+	t = integer;
+var
+	t V1;
+begin
+	V1 := V1+10;
+end.

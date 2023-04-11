@@ -61,6 +61,263 @@ namespace CompilationPrinciple.Properties {
         }
         
         /// <summary>
+        ///   查找类似 program bubble
+        ///var
+        ///	integer temp;
+        ///	integer i, j, num;
+        ///	array[1..20]of integer a;
+        ///procedure q(integer num);
+        ///	var
+        ///		integer i, j, k;
+        ///		integer t;
+        ///	begin
+        ///		i := 1;
+        ///		while i&lt;num do
+        ///			j := num-i+1;
+        ///			k := 1;
+        ///			while k&lt;j do
+        ///				if a[k+1]&lt;a[k] then
+        ///					t := a[k];
+        ///					a[k] := a[k+1];
+        ///					a[k+1] := t
+        ///				else
+        ///					temp := 0
+        ///				fi;
+        ///				k := k+1
+        ///			endwh;
+        ///			i := i+1
+        ///		endwh
+        ///	end
+        ///begin
+        ///	read(num);
+        ///	i := 1;
+        ///	while i&lt;num+1 do
+        ///		read(j);
+        ///		a[i] := j;
+        ///		i := i+1
+        ///	endwh;
+        ///	q(num);        /// [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string bubble {
+            get {
+                return ResourceManager.GetString("bubble", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 program p
+        ///type t = integer;
+        ///p = integer;
+        ///begin
+        ///end.
+        /// 的本地化字符串。
+        /// </summary>
+        internal static string Simple1 {
+            get {
+                return ResourceManager.GetString("Simple1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 program p
+        ///type t1 = integer;
+        ///p1 = integer;
+        ///a1 = array [0..10] of integer;
+        ///r1 = record
+        ///		integer x;
+        ///		integer y;
+        ///	end;
+        ///a2 = array [0..10] of integer;
+        ///r2 = record
+        ///		integer x;
+        ///		integer y;
+        ///	end;
+        ///p2 = integer;
+        ///begin
+        ///end.
+        /// 的本地化字符串。
+        /// </summary>
+        internal static string Simple2 {
+            get {
+                return ResourceManager.GetString("Simple2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 program p
+        ///type t1 = integer;
+        ///p1 = integer;
+        ///a1 = array [0..10] of integer;
+        ///r1 = record
+        ///		integer x;
+        ///		integer y;
+        ///	end;
+        ///a2 = array [0..10] of integer;
+        ///r2 = record
+        ///		integer x;
+        ///		integer y;
+        ///	end;
+        ///p2 = integer;
+        ///r3 = r2;
+        ///p3 = p2;
+        ///begin
+        ///end.
+        /// 的本地化字符串。
+        /// </summary>
+        internal static string Simple3 {
+            get {
+                return ResourceManager.GetString("Simple3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 program p
+        ///type
+        ///	t1 = integer;
+        ///	p1 = integer;
+        ///	a1 = array[0..10]of integer;
+        ///	r1 = record
+        ///		integer x;
+        ///		integer y;
+        ///	end;
+        ///	a2 = array[0..10]of integer;
+        ///	r2 = record
+        ///		integer x;
+        ///		integer y;
+        ///	end;
+        ///	p2 = integer;
+        ///	r3 = r2;
+        ///	p3 = p2;
+        ///var
+        ///	integer v1;
+        ///	p1 v2;
+        ///	a1 v3;
+        ///	r2 v4;
+        ///begin
+        ///end.
+        /// 的本地化字符串。
+        /// </summary>
+        internal static string Simple4 {
+            get {
+                return ResourceManager.GetString("Simple4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 program p
+        ///type
+        ///	t = integer;
+        ///var
+        ///	t t1;
+        ///begin
+        ///	read(t1)
+        ///end.
+        /// 的本地化字符串。
+        /// </summary>
+        internal static string Simple5 {
+            get {
+                return ResourceManager.GetString("Simple5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 program p
+        ///type
+        ///	t = integer;
+        ///var
+        ///	t V1;
+        ///	char v2;
+        ///begin
+        ///	read(v1);
+        ///	V1 := V1+10;
+        ///	write(v1)
+        ///end.
+        /// 的本地化字符串。
+        /// </summary>
+        internal static string Simple6 {
+            get {
+                return ResourceManager.GetString("Simple6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 program pp
+        ///var
+        ///	integer i, n, m, j, k, r;
+        ///	array[1..10]of integer a;
+        ///begin
+        ///	i := 0;
+        ///	j := 0;
+        ///	k := 0;
+        ///	while k&lt;3 do
+        ///		while i&lt;5 do
+        ///			a[k] := k;
+        ///			m := 1+2+3;
+        ///			m := k+5;
+        ///			n := i;
+        ///			write(n);
+        ///			i := i+1
+        ///		endwh;
+        ///		i := 0;
+        ///		k := k+1
+        ///	endwh;
+        ///	write(m);
+        ///	write(a[1]);
+        ///	write(a[2])
+        ///end.
+        /// 的本地化字符串。
+        /// </summary>
+        internal static string Simple7 {
+            get {
+                return ResourceManager.GetString("Simple7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 program bubble
+        ///var
+        ///	integer temp;
+        ///	integer i, j, num;
+        ///	array[1..20]of integer a;
+        ///procedure q(integer num);
+        ///	var
+        ///		integer i, j, k;
+        ///		integer t;
+        ///	begin
+        ///		i := 1;
+        ///		while i&lt;num do
+        ///			j := num-i+1;
+        ///			k := 1;
+        ///			while k&lt;j do
+        ///				if a[k+1]&lt;a[k] then
+        ///					t := a[k];
+        ///					a[k] := a[k+1];
+        ///					a[k+1] := t
+        ///				else
+        ///					temp := 0
+        ///				fi;
+        ///				k := k+1
+        ///			endwh;
+        ///			i := i+1
+        ///		endwh
+        ///	end
+        ///begin
+        ///	read(num);
+        ///	i := 1;
+        ///	while i&lt;num+1 do
+        ///		read(j);
+        ///		a[i] := j;
+        ///		i := i+1
+        ///	endwh;
+        ///	q(num);        /// [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string Simple8 {
+            get {
+                return ResourceManager.GetString("Simple8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 program p
         ///	type t = integer;
         ///	var t V1;
