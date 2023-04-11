@@ -2,7 +2,7 @@ program pp
 var
 	integer i, num;
 begin
-	if i < num.i then
+	if i < num then
 		i := 1
 	else
 		i := 0

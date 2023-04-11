@@ -56,5 +56,20 @@ namespace CompilationPrinciple
         private void CodeBox_TextChanged(object sender, EventArgs e) {
 
         }
+
+        private void button2_Click_1(object sender, EventArgs e) {
+            Console.Write(CodeBox.Text);
+            Scanner scanner = new Scanner(CodeBox.Text);
+            scanner.DirectSteeringMethod();
+            String tokenList = scanner.outPutTokenList();
+
+            SyntaxAnalysiser s = new SyntaxAnalysiser(scanner.tokenList);
+            SyntaxClass.SyntaxTreeNode? syntaxTreeNode = s.Parse();
+            if (syntaxTreeNode != null) {
+                String formatCode = syntaxTreeNode.GenerateCode(0, null);
+                CodeBox.Text = formatCode;
+            }
+
+        }
     }
 }

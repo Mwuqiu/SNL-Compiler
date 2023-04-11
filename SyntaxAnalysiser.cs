@@ -657,7 +657,11 @@ namespace CompilationPrinciple {
 
         public SyntaxTreeNode StmList() {
             SyntaxTreeNode t = Stm();
-            t.sibling = StmMore();
+            if(t == null) {
+
+            } else {
+                t.sibling = StmMore();
+            }
             return t;
         }
         public SyntaxTreeNode StmMore() {
