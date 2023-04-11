@@ -131,58 +131,74 @@ namespace CompilationPrinciple {
                 t.attr.expAttr.varKind = VarKind.IdV;
                 return t;
             }
-            public void PrintTree(int space) {
-                for (int i = 0; i < space; i++)
+            public String PrintTree(int space) {
+                String res = "";
+                for (int i = 0; i < space; i++) {
+                    res += " ";
                     Console.Write(" ");
+                }
                 Console.Write(Enum.GetName(typeof(NodeKind), nodeKind) + "  ");
+                res += Enum.GetName(typeof(NodeKind), nodeKind) + "  ";
+
                 switch (nodeKind) {
                     case NodeKind.DecK:
                         Console.Write(Enum.GetName(typeof(DecKind), decKind) + "  ");
+                        res += Enum.GetName(typeof(DecKind), decKind) + "  ";
                         break;
                     case NodeKind.StmtK:
                         Console.Write(Enum.GetName(typeof(StmtKind), stmtKind) + "  ");
+                        res += Enum.GetName(typeof(StmtKind), stmtKind) + "  ";
                         break;
                     case NodeKind.ExpK:
                         Console.Write(Enum.GetName(typeof(ExpKind), expKind) + "  ");
+                        res += Enum.GetName(typeof(ExpKind), expKind) + "  ";
                         break;
                 }
 
                 if (nodeKind == NodeKind.DecK && decKind == DecKind.IdK) {
                     Console.Write(typeName + "  ");
+                    res += typeName + "  ";
                 }
 
                 for (int i = 0; i < idnum; i++) {
                     Console.Write(name[i] + "  ");
+                    res += name[i] + "  ";
                 }
                 if (attr != null) {
                     if (attr.arrayAttr != null) {
                         Console.Write(attr.arrayAttr);
+                        res += attr.arrayAttr;
                     }
                     if (attr.procAttr != null) {
                         Console.Write(attr.procAttr);
+                        res += attr.procAttr;
                     }
                     if (attr.expAttr != null) {
                         switch (expKind) {
                             case ExpKind.OpK:
                                 Console.Write(attr.expAttr.op + "  ");
+                                res += attr.expAttr.op + "  ";
                                 break;
                             case ExpKind.ConstK:
                                 Console.Write(attr.expAttr.val + "  ");
+                                res += attr.expAttr.val + "  ";
                                 break;
                             case ExpKind.IdK:
                                 Console.Write(Enum.GetName(typeof(VarKind), attr.expAttr.varKind) + "  ");
+                                res += Enum.GetName(typeof(VarKind), attr.expAttr.varKind) + "  ";
                                 break;
                         }
                     }
                 }
 
                 Console.WriteLine();
+                res += "\r\n";
                 for (int i = 0; i < 3; i++) {
                     if (child[i] != null) {
                         if (child[i].nodeKind == NodeKind.Error) {
                             child[i] = null;
                         } else {
-                            child[i].PrintTree(space + 4);
+                            res += child[i].PrintTree(space + 4);
                         }
                     }
                 }
@@ -190,9 +206,10 @@ namespace CompilationPrinciple {
                     if (sibling.nodeKind == NodeKind.Error) {
                         sibling = null;
                     } else {
-                        sibling.PrintTree(space);
+                        res += sibling.PrintTree(space);
                     }
                 }
+                return res;
             }
             public void deepCopy(SyntaxTreeNode currentNode) {
                 if (this.child[0] == null) {

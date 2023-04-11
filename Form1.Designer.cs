@@ -106,6 +106,7 @@
             this.Controls.Add(this.MessageBox);
             this.Controls.Add(this.CodeBox);
             this.Controls.Add(this.LogoLabel);
+            this.MinimumSize = new System.Drawing.Size(1400, 900);
             this.Name = "Form1";
             this.Text = "Form1";
             this.ResumeLayout(false);
