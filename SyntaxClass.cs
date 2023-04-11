@@ -332,7 +332,7 @@ namespace CompilationPrinciple {
                                     case DecKind.ArrayK:
                                         Debug.Assert(attr != null && attr.arrayAttr != null);
                                         String arr = attr.arrayAttr.low + ".." + attr.arrayAttr.up;
-                                        res += "array[" + arr + "] of " + attr.arrayAttr.childType + " " + PrintName();
+                                        res += "array[" + arr + "] of " + attr.arrayAttr.convertTypeToName() + " " + PrintName();
                                         Console.Write("array[" + arr + "] of " + attr.arrayAttr.convertTypeToName() + " " + PrintName());
                                         break;
                                     case DecKind.CharK:
@@ -437,15 +437,15 @@ namespace CompilationPrinciple {
                         switch (stmtKind) {
                             case StmtKind.IfK:
                                 Console.Write("if ");
-                                String tmp = child[0].GenerateCode(0, this);
+                                res += "if ";
+                                res += child[0].GenerateCode(0, this);
                                 Console.Write(" then");
-                                res += "if " + tmp + " then";
+                                res += " then";
                                 c = child[1];
                                 if(c != null) {
                                     while(c != null) {
-                                        Console.Write("\n");
-                                        res += "\n";
-                                        c.GenerateCode(tab + 1, this);
+                                        Console.WriteLine();
+                                        res += "\r\n" + c.GenerateCode(tab + 1, this);
                                         if(c.sibling != null) {
                                             Console.Write(";");
                                             res += ";";
@@ -458,9 +458,8 @@ namespace CompilationPrinciple {
                                     Console.Write("\r\n" + tabSpace + "else");
                                     res += "\r\n" +tabSpace + "else";
                                     while (c != null) {
-                                        Console.Write("\n");
-                                        res += "\n";
-                                        c.GenerateCode(tab + 1, this);
+                                        Console.WriteLine();
+                                        res += "\r\n" + c.GenerateCode(tab + 1, this);
                                         if (c.sibling != null) {
                                             Console.Write(";");
                                             res += ";";
@@ -485,6 +484,7 @@ namespace CompilationPrinciple {
                                     }
                                     c = c.sibling;
                                 }
+                                res += "\r\n" + tabSpace + "endwh";
                                 Console.Write("\r\n" + tabSpace + "endwh");
                                 break;
                             case StmtKind.AssignK:
@@ -505,8 +505,10 @@ namespace CompilationPrinciple {
                             case StmtKind.CallK:
                                 res += child[0].GenerateCode(0, this);
                                 Console.Write("(");
+                                res += "(";
                                 res += child[1].GenerateCode(0, this);
                                 Console.Write(")");
+                                res += ")";
                                 break;
                             case StmtKind.ReturnK:
                                 break;
