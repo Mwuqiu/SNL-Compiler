@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "IVyduAyEqrWubhNIHbatzoY/5dw127E9J7oz6WOszsg3ax57xNZ3hFAjPblYneRZyomM6NE/EMH4L+QaB/yVyA==",
+  "dgSpecHash": "HKvBJ8iTcIRU4RVxuStBF7/diJNJKtJ+P2HOi0USnwLHiQUio8zaZvGFzkxAUZ+SeMteeo4r/rP4vyKiWAqFiw==",
   "success": true,
   "projectFilePath": "D:\\Projects\\SNL-Compiler\\CompilationPrinciple.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\zxx16\\.nuget\\packages\\microsoft.windows.sdk.net.ref\\10.0.17763.27\\microsoft.windows.sdk.net.ref.10.0.17763.27.nupkg.sha512"
+  ],
   "logs": []
 }
