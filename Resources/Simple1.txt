@@ -2,6 +2,11 @@ program pp
 var
 	integer i, num;
 begin
+	if i < num.i then
+		i := 1
+	else
+		i := 0
+	fi;
 	while i<num+1 do
 		write(a[i]);
 		i := i+1

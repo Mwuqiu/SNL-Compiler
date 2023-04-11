@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualBasic.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -58,6 +59,19 @@ namespace CompilationPrinciple {
                     public override string ToString() {
                         return low + "  " + up + "  " + childType;
                     }
+                    public String convertTypeToName() {
+                        if (childType == null)
+                            return "";
+                        switch (childType) {
+                            case "IntegerK":
+                                return "integer";
+                            case "ArrayK":
+                                return "array";
+                            case "CharK":
+                                return "char";
+                        }
+                        return "ERROR";
+                    }
                     //记录数组的成员类型
                 }
                 public class ProcAttr {
@@ -93,6 +107,7 @@ namespace CompilationPrinciple {
                     public string? type;
                     //记 录 语 法 树 节 点 的 检 查 类 型 ， 取 值 Void,
                     //Integer,Boolean,为类型检查 ExpType 类型。
+
                 }
                 public ArrayAttr? arrayAttr;
                 public ProcAttr? procAttr;
@@ -128,14 +143,15 @@ namespace CompilationPrinciple {
                     expKind = ExpKind.IdK,
                     attr = new Attr("exp")
                 };
+                Debug.Assert(t.attr.expAttr != null);
                 t.attr.expAttr.varKind = VarKind.IdV;
                 return t;
             }
-            public String PrintTree(int space) {
+            public String PrintTree(int tab) {
                 String res = "";
-                for (int i = 0; i < space; i++) {
-                    res += " ";
-                    Console.Write(" ");
+                for (int i = 0; i < tab; i++) {
+                    res += "\t";
+                    Console.Write("\t");
                 }
                 Console.Write(Enum.GetName(typeof(NodeKind), nodeKind) + "  ");
                 res += Enum.GetName(typeof(NodeKind), nodeKind) + "  ";
@@ -198,7 +214,7 @@ namespace CompilationPrinciple {
                         if (child[i].nodeKind == NodeKind.Error) {
                             child[i] = null;
                         } else {
-                            res += child[i].PrintTree(space + 4);
+                            res += child[i].PrintTree(tab + 1);
                         }
                     }
                 }
@@ -206,12 +222,276 @@ namespace CompilationPrinciple {
                     if (sibling.nodeKind == NodeKind.Error) {
                         sibling = null;
                     } else {
-                        res += sibling.PrintTree(space);
+                        res += sibling.PrintTree(tab);
                     }
                 }
                 return res;
             }
-            public void deepCopy(SyntaxTreeNode currentNode) {
+            public String GenerateCode(int tab, SyntaxTreeNode? fa) {
+                String res = "";
+                String tabSpace = "";
+                for (int i = 0; i < tab; i++) {
+                    tabSpace += "    ";
+                }
+                res += tabSpace;
+                Console.Write(tabSpace);
+                SyntaxTreeNode? c = null;
+                switch (nodeKind) {
+                    case NodeKind.ProK:
+                        for(int i = 0; i < 3; i++) {
+                            if (i != 0) {
+                                res += "\r\n";
+                                Console.WriteLine();
+                            }
+                            if (child[i] != null) {
+                                res += child[i].GenerateCode(0, this);
+                            }
+                        }
+                        res += ".";
+                        Console.Write(".");
+                        break;
+
+                    case NodeKind.PheadK:
+                        res += "program " + name[0];
+                        Console.Write("program " + name[0]);
+                        break;
+                    case NodeKind.TypeK:
+                        res += "type";
+                        Console.WriteLine("type");
+                        res += child[0].GenerateCode(tab + 1, this);
+                        break;
+                    case NodeKind.VarK:
+                        res += "var\r\n";
+                        Console.WriteLine("var");
+                        res += child[0].GenerateCode(tab + 1, this);
+                        break;
+                    case NodeKind.DecK:
+                        Debug.Assert(fa != null);
+                        switch (fa.nodeKind) {
+                            case NodeKind.TypeK:
+                                break;
+                            case NodeKind.VarK:
+                            case NodeKind.DecK:
+                            case NodeKind.ProcDecK:
+                                // 函数参数列表中的变参
+                                if(fa.nodeKind == NodeKind.ProcDecK && attr != null && attr.procAttr != null && attr.procAttr.paramt == ProcAttr.ParamType.Varparamtype) {
+                                    res += "var ";
+                                    Console.Write("var "); 
+                                }
+                                switch (decKind) {
+                                    case DecKind.ArrayK:
+                                        Debug.Assert(attr.arrayAttr != null);
+                                        String arr = attr.arrayAttr.low + ".." + attr.arrayAttr.up;
+                                        res += "array[" + arr + "] of " + attr.arrayAttr.childType + " " + PrintName();
+                                        Console.Write("array[" + arr + "] of " + attr.arrayAttr.convertTypeToName() + " " + PrintName());
+                                        break;
+                                    case DecKind.CharK:
+                                        res += "char " + PrintName();
+                                        Console.Write("char " + PrintName());
+                                        break;
+                                    case DecKind.IntegerK:
+                                        res += "integer " + PrintName();
+                                        Console.Write("integer " + PrintName());
+                                        break;
+                                    case DecKind.RecordK:
+                                        res += "record";
+                                        Console.Write("record");
+                                        /*bool flag = false
+                                        if(fa.nodeKind != NodeKind.ProcDecK) {
+                                            res += "\n";
+                                            flag = true
+                                        }*/
+                                        break;
+                                    case DecKind.IdK:
+                                        res += typeName + " " + PrintName();
+                                        Console.Write(typeName +  " " + PrintName());
+                                        break;
+                                }
+                                if(fa.nodeKind != NodeKind.ProcDecK) {
+                                    res += ";";
+                                    Console.Write(";");
+                                    // 正常语句, 非参数列表
+                                }
+                                break;
+                        }
+                        break;
+
+                   case NodeKind.ProcDecK:
+                        res += "procedure " + name[0] + "(";
+                        Console.Write("procedure " + name[0] + "(");
+                        c = child[0];
+                        if(c != null) {
+                            if (c.nodeKind == NodeKind.DecK) {
+                                while(c != null) {
+                                    res += c.GenerateCode(0, this);
+                                    if (c.sibling == null) {
+                                        res += ");";
+                                        Console.Write(");");
+                                    }
+                                    else {
+                                        res += c.sibling.GenerateCode(0, this);
+                                        res += ";";
+                                        Console.Write(";");
+                                    }
+                                    c = c.sibling;
+                                }
+                            }else {
+                                res += ");";
+                                Console.Write(");");
+                            }
+                        } 
+                        for(int i= 1; i < 3; i++) {
+                            Console.Write("\r\n");
+                            res += "\r\n" + child[i].GenerateCode(tab + 1, this);
+                        }
+                        break;
+                    case NodeKind.StmLK:
+                        res += "begin";
+                        Console.Write("begin");
+                        c = child[0];
+                        if(c != null) {
+                            while(c != null) {
+                                Console.Write("\r\n");
+                                res += "\r\n" + c.GenerateCode(tab + 1, this);
+                                if(c.sibling != null) {
+                                    Console.Write(";");
+                                    res += ";";
+                                }
+                                c = c.sibling;
+                            }
+                        }
+                        res += "\r\n" + tabSpace + "end";
+                        Console.Write("\r\n" + tabSpace + "end");
+                        break;
+                    case NodeKind.StmtK:
+                        switch (stmtKind) {
+                            case StmtKind.IfK:
+                                Console.Write("if ");
+                                String tmp = child[0].GenerateCode(0, this);
+                                Console.Write(" then");
+                                res += "if " + tmp + " then";
+                                c = child[1];
+                                if(c != null) {
+                                    while(c != null) {
+                                        Console.Write("\n");
+                                        res += "\n";
+                                        c.GenerateCode(tab + 1, this);
+                                        if(c.sibling != null) {
+                                            Console.Write(";");
+                                            res += ";";
+                                        }
+                                        c = c.sibling;
+                                    }
+                                }
+                                c = child[2];
+                                if (c != null) {
+                                    Console.Write("\r\n" + tabSpace + "else");
+                                    res += "\r\n" +tabSpace + "else";
+                                    while (c != null) {
+                                        Console.Write("\n");
+                                        res += "\n";
+                                        c.GenerateCode(tab + 1, this);
+                                        if (c.sibling != null) {
+                                            Console.Write(";");
+                                            res += ";";
+                                        }
+                                        c = c.sibling;
+                                    }
+                                }
+                                break;
+                            case StmtKind.WhileK:
+                                break;
+                            case StmtKind.AssignK:
+                                break;
+                            case StmtKind.ReadK:
+                                break;
+                            case StmtKind.WriteK:
+                                break;
+                            case StmtKind.CallK:
+                                break;
+                            case StmtKind.ReturnK:
+                                break;
+                        }
+                        break;
+                    case NodeKind.ExpK:
+                        switch (expKind) {
+                            case ExpKind.OpK:
+                                SyntaxTreeNode ls = child[0];
+                                SyntaxTreeNode rs = child[1];
+                                String l = "", r = "";
+                                if (LsonNeedParen()) {
+                                    Console.Write("(");
+                                    res += "(" + ls.GenerateCode(0, this) + ")";
+                                    Console.Write(")");
+                                } else {
+                                    res += ls.GenerateCode(0, this);
+                                }
+                                res += attr.expAttr.op;
+                                Console.Write(attr.expAttr.op);
+                                if (RsonNeedParen()) {
+                                    Console.Write("(");
+                                    res += "(" + rs.GenerateCode(0, this) + ")";
+                                    Console.Write(")");
+                                } else {
+                                    res += rs.GenerateCode(0, this);
+                                }
+                                break;
+                            case ExpKind.ConstK:
+                                break;
+                            case ExpKind.IdK:
+                                switch (attr.expAttr.varKind) {
+                                    case VarKind.IdV:
+                                        res += name[0];
+                                        Console.Write(name[0]);
+                                        break;
+                                    case VarKind.ArrayMembV:
+                                        Console.Write(name[0] + "[");
+                                        res += name[0] + "[" + child[0].GenerateCode(0, this) + "]";
+                                        Console.Write("]");
+                                        break;
+                                    case VarKind.FieldMembV:
+                                        Console.Write(name[0] + ".");
+                                        res += name[0] + "." + child[0].GenerateCode(0, this);
+                                        break;
+                                }
+                                break;
+                        }
+                        break;
+                }
+                if(fa != null && fa.nodeKind != NodeKind.ProcDecK && sibling != null) {
+                    Console.WriteLine();
+                    res += "\r\n" + sibling.GenerateCode(tab, fa);
+                }
+                return res;
+
+            }
+
+            public String PrintName() {
+                String res = name[0];
+                for (int i = 1;  i < idnum; i++)
+                    res += ", " + name[i] ;
+                return res;
+            }
+            public bool LsonNeedParen() {
+                if(expKind == ExpKind.OpK && child[0].expKind == ExpKind.OpK) {
+                    bool flag1 = attr.expAttr.op is "*" or "/";
+                    bool flag2 = child[0].attr.expAttr.op is "+" or "*";
+                    return flag1 && flag2;
+                }
+                return false;
+            }
+            public bool RsonNeedParen() {
+                if (expKind == ExpKind.OpK && child[1].expKind == ExpKind.OpK) {
+                    String op1 = attr.expAttr.op, op2 = attr.expAttr.op;
+                    if (op1 == "*")
+                        return op2 is "+" or "-";
+                    if (op1 == "*")
+                        return op2 is "+" or "-";
+                    return op1 == "*";
+                }
+                return false;
+            }
+            public void DeepCopy(SyntaxTreeNode currentNode) {
                 if (this.child[0] == null) {
                     this.child = currentNode.child;
                 }

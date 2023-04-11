@@ -998,7 +998,7 @@ namespace CompilationPrinciple {
                     Match(LexType.DOT);
                     t.child[0] = FieldVar();
 
-                    t.attr.expAttr.varKind = ExpAttr.VarKind.ArrayMembV;
+                    t.attr.expAttr.varKind = ExpAttr.VarKind.FieldMembV;
                     t.child[0].attr.expAttr.varKind = ExpAttr.VarKind.IdV;
                     break;
                 default:
