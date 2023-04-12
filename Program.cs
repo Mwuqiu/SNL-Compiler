@@ -7,13 +7,13 @@ namespace CompilationPrinciple {
         static void Main() {
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
-            /*            ApplicationConfiguration.Initialize();
-                        Application.Run(new Form1());*/
-            Scanner scanner = new Scanner();
+            ApplicationConfiguration.Initialize();
+            Application.Run(new Form1());
+           /* Scanner scanner = new Scanner(Properties.Resources.Simple2);
             scanner.DirectSteeringMethod();
             scanner.outPutTokenList();
             bool ll1SyntaxAnalysis = true ;
-            if (ll1SyntaxAnalysis) {
+            if (!ll1SyntaxAnalysis) {
                 LL1SyntaxAnalysis ll1 = new LL1SyntaxAnalysis(scanner.tokenList);
                 ll1.parse();
                 ll1.root.PrintTree(0);

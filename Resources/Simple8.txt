@@ -3,7 +3,7 @@ var
 	integer temp;
 	integer i, j, num;
 	array[1..20]of integer a;
-procedure q(integer num);
+procedure q(integer num; record integer p1; integer p2; end rr);
 	var
 		integer i, j, k;
 		integer t;

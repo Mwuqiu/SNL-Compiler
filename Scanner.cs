@@ -7,10 +7,11 @@ using System.Windows.Forms;
 
 namespace CompilationPrinciple {
     public class Scanner {
-        public Scanner() {
+        public Scanner(String code) {
             lineNumber = 0;
             getWorng = false;
             tokenList = new List<Token>();
+            CodeText = code;
         }
 
         static bool IsChar(char c) => (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
@@ -45,7 +46,9 @@ namespace CompilationPrinciple {
             String line;
             try {
                 //StreamReader sr = new StreamReader(Properties.Resources.SimpleExample);
-                String[] strs = Properties.Resources.Simple5.Split("\r\n");
+                //String[] strs = Properties.Resources.Simple7.Split("\r\n");
+                String[] strs = CodeText.Split("\r\n");
+
                 //Read the first line of text
                 //line = sr.ReadLine();
                 for (int i = 0; i < strs.Length; i++) {
@@ -141,12 +144,12 @@ namespace CompilationPrinciple {
                                     index += 2;
                                 } else {
                                     //member symbols
-                                    tokenList.Add(new Token { line = lineNumber,column = index, lex = LexType.DOT, sem = ".（member symbols flag)" });
+                                    tokenList.Add(new Token { line = lineNumber,column = index, lex = LexType.DOT, sem = "." });
                                     index++;
                                 }
                             } else {
                                 // end-of-program flag
-                                tokenList.Add(new Token { line = lineNumber,column = index, lex = LexType.DOT, sem = ".（end-of-program flag)" });
+                                tokenList.Add(new Token { line = lineNumber,column = index, lex = LexType.DOT, sem = "." });
                                 index++;
                             }
                             break;
@@ -191,14 +194,23 @@ namespace CompilationPrinciple {
 
         }
 
-        public void outPutTokenList() {
+        public String outPutTokenList() {
+            String res = String.Format("{0,-5} {1, -5} {2, -13} {3, -10}\r\n", "Line", "Col", "Name", "Type");
+            for (int i = 0; i < 38; i++)
+                res += "-";
+            res += "\r\n";
             for (int i = 0; i < tokenList.Count; i++) {
                 Console.WriteLine(tokenList[i].line + "  " + tokenList[i].column + "   " + Enum.GetName(typeof(LexType), tokenList[i].lex) + "  " + tokenList[i].sem);
+                res += String.Format("{0,-5} {1, -5} {2, -13} {3, -15}", tokenList[i].line, tokenList[i].column, Enum.GetName(typeof(LexType), tokenList[i].lex) , tokenList[i].sem);
+                res += "\r\n";
             }
+            Console.Write(res);
+            return res;
         }
 
         private int lineNumber;
         bool getWorng;
         public List<Token> tokenList { get; set; }
+        String CodeText;
     }
 }

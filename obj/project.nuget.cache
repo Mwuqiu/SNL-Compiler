@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "eIjNMoRvL8aOUe21qeswVsC3RMVSgk0zW36fwHvZilrRvZBSzwwdedfQiKjhLDlhHgRr1UgbOtNk2CX2rdLeqA==",
+  "dgSpecHash": "HKvBJ8iTcIRU4RVxuStBF7/diJNJKtJ+P2HOi0USnwLHiQUio8zaZvGFzkxAUZ+SeMteeo4r/rP4vyKiWAqFiw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\rog\\Desktop\\编译原理\\CompilationPrinciple\\SNL-Compiler-Designs\\CompilationPrinciple.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "D:\\Projects\\SNL-Compiler\\CompilationPrinciple.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\zxx16\\.nuget\\packages\\microsoft.windows.sdk.net.ref\\10.0.17763.27\\microsoft.windows.sdk.net.ref.10.0.17763.27.nupkg.sha512"
+  ],
   "logs": []
 }
