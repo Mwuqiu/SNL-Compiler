@@ -45,7 +45,7 @@ namespace CompilationPrinciple {
             String line;
             try {
                 //StreamReader sr = new StreamReader(Properties.Resources.SimpleExample);
-                String[] strs = Properties.Resources.Simple7.Split("\r\n");
+                String[] strs = Properties.Resources.Simple5.Split("\r\n");
                 //Read the first line of text
                 //line = sr.ReadLine();
                 for (int i = 0; i < strs.Length; i++) {

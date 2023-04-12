@@ -17,11 +17,15 @@ namespace CompilationPrinciple {
                 LL1SyntaxAnalysis ll1 = new LL1SyntaxAnalysis(scanner.tokenList);
                 ll1.parse();
                 ll1.root.PrintTree(0);
+                SemanticAnalysiser semanticAnalysiser = new SemanticAnalysiser();
+                semanticAnalysiser.analyze(ll1.root);
+                semanticAnalysiser.PrintSymbTable();
             } else {
                 SyntaxAnalysiser s = new SyntaxAnalysiser(scanner.tokenList);
                 SyntaxClass.SyntaxTreeNode? syntaxTreeNode = s.Parse();
                 if (syntaxTreeNode != null) syntaxTreeNode.PrintTree(0);
-            }           
+            }
+            
         }
     }
 }
