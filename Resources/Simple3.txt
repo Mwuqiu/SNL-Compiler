@@ -14,6 +14,12 @@ r2 = record
 p2 = integer;
 r3 = r2;
 p3 = p2;
+var 
+record 
+	integer x;
+	integer y;
+end rr1;
+p1 pp1;
 begin
-	read(p1)
+	read(pp1)
 end.

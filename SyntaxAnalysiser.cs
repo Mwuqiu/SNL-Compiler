@@ -657,7 +657,11 @@ namespace CompilationPrinciple {
 
         public SyntaxTreeNode StmList() {
             SyntaxTreeNode t = Stm();
-            t.sibling = StmMore();
+            if(t == null) {
+
+            } else {
+                t.sibling = StmMore();
+            }
             return t;
         }
         public SyntaxTreeNode StmMore() {
@@ -998,7 +1002,7 @@ namespace CompilationPrinciple {
                     Match(LexType.DOT);
                     t.child[0] = FieldVar();
 
-                    t.attr.expAttr.varKind = ExpAttr.VarKind.ArrayMembV;
+                    t.attr.expAttr.varKind = ExpAttr.VarKind.FieldMembV;
                     t.child[0].attr.expAttr.varKind = ExpAttr.VarKind.IdV;
                     break;
                 default:

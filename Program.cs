@@ -9,19 +9,22 @@ namespace CompilationPrinciple {
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
             Application.Run(new Form1());
-            /*Scanner scanner = new Scanner();
+           /* Scanner scanner = new Scanner(Properties.Resources.Simple2);
             scanner.DirectSteeringMethod();
             scanner.outPutTokenList();
             bool ll1SyntaxAnalysis = true ;
-            if (ll1SyntaxAnalysis) {
+            if (!ll1SyntaxAnalysis) {
                 LL1SyntaxAnalysis ll1 = new LL1SyntaxAnalysis(scanner.tokenList);
                 ll1.parse();
                 ll1.root.PrintTree(0);
             } else {
                 SyntaxAnalysiser s = new SyntaxAnalysiser(scanner.tokenList);
                 SyntaxClass.SyntaxTreeNode? syntaxTreeNode = s.Parse();
-                if (syntaxTreeNode != null) syntaxTreeNode.PrintTree(0);
-            }   */
+                if (syntaxTreeNode != null) {
+                    syntaxTreeNode.PrintTree(0);
+                    syntaxTreeNode.GenerateCode(0, null);
+                }
+            }  */
         }
     }
 }

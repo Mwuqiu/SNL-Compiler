@@ -4,5 +4,5 @@ type
 var
 	t V1;
 begin
-	V1 := V1+10;
+	V1 := V1+10
 end.

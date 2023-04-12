@@ -793,7 +793,7 @@ namespace CompilationPrinciple {
                             //Pop up the bottom of the stack flag
                             opStack.Pop();
                             currentP = syntaxTreeStack.Pop();
-                            currentP.deepCopy(numStack.Pop());
+                            currentP.DeepCopy(numStack.Pop());
 
 
                             /*                            if (getExpresult2 == true) {
