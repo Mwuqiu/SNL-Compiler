@@ -45,7 +45,11 @@ namespace CompilationPrinciple
             ll1.parse();
             syntaxTreeLL = ll1.root.PrintTree(0);
 
-            ResultForm resultForm = new ResultForm(tokenList, syntaxTreeRD, syntaxTreeLL);
+            SemanticAnalysiser semanticAnalysiser = new SemanticAnalysiser();
+            semanticAnalysiser.analyze(ll1.root);
+            List<List<String>> symbTable = semanticAnalysiser.PrintSymbTable();
+
+            ResultForm resultForm = new ResultForm(tokenList, syntaxTreeRD, syntaxTreeLL, symbTable);
             resultForm.Show();
         }
 

@@ -11,12 +11,27 @@ using System.Windows.Forms;
 
 namespace CompilationPrinciple {
     public partial class ResultForm : Form {
-        public ResultForm(String tokenList, String syntaxTreeRD, String syntaxTreeLL) {
+        public ResultForm(String tokenList, String syntaxTreeRD, String syntaxTreeLL, List<List<String>> symbTable) {
             InitializeComponent();
             TokenBox.Text = tokenList;
             Resize += on_form_resize;
             SyntaxBoxRD.Text = syntaxTreeRD;
             SyntaxBoxLL.Text = syntaxTreeLL;
+
+            for (int i = 0; i < symbTable.Count; i++) {
+                List<String> line = symbTable[i];
+                ListViewItem item = new ListViewItem(line[0], 0);
+                item.Checked = true;
+                for(int j = 1; j < 7; j++) {
+                    if (line[j] != null) {
+                        item.SubItems.Add(line[j]);
+                    } else {
+                        item.SubItems.Add("");
+                    }
+                }
+                SemTable.Items.Add(item);
+            }
+
             on_form_resize(null, null);
         }
 
@@ -35,6 +50,15 @@ namespace CompilationPrinciple {
             SemTable.Location = new Point(SemTable.Location.X, SemLabel.Location.Y + SemLabel.Height);
             SemTable.Width = SyntaxBoxLL.Location.X + SyntaxBoxLL.Width - SemTable.Location.X;
             SemTable.Height = Height - SemTable.Location.Y - 60;
+
+            foreach (ColumnHeader column in SemTable.Columns) {
+                column.Width = (SemTable.Width - 30) / 7;
+
+            }
+        }
+
+        private void ResultForm_Load(object sender, EventArgs e) {
+
         }
     }
 }

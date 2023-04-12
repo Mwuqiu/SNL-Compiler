@@ -800,39 +800,50 @@ namespace CompilationPrinciple {
             boolPtr = NewTy(TypeKind.boolTy);
         }
 
-        public void PrintSymbTable() {
+        public List<List<String>> PrintSymbTable() {
             int lev = 0;
+            List<List<String>> list = new List<List<String>>();
             while (scope[lev] != null) {
-                PrintOneLayer(lev);
+                PrintOneLayer(list, lev);
                 lev++;
             }
+            return list;
         }
 
-        public void PrintOneLayer(int lev) {
+        public void PrintOneLayer(List<List<String>> list, int lev) {
             SymTableItem t = scope[lev];
             Console.WriteLine("-------SymbTable  in level " + lev + " ---------");
             while (t != null) {
+                List<String> line = new List<String>(new String[7]);
+                line[0] = lev.ToString();
                 Console.Write(t.idname + "     ");
+                line[1] = t.idname;
                 AttributeIR attribute = t.attrIR;
                 if (attribute != null) {
                     if(attribute.idType == null) {
                         Console.Write("undefined  ");
+                        line[3] = "undefined";
                     } else {
                         switch (attribute.idType.typeKind) {
                             case TypeKind.intTy:
                                 Console.Write("intTy  ");
+                                line[3] = "intTy";
                                 break;
                             case TypeKind.charTy:
                                 Console.Write("charTy  ");
+                                line[3] = "charTy";
                                 break;
                             case TypeKind.arrayTy:
                                 Console.Write("arrayTy  ");
+                                line[3] = "arrayTy";
                                 break;
                             case TypeKind.recordTy:
                                 Console.Write("recordTy  ");
+                                line[3] = "recordTy";
                                 break;
                             default:
                                 Console.Write("error  type!  ");
+                                line[3] = "error type!";
                                 break;
                         }
                     }                    
@@ -840,30 +851,38 @@ namespace CompilationPrinciple {
                 switch (attribute.typeKind) {
                     case IdKind.typeKind:
                         Console.Write("typekind  ");
+                        line[2] = "typekind";
                         break;
                     case IdKind.varKind:
                         Console.Write("varkind  ");
+                        line[2] = "varkind";
                         Console.Write("Level " + attribute.varAttr.level + "   ");
                         Console.Write("Offset " + attribute.varAttr.off + "   ");
+                        line[5] = attribute.varAttr.off.ToString();
                         switch (attribute.varAttr.accessKind) {
                             case AccessKind.dir:
                                 Console.Write("dir  ");
+                                line[6] = "dir";
                                 break;
                             case AccessKind.indir:
                                 Console.Write("indir  ");
+                                line[6] = "indir";
                                 break;
                         }
                         break;
                     case IdKind.procKind:
                         Console.Write("funckind  ");
+                        line[2] = "funckind";
                         Console.Write("level  " + attribute.procAttr.level);
                         Console.Write("Noff  " + attribute.procAttr.nOff);
+                        line[4] = attribute.procAttr.nOff.ToString();
                         break;
                     default : Console.Write("error  ");
                         break;
                 }
                 t = t.nextItem;
                 Console.WriteLine("");
+                list.Add(line);
             }
         }
     }

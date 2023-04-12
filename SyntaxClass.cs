@@ -63,11 +63,11 @@ namespace CompilationPrinciple {
                         if (childType == null)
                             return "";
                         switch (childType) {
-                            case "IntegerK":
+                            case DecKind.IntegerK:
                                 return "integer";
-                            case "ArrayK":
+                            case DecKind.ArrayK:
                                 return "array";
-                            case "CharK":
+                            case DecKind.CharK:
                                 return "char";
                         }
                         return "ERROR";
