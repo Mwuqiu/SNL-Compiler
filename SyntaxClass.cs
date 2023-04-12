@@ -44,7 +44,7 @@ namespace CompilationPrinciple {
             public string[] name;
             //字符串数组，数组成员是节点中的标志符的名字
 
-            // public addr table[]
+            public SymTableItem[] table;
             // TODO 标志符在符号表的入口
 
             public string? typeName;
@@ -55,19 +55,19 @@ namespace CompilationPrinciple {
                 public class ArrayAttr {
                     //记录数组类型的属性。
                     public int low, up;
-                    public string? childType;
+                    public DecKind childType;
                     public override string ToString() {
-                        return low + "  " + up + "  " + childType;
+                        return low + "  " + up + "  " + Enum.GetName(typeof(DecKind), childType);
                     }
                     public String convertTypeToName() {
                         if (childType == null)
                             return "";
                         switch (childType) {
-                            case "IntegerK":
+                            case DecKind.IntegerK:
                                 return "integer";
-                            case "ArrayK":
+                            case DecKind.ArrayK:
                                 return "array";
-                            case "CharK":
+                            case DecKind.CharK:
                                 return "char";
                         }
                         return "ERROR";
@@ -134,6 +134,7 @@ namespace CompilationPrinciple {
                 idnum = 0;
                 child = new SyntaxTreeNode[3];
                 name = new string[10];
+                table = new SymTableItem[10];
             }
             public SyntaxTreeNode(NodeKind n) : this() {
                 nodeKind = n;

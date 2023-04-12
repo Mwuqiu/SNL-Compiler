@@ -45,7 +45,11 @@ namespace CompilationPrinciple
             ll1.parse();
             syntaxTreeLL = ll1.root.PrintTree(0);
 
-            ResultForm resultForm = new ResultForm(tokenList, syntaxTreeRD, syntaxTreeLL);
+            SemanticAnalysiser semanticAnalysiser = new SemanticAnalysiser();
+            semanticAnalysiser.analyze(ll1.root);
+            List<List<String>> symbTable = semanticAnalysiser.PrintSymbTable();
+
+            ResultForm resultForm = new ResultForm(tokenList, syntaxTreeRD, syntaxTreeLL, symbTable);
             resultForm.Show();
         }
 
@@ -69,6 +73,10 @@ namespace CompilationPrinciple
                 String formatCode = syntaxTreeNode.GenerateCode(0, null);
                 CodeBox.Text = formatCode;
             }
+
+        }
+
+        private void Form1_Load(object sender, EventArgs e) {
 
         }
     }

@@ -6,52 +6,119 @@ using System.Threading.Tasks;
 
 namespace CompilationPrinciple {
 
-    public enum TypeKind {  intTy,charTy,arrayTy,recordTy,boolTy  }
+    public enum TypeKind { intTy, charTy, arrayTy, recordTy, boolTy}
 
-    public struct intPtr {
-        public intPtr() {
-            size = 1;
-            kind = TypeKind.intTy;
-        }
+    public enum IdKind { typeKind, varKind, procKind }
 
-        int size;
-        TypeKind kind;
+    public enum AccessKind { dir, indir }
+
+    public class IntPtr {
+        public int size { get; set; }
+        public TypeKind kind { get; set; }
     }
 
-    public struct charPtr {
-
-        public charPtr() { 
-            size= 1;
-            kind= TypeKind.charTy;
-        }
-
-        int size;
-        TypeKind kind;
+    public class CharPtr {
+        public int size { get; set; }
+        public TypeKind kind { get; set; }
     }
 
-    public struct arrayPtr { 
-        public arrayPtr(int size,TypeKind indexType,TypeKind elementType) {
-            this.size = size;
-            this.indexType = indexType;
-            this.elementType = elementType;
-            this.kind = TypeKind.arrayTy;
-        }
+    public class BoolPtr {
+        public int size { get; set; }
+        public TypeKind kind { get; set; }
+    }
+
+    public class ArrayPtr {
         int size;
         TypeKind kind;
         TypeKind indexType;
         TypeKind elementType;
     }
 
-    public struct recordPtr {
+    public class RecordPtr {
         int size;
         TypeKind kind;
-
+        List<FieldChain> recordBody;
     }
 
+    public class FieldChain {
+        public string id { get; set; }
+        public int off { get; set; }
+        public TypeIR unitType { get; set; }
+        public FieldChain next { get; set; }
+    }       
 
+    public class TypeIR {
 
+        public TypeIR() {
+            arrayAttr = new ArrayAttr();
+        }
 
+        public int size { get; set; }
+        public TypeKind typeKind { get; set; }
 
-    internal class SemanticSupporter {
+        public class ArrayAttr {
+            public TypeIR indexTy;
+            public TypeIR elementType;
+            public int low;
+            public int up;
+        }
+
+        public ArrayAttr arrayAttr;
+
+        public FieldChain next { get; set; }
+    }
+
+    public class ParamTable {
+        public SymTableItem entry { get; set; }
+        public ParamTable next { get; set; }
+
+        public ParamTable() {
+            entry = new SymTableItem();
+            next = null;
+        }
+    }
+
+    public class AttributeIR {      
+        
+        public AttributeIR() {
+            varAttr = new VarAttr();
+            procAttr = new ProcAttr();
+            idType = new TypeIR();
+        }
+
+        public class VarAttr {
+            public AccessKind accessKind;
+            public int level;
+            public int off;
+            public bool isParam;
+        }
+
+        public class ProcAttr {
+            public ParamTable param;
+            public int level;
+            public int code;
+            public int size;
+            public int mOff;      /*过程活动记录的大小*/
+            public int nOff;  	   /*sp到display表的偏移量*/
+        }
+
+        public VarAttr varAttr;
+        public ProcAttr procAttr;
+
+        public TypeIR idType; // int char bool array record
+        public IdKind typeKind;  // type var proc
+    }
+
+    public class SymTableItem {
+        public string testStr;
+        public string idname { get; set; }
+        public AttributeIR attrIR { get; set; }
+        public SymTableItem ? nextItem { get; set; }
+
+        public SymTableItem() {
+            attrIR = new AttributeIR();
+            idname = "";
+            nextItem = null;
+        }
     }
 }

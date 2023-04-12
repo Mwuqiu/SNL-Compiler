@@ -192,7 +192,7 @@ namespace CompilationPrinciple {
                         if(currentP.attr == null) {
                             currentP.attr = new SyntaxTreeNode.Attr("array");
                         }
-                        currentP.attr.arrayAttr.childType = "IntegerK";
+                        currentP.attr.arrayAttr.childType = DecKind.IntegerK;
                     } else {
                         currentP.decKind = DecKind.IntegerK;
                     }                    

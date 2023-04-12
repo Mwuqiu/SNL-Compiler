@@ -255,7 +255,7 @@ namespace CompilationPrinciple {
             Match(LexType.RMIDPAREN);
             Match(LexType.OF);
             BaseType(t);
-            t.attr.arrayAttr.childType = Enum.GetName(typeof(DecKind), t.decKind);
+            t.attr.arrayAttr.childType =  t.decKind;
             t.decKind = DecKind.ArrayK;
         }
         public void RecType(SyntaxTreeNode t) {
