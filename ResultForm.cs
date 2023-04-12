@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.Common;
 using System.Drawing;
 using System.Linq;
 using System.Reflection.Emit;
@@ -51,6 +52,8 @@ namespace CompilationPrinciple {
             SemTable.Width = SyntaxBoxLL.Location.X + SyntaxBoxLL.Width - SemTable.Location.X;
             SemTable.Height = Height - SemTable.Location.Y - 60;
 
+            if (Math.Abs(SemTable.Columns[0].Width - (SemTable.Width - 30) / 7) < 15)
+                return;
             foreach (ColumnHeader column in SemTable.Columns) {
                 column.Width = (SemTable.Width - 30) / 7;
 
