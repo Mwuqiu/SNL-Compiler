@@ -29,7 +29,7 @@ namespace CompilationPrinciple {
     public class SyntaxAnalysiser {
         public List<Token> tokenList;
         public int index;
-        public List<string> errorList;
+        public List<string> errorList { get; set; }
         public List<string> warningList;
         public SyntaxAnalysiser(List<Token> tokens) {
             tokenList = tokens;
@@ -69,7 +69,9 @@ namespace CompilationPrinciple {
                 Match(LexType.ENDFILE);
                 // 如果当前和ENDFILE匹配, 则正常结束.
                 // 否则报错
-                return t;
+                if(errorList.Count == 0)
+                    return t;
+                return null; 
             } catch (Exception e) {
                 errorList.Add(e.Message);
                 return null;

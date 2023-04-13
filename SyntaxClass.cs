@@ -352,10 +352,10 @@ namespace CompilationPrinciple {
                                             while (c != null) {
                                                 res += c.GenerateCode(tab + 1, this) + "\r\n";
                                                 Console.WriteLine();
-                                                if (c.sibling != null) {
+                                                /*if (c.sibling != null) {
                                                     Console.Write(";");
                                                     res += ";";
-                                                }
+                                                }*/
                                                 c = c.sibling;
                                             }
                                             res += tabSpace + "end " + PrintName();
@@ -413,7 +413,9 @@ namespace CompilationPrinciple {
                         } 
                         for(int i= 1; i < 3; i++) {
                             Console.Write("\r\n");
-                            res += "\r\n" + child[i].GenerateCode(tab + 1, this);
+                            if (child[i] != null) {
+                                res += "\r\n" + child[i].GenerateCode(tab + 1, this);
+                            }
                         }
                         break;
                     case NodeKind.StmLK:
@@ -586,7 +588,7 @@ namespace CompilationPrinciple {
             }
             public bool RsonNeedParen() {
                 if (expKind == ExpKind.OpK && child[1].expKind == ExpKind.OpK) {
-                    String op1 = attr.expAttr.op, op2 = attr.expAttr.op;
+                    String op1 = attr.expAttr.op, op2 = child[1].attr.expAttr.op;
                     if (op1 == "*")
                         return op2 is "+" or "-";
                     if (op1 == "*")
