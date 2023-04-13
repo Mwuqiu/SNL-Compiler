@@ -110,7 +110,6 @@ namespace CompilationPrinciple {
     }
 
     public class SymTableItem {
-        public string testStr;
         public string idname { get; set; }
         public AttributeIR attrIR { get; set; }
         public SymTableItem ? nextItem { get; set; }
@@ -119,6 +118,12 @@ namespace CompilationPrinciple {
             attrIR = new AttributeIR();
             idname = "";
             nextItem = null;
+        }
+
+        public void copyItem(SymTableItem item) {
+            this.idname = item.idname;
+            this.attrIR = item.attrIR;
+            this.nextItem = item.nextItem;
         }
     }
 }
