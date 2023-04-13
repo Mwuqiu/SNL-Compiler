@@ -16,8 +16,8 @@ namespace CompilationPrinciple {
             InitializeComponent();
             TokenBox.Text = tokenList;
             Resize += on_form_resize;
-            SyntaxBoxRD.Text = syntaxTreeRD;
-            SyntaxBoxLL.Text = syntaxTreeLL;
+            SyntaxBoxRD.Text = syntaxTreeRD.Replace("\t", new string(' ', 4));
+            SyntaxBoxLL.Text = syntaxTreeLL.Replace("\t", new string(' ', 4));
 
             for (int i = 0; i < symbTable.Count; i++) {
                 List<String> line = symbTable[i];

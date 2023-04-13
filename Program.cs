@@ -20,6 +20,8 @@ namespace CompilationPrinciple {
                 SemanticAnalysiser semanticAnalysiser = new SemanticAnalysiser();
                 semanticAnalysiser.analyze(ll1.root);
                 semanticAnalysiser.PrintSymbTable ();
+                ApplicationConfiguration.Initialize();
+                Application.Run(new Form1());
             } else {
                 SyntaxAnalysiser s = new SyntaxAnalysiser(scanner.tokenList);
                 SyntaxClass.SyntaxTreeNode? syntaxTreeNode = s.Parse();

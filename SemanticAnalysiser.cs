@@ -62,11 +62,12 @@ namespace CompilationPrinciple {
             AttributeIR attr = new AttributeIR();
             SymTableItem entry = new SymTableItem();
             attr.typeKind = IdKind.typeKind;
-            while (p != null) {                               
+            while (p != null) {                          
+                //attr.idType = TypeProcess(p, p.decKind);
                 Enter(ref present, attr, entry , p.name[0]);
                 if (present) {
                     Console.WriteLine("repetation declared!");
-                    entry = new SymTableItem();
+                    entry = null;
                 } else {
                     entry.attrIR.idType = TypeProcess(p, p.decKind);
                 }
@@ -590,7 +591,8 @@ namespace CompilationPrinciple {
                 cur.attrIR.procAttr.level = attr.procAttr.level;
                 cur.attrIR.procAttr.param = attr.procAttr.param;
             }
-            entry = cur;
+            entry.copyItem(cur);
+            //entry = cur;
         }
 
         public TypeIR TypeProcess(SyntaxTreeNode p,DecKind deckind) {
@@ -641,7 +643,7 @@ namespace CompilationPrinciple {
             if(present == false) {
                 entry = null;
             } else {
-                entry = findentry;
+                entry .copyItem( findentry);
             }
             return present;
         }
@@ -672,7 +674,7 @@ namespace CompilationPrinciple {
                 ptr0 = TypeProcess(p, DecKind.IntegerK);
                 ptr1 = TypeProcess(p, p.attr.arrayAttr.childType);
                 ptr = NewTy(TypeKind.arrayTy);
-                ptr.size = ((p.attr.arrayAttr.up) - ((p.attr.arrayAttr.low) + 1) * ptr1.size);
+                ptr.size = (p.attr.arrayAttr.up - p.attr.arrayAttr.low + 1) * ptr1.size;
                 ptr.arrayAttr.indexTy = ptr0;
                 ptr.arrayAttr.elementType = ptr1;
                 ptr.arrayAttr.low = p.attr.arrayAttr.low;
@@ -704,6 +706,9 @@ namespace CompilationPrinciple {
                 }
                 p = p.sibling;
             }
+
+            ptr.size = ptr2.off + ptr2.unitType.size;
+            ptr.next = body;
             return ptr;
         }
 
