@@ -81,10 +81,10 @@ namespace CompilationPrinciple
             SyntaxClass.SyntaxTreeNode? syntaxTreeNode = s.Parse();
             String syntaxTreeRD = "";
             if (syntaxTreeNode != null) {
-                errStr += "[SYNTAX NO ERROR.] \r\n";
+                errStr += "[SYNTAX NO ERROR.] \r\n\r\n";
                 syntaxTreeRD = syntaxTreeNode.PrintTree(0).Replace("\t", new string(' ', 4));
             } else {
-                errStr += "[SYNTAX ERROR!] \r\n";
+                errStr += "[SYNTAX ERROR!] \r\n\r\n";
                 foreach (string str in s.errorList) {
                     errStr += str + "\r\n";
                 }
@@ -97,12 +97,18 @@ namespace CompilationPrinciple
             ll1.parse();
             syntaxTreeLL = ll1.root.PrintTree(0).Replace("\t", new string(' ', 4));
 
+
+
             SemanticAnalysiser semanticAnalysiser = new SemanticAnalysiser();
             semanticAnalysiser.analyze(ll1.root);
             List<List<String>> symbTable = semanticAnalysiser.PrintSymbTable();
             
+
             ResultForm resultForm = new ResultForm(tokenList, syntaxTreeRD, syntaxTreeLL, symbTable);
             //ResultForm resultForm = new ResultForm(tokenList, syntaxTreeRD, "", new List<List<string>>());
+            errStr += "[SEMANTIC NO ERROR.]";
+            MessageBox.Text = errStr;
+
             resultForm.Show();
         }
 
