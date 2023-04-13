@@ -61,7 +61,15 @@ namespace CompilationPrinciple {
                 errorList.Add(msg);
                 index++;
             }
-
+        }
+        public void UnexceptedToken(int line, int col, Token token) {
+            errorList.Add("[Error] Type #3: Unexcepted token at line "
+                        + GetCurrent().line
+                        + ", col "
+                        + GetCurrent().column
+                        + " near word '" 
+                        + token.sem
+                        + "'.");
         }
         public SyntaxTreeNode? Parse() {
             try {
@@ -133,12 +141,7 @@ namespace CompilationPrinciple {
                 case LexType.BEGIN:
                     break;
                 default:
-                    errorList.Add("[Error] Type #3: Unexcepted token at line "
-                        + GetCurrent().line
-                        + ", col "
-                        + GetCurrent().column
-                        + ".");
-                    index++;
+                    UnexceptedToken(GetCurrent().line, GetCurrent().column, GetCurrent());
                     //读入下一个单词，跳过此单词 ?
                     break;
             }
@@ -190,11 +193,7 @@ namespace CompilationPrinciple {
                     Match(LexType.ID);
                     break;
                 default:
-                    errorList.Add("[Error] Type #3: Unexcepted token at line "
-                         + GetCurrent().line
-                         + ", col "
-                         + GetCurrent().column
-                         + ".");
+                    UnexceptedToken(GetCurrent().line, GetCurrent().column, GetCurrent());
                     index++;
                     //读入下一个单词  ?
                     break;
@@ -211,11 +210,7 @@ namespace CompilationPrinciple {
                     t.decKind = DecKind.CharK;
                     break;
                 default:
-                    errorList.Add("[Error] Type #3: Unexcepted token at line "
-                        + GetCurrent().line
-                        + ", col "
-                        + GetCurrent().column
-                        + ".");
+                    UnexceptedToken(GetCurrent().line, GetCurrent().column, GetCurrent());
                     index++;
                     // 读入下一个单词 ?
                     break;
@@ -231,11 +226,7 @@ namespace CompilationPrinciple {
                     RecType(t);
                     break;
                 default:
-                    errorList.Add("[Error] Type #3: Unexcepted token at line "
-                        + GetCurrent().line
-                        + ", col "
-                        + GetCurrent().column
-                        + ".");
+                    UnexceptedToken(GetCurrent().line, GetCurrent().column, GetCurrent());
                     index++;
                     // 读入下一个单词 ?
                     break;
@@ -297,11 +288,7 @@ namespace CompilationPrinciple {
                     p = FieldDecMore();
                     break;
                 default:
-                    errorList.Add("[Error] Type #3: Unexcepted token at line "
-                        + GetCurrent().line
-                        + ", col "
-                        + GetCurrent().column
-                        + ".");
+                    UnexceptedToken(GetCurrent().line, GetCurrent().column, GetCurrent());
                     index++;
                     //读入下一个单词 (?)
                     break;
@@ -325,11 +312,7 @@ namespace CompilationPrinciple {
                     IdList(t);
                     break;
                 default:
-                    errorList.Add("[Error] Type #3: Unexcepted token at line "
-                        + GetCurrent().line
-                        + ", col "
-                        + GetCurrent().column
-                        + ".");
+                    UnexceptedToken(GetCurrent().line, GetCurrent().column, GetCurrent());
                     index++;
                     //读入下一个单词 (?)
                     break;
@@ -346,11 +329,7 @@ namespace CompilationPrinciple {
                     t = FieldDecList();
                     break;
                 default:
-                    errorList.Add("[Error] Type #3: Unexcepted token at line "
-                        + GetCurrent().line
-                        + ", col "
-                        + GetCurrent().column
-                        + ".");
+                    UnexceptedToken(GetCurrent().line, GetCurrent().column, GetCurrent());
                     index++;
                     //读入下一个单词 (?)
                     break;
@@ -366,11 +345,7 @@ namespace CompilationPrinciple {
                 case LexType.BEGIN:
                     break;
                 default:
-                    errorList.Add("[Error] Type #3: Unexcepted token at line "
-                        + GetCurrent().line
-                        + ", col "
-                        + GetCurrent().column
-                        + ".");
+                    UnexceptedToken(GetCurrent().line, GetCurrent().column, GetCurrent());
                     index++;
                     //读入下一个单词 (?)
                     break;
@@ -388,11 +363,7 @@ namespace CompilationPrinciple {
                     t = VarDeclaration();
                     break;
                 default:
-                    errorList.Add("[Error] Type #3: Unexcepted token at line "
-                        + GetCurrent().line
-                        + ", col "
-                        + GetCurrent().column
-                        + ".");
+                    UnexceptedToken(GetCurrent().line, GetCurrent().column, GetCurrent());
                     index++;
                     //读入下一个单词 ?
                     break;
@@ -434,11 +405,7 @@ namespace CompilationPrinciple {
                     t = VarDecList();
                     break;
                 default:
-                    errorList.Add("[Error] Type #3: Unexcepted token at line "
-                        + GetCurrent().line
-                        + ", col "
-                        + GetCurrent().column
-                        + ".");
+                    UnexceptedToken(GetCurrent().line, GetCurrent().column, GetCurrent());
                     index++;
                     // 读入下一个单词 ?
                     break;
@@ -471,11 +438,7 @@ namespace CompilationPrinciple {
                     break;
                 default:
                     // 读入下一个单词 ?
-                    errorList.Add("[Error] Type #3: Unexcepted token at line "
-                        + GetCurrent().line
-                        + ", col "
-                        + GetCurrent().column
-                        + ".");
+                    UnexceptedToken(GetCurrent().line, GetCurrent().column, GetCurrent());
                     index++;
                     break;
             }
@@ -493,11 +456,8 @@ namespace CompilationPrinciple {
                     t = ProcDeclaration();
                     break;
                 default:
-                    errorList.Add("[Error] Type #3: Unexcepted token at line "
-                        + GetCurrent().line
-                        + ", col "
-                        + GetCurrent().column
-                        + ".");
+
+                    UnexceptedToken(GetCurrent().line, GetCurrent().column, GetCurrent());
                     index++;
                     // 读入下一个单词 ?
                     break;
@@ -535,11 +495,7 @@ namespace CompilationPrinciple {
                     t.child[0] = p;
                     break;
                 default:
-                    errorList.Add("[Error] Type #3: Unexcepted token at line "
-                        + GetCurrent().line
-                        + ", col "
-                        + GetCurrent().column
-                        + ".");
+                    UnexceptedToken(GetCurrent().line, GetCurrent().column, GetCurrent());
                     index++;
                     // 读入下一个单词 ?
                     break;
@@ -568,6 +524,7 @@ namespace CompilationPrinciple {
                     }
                     break;
                 default:
+                    UnexceptedToken(GetCurrent().line, GetCurrent().column, GetCurrent());
                     // 读入下一个单词 ?
                     break;
 
@@ -594,11 +551,7 @@ namespace CompilationPrinciple {
                     FormList(t);
                     break;
                 default:
-                    errorList.Add("[Error] Type #3: Unexcepted token at line "
-                        + GetCurrent().line
-                        + ", col "
-                        + GetCurrent().column
-                        + ".");
+                    UnexceptedToken(GetCurrent().line, GetCurrent().column, GetCurrent());
                     index++;
                     // 读入下一个单词 ?
                     break;
@@ -622,11 +575,7 @@ namespace CompilationPrinciple {
                     FormList(t);
                     break;
                 default:
-                    errorList.Add("[Error] Type #3: Unexcepted token at line "
-                        + GetCurrent().line
-                        + ", col "
-                        + GetCurrent().column
-                        + ".");
+                    UnexceptedToken(GetCurrent().line, GetCurrent().column, GetCurrent());
                     index++;
                     // 读入下一个单词 ?
                     break;
@@ -705,11 +654,7 @@ namespace CompilationPrinciple {
                     t = AssCall(tmp);
                     break;
                 default:
-                    errorList.Add("[Error] Type #3: Unexcepted token at line "
-                        + GetCurrent().line
-                        + ", col "
-                        + GetCurrent().column
-                        + ".");
+                    UnexceptedToken(GetCurrent().line, GetCurrent().column, GetCurrent());
                     index++;
                     // 跳过当前单词，读入下一个单词
                     break;
@@ -728,11 +673,7 @@ namespace CompilationPrinciple {
                     t = CallStmRest(tmp);
                     break;
                 default:
-                    errorList.Add("[Error] Type #3: Unexcepted token at line "
-                        + GetCurrent().line
-                        + ", col "
-                        + GetCurrent().column
-                        + ".");
+                    UnexceptedToken(GetCurrent().line, GetCurrent().column, GetCurrent());
                     index++;
                     // 读入下一个单词
                     break;
@@ -839,11 +780,7 @@ namespace CompilationPrinciple {
                         t.sibling = ActParamMore();
                     break;
                 default:
-                    errorList.Add("[Error] Type #3: Unexcepted token at line "
-                        + GetCurrent().line
-                        + ", col "
-                        + GetCurrent().column
-                        + ".");
+                    UnexceptedToken(GetCurrent().line, GetCurrent().column, GetCurrent());
                     index++;
                     //读入下一个单词 ?
                     break;
@@ -860,11 +797,7 @@ namespace CompilationPrinciple {
                     t = ActParamList();
                     break;
                 default:
-                    errorList.Add("[Error] Type #3: Unexcepted token at line "
-                        + GetCurrent().line
-                        + ", col "
-                        + GetCurrent().column
-                        + ".");
+                    UnexceptedToken(GetCurrent().line, GetCurrent().column, GetCurrent());
                     index++;
                     //读入下一个单词 ?
                     break;
@@ -952,11 +885,7 @@ namespace CompilationPrinciple {
                     Match(LexType.RPAREN);
                     break;
                 default:
-                    errorList.Add("[Error] Type #3: Unexcepted token at line "
-                        + GetCurrent().line
-                        + ", col "
-                        + GetCurrent().column
-                        + ".");
+                    UnexceptedToken(GetCurrent().line, GetCurrent().column, GetCurrent());
                     index++;
                     //非期望单词错误,显示出错单词和信息.并读入下一单词
                     break;
@@ -1008,11 +937,7 @@ namespace CompilationPrinciple {
                     t.child[0].attr.expAttr.varKind = ExpAttr.VarKind.IdV;
                     break;
                 default:
-                    errorList.Add("[Error] Type #3: Unexcepted token at line "
-                        + GetCurrent().line
-                        + ", col "
-                        + GetCurrent().column
-                        + ".");
+                    UnexceptedToken(GetCurrent().line, GetCurrent().column, GetCurrent());
                     index++;
                     // 错误信息, 读入下一个token
                     break;
@@ -1053,11 +978,7 @@ namespace CompilationPrinciple {
                     Match(LexType.RMIDPAREN);
                     break;
                 default:
-                    errorList.Add("[Error] Type #3: Unexcepted token at line "
-                        + GetCurrent().line
-                        + ", col "
-                        + GetCurrent().column
-                        + ".");
+                    UnexceptedToken(GetCurrent().line, GetCurrent().column, GetCurrent());
                     index++;
                     //读入下一个token， 并提示错误信息
                     break;

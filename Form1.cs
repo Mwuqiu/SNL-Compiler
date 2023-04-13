@@ -20,6 +20,7 @@ namespace CompilationPrinciple
             foreach (string example in examples) {
                 comboBox.Items.Add(example);
             }
+            comboBox.SelectedIndex = 0;
             On_form_resize(null, null);
             Resize += On_form_resize;
             
