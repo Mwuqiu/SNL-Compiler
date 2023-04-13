@@ -9,7 +9,7 @@ namespace CompilationPrinciple {
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
             Application.Run(new Form1());
-            Scanner scanner = new Scanner(Properties.Resources.Simple8);
+            /*Scanner scanner = new Scanner(Properties.Resources.Simple8);
             scanner.DirectSteeringMethod();
             scanner.outPutTokenList();
             bool ll1SyntaxAnalysis = true ;
@@ -24,7 +24,7 @@ namespace CompilationPrinciple {
                 SyntaxAnalysiser s = new SyntaxAnalysiser(scanner.tokenList);
                 SyntaxClass.SyntaxTreeNode? syntaxTreeNode = s.Parse();
                 if (syntaxTreeNode != null) syntaxTreeNode.PrintTree(0);
-            }
+            }*/
             
         }
     }

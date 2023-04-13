@@ -105,233 +105,594 @@ namespace CompilationPrinciple.Properties {
         }
         
         /// <summary>
-        ///   查找类似 program p
-        ///type t = integer;
-        ///p = integer;
+        ///   查找类似 {数组测试}
+        ///{结果应为:0,1,2,3,4,5}
+        ///program sd
+        ///type  i=integer;
+        ///      sarray=array [0..5] of integer;
+        ///var  i x;
+        ///     sarray y;
+        ///     integer ss;
+        ///procedure sd(integer a);
+        ///begin 
+        ///   write(a)
+        ///end    
         ///begin
+        ///  ss:=0;
+        ///  while ss&lt;6 do
+        ///    y[ss]:=ss;
+        ///    x:=y[ss];
+        ///    sd(x);
+        ///    ss:=ss+1
+        ///  endwh
+        ///end.  的本地化字符串。
+        /// </summary>
+        internal static string C1 {
+            get {
+                return ResourceManager.GetString("C1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 {值参、变参结合功能测试}
+        ///
+        ///program sd
+        ///var 
+        ///    integer x,y,z;     
+        ///    procedure f(integer x,y;var integer z);
+        ///    begin
+        ///	z:=x+y+z;
+        ///	write(x);
+        ///	write(y);
+        ///	write(z)
+        ///    end
+        ///begin
+        ///x:=3;
+        ///y:=4;
+        ///z:=5;
+        ///f(x,y,z);
+        ///write(x);
+        ///write(y);
+        ///write(z);
+        ///f(6,x+y+z,y);
+        ///write(x);
+        ///write(y);
+        ///write(z);
+        ///f(x+y,y/x,x);
+        ///write(x);
+        ///write(y);
+        ///write(z)
+        ///end.  的本地化字符串。
+        /// </summary>
+        internal static string C2 {
+            get {
+                return ResourceManager.GetString("C2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 {域变量的测试程序}
+        ///{功能：对于输入m,n ;  输出m+1,n+1,和m+1+n+1的值}
+        ///program  example
+        ///type 
+        ///     w2=record
+        ///          integer  x;
+        ///          integer  y;
+        ///        end;
+        ///var 
+        ///w2  a;     
+        ///integer b;
+        ///integer c;
+        ///integer d;
+        ///procedure sd(integer s1;var integer s2); 
+        ///begin
+        ///   s2:=s1+1
+        ///end
+        ///begin       
+        ///   read(b);
+        ///   read(d);
+        ///   sd(b,c);
+        ///   a.x:=c;
+        ///   write(a.x);
+        ///   sd(d,c);
+        ///   a.y:=c;
+        ///   write(a.y);
+        ///   write(a.x+a.y)        
+        ///end. 的本地化字符串。
+        /// </summary>
+        internal static string C4 {
+            get {
+                return ResourceManager.GetString("C4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 {并列过程声明测试程序}
+        ///{输入三个整数，如果小于10,则加上10；否则，减去10}
+        ///program  example
+        ///type w1=integer;
+        ///     w2=record
+        ///          integer  x;
+        ///          integer  y,z;
+        ///        end;
+        ///var  integer c; 
+        ///     integer b;
+        ///     w1 a;
+        ///     w2 d;
+        ///procedure sd(integer s1;var integer s2); 
+        ///begin
+        ///   if s1&lt;10
+        ///   then s2:=s1+10
+        ///   else s2:=s1-10	
+        ///   fi
+        ///end
+        ///procedure sss(integer a);
+        ///begin
+        ///   write(a)
+        ///end
+        ///begin      
+        ///   read(a);
+        ///   sd(a,c);
+        ///   d.x:=c;
+        ///   b:=d.x;
+        ///   sss(b);
+        ///   read(a);
+        ///   sd(a,c);
+        ///   d.y:=c;
+        ///   b:=d.y;
+        ///    [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string C5 {
+            get {
+                return ResourceManager.GetString("C5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 {并列声明函数之间的调用}
+        ///{输入n，如果n&lt;10,则输出n+10,n,n+10;
+        ///              否则输出n-10,n,n-10}
+        ///program  example
+        ///type w1=integer;
+        ///var  
+        ///     integer b;
+        ///     w1 a;
+        ///procedure sss(integer a);
+        ///begin
+        ///   write(a)
+        ///end
+        ///procedure sd(integer s1;var integer s2); 
+        ///begin
+        ///   if s1&lt;10
+        ///   then s2:=s1+10
+        ///   else s2:=s1-10	
+        ///   fi;
+        ///   sss(s2);
+        ///   sss(a)
+        ///end
+        ///begin      
+        ///   read(a);
+        ///   sd(a,b);
+        ///   sss(b)
+        ///end. 的本地化字符串。
+        /// </summary>
+        internal static string C6 {
+            get {
+                return ResourceManager.GetString("C6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 {在一个过程声明中又有一过程声明测试}
+        ///{输入n,若n&lt;10,则输出n+10,n+10;
+        ///            否则输出n-10,n-10}
+        ///
+        ///program  example
+        ///type w1=record
+        ///        integer x;
+        ///        integer y;
+        ///        end;
+        ///var  
+        ///     integer a;
+        ///     integer b;
+        ///     w1 c;
+        ///     {w2 d;语义错误}
+        ///procedure sd(integer s1;var integer s2); 
+        ///var integer ss;
+        ///procedure sss(integer a);
+        ///begin
+        ///   write(a)
+        ///end
+        ///begin
+        ///   if s1&lt;10
+        ///   then s2:=s1+10
+        ///   else s2:=s1-10	
+        ///   fi;
+        ///   sss(s2)
+        ///end
+        ///begin      
+        ///   read(a);
+        ///   sd(a,b);
+        ///   write(b)
+        ///end. 的本地化字符串。
+        /// </summary>
+        internal static string C7 {
+            get {
+                return ResourceManager.GetString("C7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 {深层调用测试}
+        ///{输入n,若n&lt;10,则输出n+10,20,n+10;
+        ///           否则输出n-10,20,n-10}
+        ///program  example
+        ///type w1=record
+        ///        integer x;
+        ///        integer y;
+        ///        end;
+        ///var  
+        ///     integer a;
+        ///     integer b;
+        ///     w1 c;
+        ///
+        ///procedure sd(integer s1;var integer s2); 
+        ///var integer ss;
+        ///procedure sss(integer a);
+        ///procedure ddd(integer b);
+        ///begin
+        ///   write(b)
+        ///end
+        ///begin
+        ///   ss:=20;
+        ///   write(a);
+        ///   ddd(ss)
+        ///end
+        ///begin
+        ///   if s1&lt;10
+        ///   then s2:=s1+10
+        ///   else s2:=s1-10	
+        ///   fi;
+        ///   sss(s2)
+        ///end
+        ///begin      
+        ///   read(a);
+        ///  [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string C8 {
+            get {
+                return ResourceManager.GetString("C8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 {测试常表达式优化}
+        ///
+        ///program aa
+        ///
+        ///type  t1=integer;
+        ///var   t1  v1,v2;
+        ///      integer a,b,c;
+        ///char  o1;
+        ///procedure p(integer x; var integer y);
+        ///
+        ///begin
+        ///    x:=x+1 ;
+        ///    y:=y+1 
+        ///end
+        ///begin
+        ///   v1:=10;
+        ///   v2:=26;
+        ///   a:=1;
+        ///   b:=a+1;
+        ///   a:=c;
+        ///   c:=b+5;
+        ///   
+        ///   p(a,b);
+        ///   if  v2 &lt; 3*(4+5)
+        ///   then   v2:= v2+1
+        ///   else 
+        ///	write(o1)	 	 
+        ///   fi
         ///end.
         /// 的本地化字符串。
         /// </summary>
-        internal static string Simple1 {
+        internal static string CONST {
             get {
-                return ResourceManager.GetString("Simple1", resourceCulture);
+                return ResourceManager.GetString("CONST", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 {简单的过程调用，测试变参的传递}
+        ///program pp
+        ///var   integer  v1;
+        ///char  c;
+        ///
+        ///procedure f();
+        ///begin
+        ///    v1 :=2
+        ///end
+        ///
+        ///procedure t1();
+        ///var  integer v1;
+        ///begin
+        ///    v1 :=1
+        ///end
+        ///
+        ///begin
+        ///  read(v1);
+        ///  t1();
+        ///  write(v1);
+        ///  f();
+        ///  write(v1)
+        ///end.
+        /// 的本地化字符串。
+        /// </summary>
+        internal static string EASY {
+            get {
+                return ResourceManager.GetString("EASY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 {测试公共表达式优化部分的例子；检测一般变量}
+        ///
+        ///program  pp
+        ///var  integer  A,B,C,D,E,F,G;
+        ///    
+        ///begin
+        ///  F:=1;
+        ///  A:=B*C+C*B;
+        ///  D:=B;
+        ///  E:=D*C+B*C;
+        ///  B:=F;
+        ///  G:=B*C+B*C
+        ///
+        ///end. 的本地化字符串。
+        /// </summary>
+        internal static string ECCEXAM1 {
+            get {
+                return ResourceManager.GetString("ECCEXAM1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 
+        ///{测试常表达式优化和公共表达式优化部分的例子；
+        /// 检测复杂变量}
+        ///
+        ///program  pp
+        ///var  integer  v,x,i,j,y;
+        ///     array [1..10]  of integer a;
+        ///begin
+        ///   i:=5;
+        ///   j:=3;
+        ///   read(v);
+        ///   a[i]:= v;
+        ///   x:=a[i]+j;
+        ///   write(x);
+        ///   a[i]:=a[i]+j;
+        ///   write(a[i]);
+        ///   y:=a[i]+j;
+        ///   write(y)
+        ///end. 的本地化字符串。
+        /// </summary>
+        internal static string ECCEXAM2 {
+            get {
+                return ResourceManager.GetString("ECCEXAM2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 {测试表达式的计算，运行结果为15，7}
+        ///program pp
+        ///type t1=integer;
+        ///     t2=t1;
+        ///var  integer v1,v2,c;
+        ///     t2  v3;
+        ///     array [2..100] of integer  a;
+        ///     record 
+        ///        array [1..10]  of  integer  b;
+        ///	integer  v4;
+        ///	
+        ///     end  r1;	
+        ///     char  m1,m2;
+        /// 
+        ///procedure f(  var  t1  y);
+        ///
+        ///var  integer v11,v22;
+        ///    array [2..100] of char  a1;
+        ///begin
+        ///     r1.v4:=1+3*(7-5);
+        ///     
+        ///     y:= r1.v4
+        ///end
+        /// 
+        ///begin
+        ///  a[(3+4)*5]:=5;
+        ///  v1:=a[35];
+        ///  
+        ///  if v1 &lt; 10    then   write(v1+10)
+        ///                else   write(v1-10)        /// [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string EXP {
+            get {
+                return ResourceManager.GetString("EXP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 { 循环不变式外提优化的测试程序1,测试外提}
+        ///program  pp
+        ///var integer i,n,m,j,k;
+        ///    array [1..10] of integer a;
+        ///
+        ///begin
+        ///   i:=0;
+        ///   j:=0;  
+        ///   k:=0;
+        ///   while k&lt;3  do
+        ///      while i&lt;5 do 
+        ///      	   m:=10*(5+j); {运算提两层}
+        ///           m:=k+5;      {运算提一层}
+        ///           n:=i;
+        ///      
+        ///           write(n);
+        ///           i:=i+1
+        ///      endwh;
+        ///      i:=0;
+        ///      k:=k+1
+        ///   endwh;
+        ///   write(m)
+        /// end.
+        ///
+        ///    
+        ///  的本地化字符串。
+        /// </summary>
+        internal static string LOOP1 {
+            get {
+                return ResourceManager.GetString("LOOP1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 { 循环不变式外提优化的测试程序,有过程调用情形}
+        ///program  pp
+        ///var integer i,n,m,j,k;
+        ///    array [1..10] of integer a;
+        ///procedure q();
+        ///begin
+        ///   write(100)
+        ///end
+        ///
+        ///begin
+        ///   i:=0;
+        ///   j:=0;  
+        ///   k:=0;
+        ///   while k&lt;3  do
+        ///      while i&lt;5 do 
+        ///      	   m:=10*(5+j); 
+        ///           m:=k+5;     
+        ///           n:=i;
+        ///           q();        {有过程调用，不优化打开的循环}
+        ///           write(n);
+        ///           i:=i+1
+        ///      endwh;
+        ///      i:=0;
+        ///      k:=k+1
+        ///   endwh;
+        ///
+        ///   write(m);
+        ///   while j&lt;4 do   {可以优化}
+        ///     m:=1+k;
+        ///     j:=j+1
+        ///   endwh;
+        ///   write(m [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string LOOP2 {
+            get {
+                return ResourceManager.GetString("LOOP2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 { 循环不变式外提优化的测试程序1,测试地址加外提}
+        ///program  pp
+        ///var integer i,n,m,j,k,r;
+        ///    array [1..10] of integer a;
+        ///
+        ///begin
+        ///   i:=0;
+        ///   j:=0;  
+        ///   k:=0;
+        ///   while k&lt;3  do
+        ///      while i&lt;5 do 
+        ///           a[k]:=k;           
+        ///      	   m:=10*(5+j); {运算提两层}
+        ///           m:=k+5;      {运算提一层}
+        ///           n:=i;
+        ///      
+        ///           write(n);
+        ///           i:=i+1
+        ///      endwh;
+        ///      i:=0;
+        ///      k:=k+1
+        ///   endwh;
+        ///   write(m);
+        /// 
+        ///   write(a[1]);
+        ///   write(a[2])
+        /// end.
+        ///
+        ///    
+        ///  的本地化字符串。
+        /// </summary>
+        internal static string LOOP3 {
+            get {
+                return ResourceManager.GetString("LOOP3", resourceCulture);
             }
         }
         
         /// <summary>
         ///   查找类似 program p
-        ///type t1 = integer;
-        ///p1 = integer;
-        ///a1 = array [0..10] of integer;
-        ///r1 = record
-        ///		integer x;
-        ///		integer y;
-        ///	end;
-        ///a2 = array [0..10] of integer;
-        ///r2 = record
-        ///		integer x;
-        ///		integer y;
-        ///	end;
-        ///p2 = integer;
-        ///begin
+        ///type  t = integer;
+        ///var  t  V1 ;
+        ///     char  v2;
+        ///begin 
+        ///   read(v1);
+        ///   V1:=V1+10;
+        ///   write(v1)
         ///end.
-        /// 的本地化字符串。
+        ///    的本地化字符串。
         /// </summary>
-        internal static string Simple2 {
+        internal static string SCAN {
             get {
-                return ResourceManager.GetString("Simple2", resourceCulture);
+                return ResourceManager.GetString("SCAN", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   查找类似 program p
-        ///type t1 = integer;
-        ///p1 = integer;
-        ///a1 = array [0..10] of integer;
-        ///r1 = record
-        ///		integer x;
-        ///		integer y;
-        ///	end;
-        ///a2 = array [0..10] of integer;
-        ///r2 = record
-        ///		integer x;
-        ///		integer y;
-        ///	end;
-        ///p2 = integer;
-        ///r3 = r2;
-        ///p3 = p2;
+        ///   查找类似 program  example
+        ///type w1=integer;
+        ///     w2=record
+        ///          integer  x;
+        ///          char     y,z,m;
+        ///        end;
+        ///     w3=array [3..6] of integer;  {haha}
+        ///
+        ///var integer p;
+        ///     w3 c;
+        ///     w2 d;
+        ///    integer a;
+        ///
+        ///procedure sd(integer s1;var integer s2); 
+        ///var integer  x,y;
+        ///procedure sd1(integer y);
         ///begin
-        ///end.
-        /// 的本地化字符串。
-        /// </summary>
-        internal static string Simple3 {
-            get {
-                return ResourceManager.GetString("Simple3", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 program p
-        ///type
-        ///	t1 = integer;
-        ///	p1 = integer;
-        ///	a1 = array[0..10]of integer;
-        ///	r1 = record
-        ///		integer x;
-        ///		integer y;
-        ///	end;
-        ///	a2 = array[0..10]of integer;
-        ///	r2 = record
-        ///		integer x;
-        ///		integer y;
-        ///	end;
-        ///	p2 = integer;
-        ///	r3 = r2;
-        ///	p3 = p2;
-        ///var
-        ///	integer v1;
-        ///	p1 v2;
-        ///	a1 v3;
-        ///	r2 v4;
+        ///   write(y)
+        ///end
         ///begin
-        ///end.
-        /// 的本地化字符串。
+        ///   if a=2
+        ///   then x:=s1*(5+7)+10
+        ///   else 
+        ///	x:=s1/9;
+        ///	sd1(x)
+        ///  fi;
+        ///   return
+        ///end
+        ///
+        ///begin      
+        ///   while a&lt;5
+        ///   do 
+        ///   sd(2,a);
+        ///   c[3]:=a*2;
+        ///   c[a]:=d.x;
+        ///   re [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
-        internal static string Simple4 {
+        internal static string SD1 {
             get {
-                return ResourceManager.GetString("Simple4", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 program p
-        ///type
-        ///	t = integer;
-        ///var
-        ///	t t1;
-        ///begin
-        ///	read(t1)
-        ///end.
-        /// 的本地化字符串。
-        /// </summary>
-        internal static string Simple5 {
-            get {
-                return ResourceManager.GetString("Simple5", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 program p
-        ///type
-        ///	t = integer;
-        ///var
-        ///	t V1;
-        ///	char v2;
-        ///begin
-        ///	read(v1);
-        ///	V1 := V1+10;
-        ///	write(v1)
-        ///end.
-        /// 的本地化字符串。
-        /// </summary>
-        internal static string Simple6 {
-            get {
-                return ResourceManager.GetString("Simple6", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 program pp
-        ///var
-        ///	integer i, n, m, j, k, r;
-        ///	array[1..10]of integer a;
-        ///begin
-        ///	i := 0;
-        ///	j := 0;
-        ///	k := 0;
-        ///	while k&lt;3 do
-        ///		while i&lt;5 do
-        ///			a[k] := k;
-        ///			m := 1+2+3;
-        ///			m := k+5;
-        ///			n := i;
-        ///			write(n);
-        ///			i := i+1
-        ///		endwh;
-        ///		i := 0;
-        ///		k := k+1
-        ///	endwh;
-        ///	write(m);
-        ///	write(a[1]);
-        ///	write(a[2])
-        ///end.
-        /// 的本地化字符串。
-        /// </summary>
-        internal static string Simple7 {
-            get {
-                return ResourceManager.GetString("Simple7", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 program bubble
-        ///var
-        ///	integer temp;
-        ///	integer i, j, num;
-        ///	array[1..20]of integer a;
-        ///procedure q(integer num);
-        ///	var
-        ///		integer i, j, k;
-        ///		integer t;
-        ///	begin
-        ///		i := 1;
-        ///		while i&lt;num do
-        ///			j := num-i+1;
-        ///			k := 1;
-        ///			while k&lt;j do
-        ///				if a[k+1]&lt;a[k] then
-        ///					t := a[k];
-        ///					a[k] := a[k+1];
-        ///					a[k+1] := t
-        ///				else
-        ///					temp := 0
-        ///				fi;
-        ///				k := k+1
-        ///			endwh;
-        ///			i := i+1
-        ///		endwh
-        ///	end
-        ///begin
-        ///	read(num);
-        ///	i := 1;
-        ///	while i&lt;num+1 do
-        ///		read(j);
-        ///		a[i] := j;
-        ///		i := i+1
-        ///	endwh;
-        ///	q(num);        /// [字符串的其余部分被截断]&quot;; 的本地化字符串。
-        /// </summary>
-        internal static string Simple8 {
-            get {
-                return ResourceManager.GetString("Simple8", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 program p
-        ///	type t = integer;
-        ///	var t V1;
-        ///		char V2;
-        ///	begin
-        ///		read(V1);
-        ///		V1 := V1 + 10;
-        ///		write(V1)
-        ///end.
-        /// 的本地化字符串。
-        /// </summary>
-        internal static string SimpleExample {
-            get {
-                return ResourceManager.GetString("SimpleExample", resourceCulture);
+                return ResourceManager.GetString("SD1", resourceCulture);
             }
         }
     }

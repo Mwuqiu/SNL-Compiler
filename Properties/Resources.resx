@@ -121,31 +121,55 @@
   <data name="bubble" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\bubble.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
-  <data name="Simple1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Simple1.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  <data name="C1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\C1.TXT;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
-  <data name="Simple2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Simple2.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  <data name="C2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\C2.TXT;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
-  <data name="Simple3" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Simple3.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  <data name="C4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\C4.TXT;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
-  <data name="Simple4" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Simple4.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  <data name="C5" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\C5.TXT;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
-  <data name="Simple5" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Simple5.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  <data name="C6" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\C6.TXT;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
-  <data name="Simple6" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Simple6.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  <data name="C7" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\C7.TXT;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
-  <data name="Simple7" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Simple7.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  <data name="C8" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\C8.TXT;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
-  <data name="Simple8" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Simple8.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  <data name="CONST" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CONST.TXT;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
-  <data name="SimpleExample" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\SimpleExample.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  <data name="EASY" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\EASY.TXT;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
+  <data name="ECCEXAM1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ECCEXAM1.TXT;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
+  <data name="ECCEXAM2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ECCEXAM2.TXT;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
+  <data name="EXP" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\EXP.TXT;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
+  <data name="LOOP1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LOOP1.TXT;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
+  <data name="LOOP2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LOOP2.TXT;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
+  <data name="LOOP3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LOOP3.TXT;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
+  <data name="SCAN" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SCAN.TXT;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
+  <data name="SD1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SD1.TXT;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
 </root>
