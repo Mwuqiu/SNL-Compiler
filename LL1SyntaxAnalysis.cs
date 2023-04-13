@@ -1066,7 +1066,7 @@ namespace CompilationPrinciple {
                     Token token = tokenList.First();
                     int generNumber = lL1Supporter.LL1Table[(int)lexType, (int)token.lex];
                     // the conversion is legal
-                    if (generNumber >= 1 && generNumber <= 103) {
+                    if (generNumber >= 1 && generNumber <= 104) {
                         process(generNumber);
                     } else {
                         Console.WriteLine("there is not a convert from : " + lexType + "to :" + Enum.GetName(typeof(LexType), token.lex));

@@ -7,9 +7,9 @@ namespace CompilationPrinciple {
         static void Main() {
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
-            ApplicationConfiguration.Initialize();
-            Application.Run(new Form1());
-            /*Scanner scanner = new Scanner(Properties.Resources.Simple8);
+/*            ApplicationConfiguration.Initialize();
+            Application.Run(new Form1());*/
+            Scanner scanner = new Scanner(Properties.Resources.C2);
             scanner.DirectSteeringMethod();
             scanner.outPutTokenList();
             bool ll1SyntaxAnalysis = true ;
@@ -19,9 +19,10 @@ namespace CompilationPrinciple {
                 ll1.root.PrintTree(0);
                 SemanticAnalysiser semanticAnalysiser = new SemanticAnalysiser();
                 semanticAnalysiser.analyze(ll1.root);
-                semanticAnalysiser.PrintSymbTable ();
+                semanticAnalysiser.PrintSymbTable();
+            }
 /*                ApplicationConfiguration.Initialize();
-                Application.Run(new Form1());*/
+                Application.Run(new Form1());
             } else {
                 SyntaxAnalysiser s = new SyntaxAnalysiser(scanner.tokenList);
                 SyntaxClass.SyntaxTreeNode? syntaxTreeNode = s.Parse();
