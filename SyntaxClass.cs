@@ -352,10 +352,10 @@ namespace CompilationPrinciple {
                                             while (c != null) {
                                                 res += c.GenerateCode(tab + 1, this) + "\r\n";
                                                 Console.WriteLine();
-                                                if (c.sibling != null) {
+                                                /*if (c.sibling != null) {
                                                     Console.Write(";");
                                                     res += ";";
-                                                }
+                                                }*/
                                                 c = c.sibling;
                                             }
                                             res += tabSpace + "end " + PrintName();
@@ -410,10 +410,15 @@ namespace CompilationPrinciple {
                                 res += ");";
                                 Console.Write(");");
                             }
-                        } 
+                        } else {
+                            res += ");";
+                            Console.Write(");");
+                        }
                         for(int i= 1; i < 3; i++) {
                             Console.Write("\r\n");
-                            res += "\r\n" + child[i].GenerateCode(tab + 1, this);
+                            if (child[i] != null) {
+                                res += "\r\n" + child[i].GenerateCode(tab + 1, this);
+                            }
                         }
                         break;
                     case NodeKind.StmLK:
@@ -507,7 +512,15 @@ namespace CompilationPrinciple {
                                 res += child[0].GenerateCode(0, this);
                                 Console.Write("(");
                                 res += "(";
-                                res += child[1].GenerateCode(0, this);
+                                c = child[1];
+                                while(c != null) {
+                                    res += c.GenerateCode(0, this);
+                                    if (c.sibling != null) {
+                                        Console.Write(", ");
+                                        res += ", ";
+                                    }
+                                    c = c.sibling;
+                                }
                                 Console.Write(")");
                                 res += ")";
                                 break;
@@ -586,12 +599,12 @@ namespace CompilationPrinciple {
             }
             public bool RsonNeedParen() {
                 if (expKind == ExpKind.OpK && child[1].expKind == ExpKind.OpK) {
-                    String op1 = attr.expAttr.op, op2 = attr.expAttr.op;
-                    if (op1 == "*")
+                    String op1 = attr.expAttr.op, op2 = child[1].attr.expAttr.op;
+                    if (op1 == "-")
                         return op2 is "+" or "-";
                     if (op1 == "*")
                         return op2 is "+" or "-";
-                    return op1 == "*";
+                    return op1 == "/";
                 }
                 return false;
             }

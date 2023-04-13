@@ -1,8 +1,0 @@
-program p
-type
-	t = integer;
-var
-	t t1;
-begin
-	read(t1)
-end.

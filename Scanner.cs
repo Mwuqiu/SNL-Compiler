@@ -12,6 +12,7 @@ namespace CompilationPrinciple {
             getWorng = false;
             tokenList = new List<Token>();
             CodeText = code;
+            errorList = new List<String>();
         }
 
         static bool IsChar(char c) => (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
@@ -60,7 +61,7 @@ namespace CompilationPrinciple {
                 }
                 tokenList.Add(new Token {line = lineNumber+1, column = 0, lex = LexType.ENDFILE, sem = "" });
             } catch (Exception e) {
-                Console.WriteLine("Exception: " + e.Message);
+                Console.WriteLine("Exception: " + e.Message + e.StackTrace);
             } finally {
                 Console.WriteLine("Executing finally block.");
             }
@@ -88,6 +89,16 @@ namespace CompilationPrinciple {
                         diBuff += line[index].ToString();
                         index++;
                     }
+                    if (index != line.Length && IsChar(line[index])) {
+                        while (index < line.Length && (IsChar(line[index]) || IsDigit(line[index]))) {
+                            diBuff += line[index].ToString();
+                            index++;
+                        }
+                        String err = "ERROR FOUND IN LINE " + lineNumber + ", Col " + index + " NEAR TOKEN '" + diBuff + "': NUMBERS SHOULD NOT BE STATRED AS VARIABLES.";
+                        Console.WriteLine(err);
+                        getWorng = true;
+                        errorList.Add(err);
+                    }
                     tokenList.Add(new Token { line = lineNumber,column = startIndex, lex = LexType.INTC_VAL, sem = diBuff });
                 }
                 //Single-byte separator
@@ -111,23 +122,29 @@ namespace CompilationPrinciple {
                             if (index + 1 < line.Length) {
                                 char nextChar = line[++index];
                                 if (nextChar != '=') {
-                                    Console.WriteLine("ERROR FOUND IN LINE " + lineNumber + "MISS FOUND \"=\" AFTER \":\"");
+                                    String err = "ERROR FOUND IN LINE " + lineNumber + " MISS FOUND \"=\" AFTER \":\"";
+                                    Console.WriteLine(err);
                                     getWorng = true;
+                                    errorList.Add(err);
                                 } else {
                                     tokenList.Add(new Token { line = lineNumber,column = index, lex = LexType.ASSIGN, sem = ":=" });
                                     index++;
                                 }
                             } else {
-                                Console.WriteLine("ERROR FOUND IN LINE " + lineNumber + "MISS FOUND \"=\" AFTER \":\"");
+                                String err = "ERROR FOUND IN LINE " + lineNumber + " MISS FOUND \"=\" AFTER \":\"";
+                                Console.WriteLine(err);
                                 getWorng = true;
+                                errorList.Add(err);
                             }
                             break;
                         //There must be a '}' after the '{ ' and circled by them is the comment text
                         case '{':
                             string commentText = "";
                             while (index < line.Length && line[index] != '}') {
-                                if (line[index] == '{')
+                                if (line[index] == '{') {
+                                    index++;
                                     continue;
+                                }
                                 commentText += line[index].ToString();
                                 index++;
                             }
@@ -163,22 +180,30 @@ namespace CompilationPrinciple {
                                         tokenList.Add(new Token { line = lineNumber,column = index, lex = LexType.CHAR_T, sem = nextChar.ToString() });
                                         index += 3;
                                     } else {
-                                        Console.WriteLine("ERROE : More than one character after a single quote or missing another single quote");
+                                        String err = "ERROE : More than one character after a single quote or  MISSing another single quote";
+                                        Console.WriteLine(err);
                                         getWorng = true;
+                                        errorList.Add(err);
                                     }
                                 } else {
-                                    Console.WriteLine("No characters after single quotes");
+                                    String err = "No characters after single quotes";
+                                    Console.WriteLine(err);
                                     getWorng = true;
+                                    errorList.Add(err);
                                 }
                             } else {
-                                Console.WriteLine("ERROE : More than one character after a single quote or missing another single quote");
+                                String err = "ERROE : More than one character after a single quote or  MISSing another single quote";
+                                Console.WriteLine(err);
                                 getWorng = true;
+                                errorList.Add(err);
                             }
                             break;
                         default:
                             if (' ' != line[index] && 32 != line[index] && 9 != line[index]) {
-                                Console.WriteLine("Unexpected Char : " + line[index] + "in line : " + lineNumber);
+                                String err = "Unexpected Char : " + line[index] + "in line : " + lineNumber;
+                                Console.WriteLine(err);
                                 getWorng = true;
+                                errorList.Add(err);
                             } else {
                                 index++;
                             }
@@ -209,8 +234,9 @@ namespace CompilationPrinciple {
         }
 
         private int lineNumber;
-        bool getWorng;
+        public bool getWorng { get; set; }
         public List<Token> tokenList { get; set; }
+        public List<String> errorList { get; set; }
         String CodeText;
     }
 }
