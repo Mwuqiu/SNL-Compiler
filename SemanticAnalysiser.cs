@@ -22,7 +22,7 @@ namespace CompilationPrinciple {
         private int id;
         private int initOff;
         private SymTableItem[] scope;
-
+        public List<String> errorList;
         public SemanticAnalysiser() {
             StoreNoff = 0;
             savedOff = 0;
@@ -38,7 +38,10 @@ namespace CompilationPrinciple {
             level = level + 1;    
             off = initOff;
         }
-
+        public void SemError(String str) {
+            errorList.Add(str);
+            Console.WriteLine(str);
+        }
         public void analyze(SyntaxTreeNode root) {
             CreateTable();
             initialize();
@@ -51,9 +54,13 @@ namespace CompilationPrinciple {
                 }else if(p.nodeKind == NodeKind.ProcDecK) {
                     ProcDecPart(p);
                 } else {
-                    Console.WriteLine("no this node kind in syntax tree!");
+                    SemError("[ERROR] line" + root.lineno + ": no this node kind in syntax tree!");
                 }
                 p = p.sibling;
+            }
+            p = root.child[2];
+            if(p.nodeKind == NodeKind.StmLK) {
+                Body(p);
             }
         }
 
@@ -66,7 +73,7 @@ namespace CompilationPrinciple {
                 //attr.idType = TypeProcess(p, p.decKind);
                 Enter(ref present, attr, entry , p.name[0]);
                 if (present) {
-                    Console.WriteLine("repetation declared!");
+                    SemError("[ERROR] line " + p.lineno + ": variable '" + p.name[0] + "'"  + " repetation declared!");
                     entry = null;
                 } else {
                     entry.attrIR.idType = TypeProcess(p, p.decKind);
@@ -95,7 +102,7 @@ namespace CompilationPrinciple {
                     case NodeKind.ProcDecK:
                         break;
                     default:
-                        Console.WriteLine("no this node kind in syntax tree!");
+                        SemError("[ERROR] line " + p.lineno + ": no this node kind in syntax tree!");
                         break;
                 }
                 if (t.nodeKind ==NodeKind.ProcDecK)
@@ -148,7 +155,7 @@ namespace CompilationPrinciple {
                     returnstatement(t);
                     break;
                 default:
-                    Console.WriteLine("statement type error");
+                    SemError("[ERROR] line " + t.lineno + ": statement type error");
                     break;
             }
         }
@@ -179,9 +186,13 @@ namespace CompilationPrinciple {
             t.table[0] = entry;
             /*找到*/
             if (present) {
-                if(FindAttr(entry).typeKind != IdKind.varKind) {
-                    Console.WriteLine("is not variable error!");
+                if (FindAttr(entry).typeKind != IdKind.varKind) {
+                    SemError("[ERROR] line " + t.lineno + ": '" + t.name[0] + "' is not a variable!");
                     Eptr = null;
+                } else if (FindAttr(entry).idType.typeKind != TypeKind.arrayTy) {
+                    // 不是数组类型变量
+                    SemError("[ERROR] line " + t.lineno + ": '" + t.name[0] + "' is not a array variable!");
+
                 } else {
                     /*检查E的类型是否与下标类型相符*/
                     Eptr0 = entry.attrIR.idType.arrayAttr.indexTy;
@@ -195,14 +206,14 @@ namespace CompilationPrinciple {
                     }
                     present = Compat(Eptr0, Eptr1);
                     if (present) {
-                        Console.WriteLine("type is not matched with the array member error !");
+                        SemError("[ERROR] line " + t.lineno + ": array member type is not matched!");
                         Eptr = null;
                     } else {
                         Eptr = entry.attrIR.idType.arrayAttr.elementType;
                     }
                 }
             } else {
-                Console.WriteLine("is not declarations");
+                SemError("[ERROR] line " + t.lineno + ": '" + t.name[0] + "' have not been declared.");
             }
             return Eptr;
         }
@@ -223,11 +234,11 @@ namespace CompilationPrinciple {
             if (present) {
                 /*Var0不是变量*/
                 if(FindAttr(entry).typeKind != IdKind.varKind ) {
-                    Console.WriteLine("is not variable error");
+                    SemError("[ERROR] '" + t.name[0] + "' is not a variable!");
                     Eptr = null;
                 } else {
                     if(FindAttr(entry).idType.typeKind != TypeKind.recordTy) {
-                        Console.WriteLine("is not record variable error");
+                        SemError("[ERROR] '" + t.name[0] + "' is not a record variable!");
                         Eptr = null;
                     } else {
                         /*检查id是否是合法域名*/
@@ -244,7 +255,7 @@ namespace CompilationPrinciple {
                         if(currentP == null) {
                             if(result != false) {
                                 Eptr = null;
-                                Console.WriteLine("is not field type");
+                                SemError("[ERROR] line " + t.lineno + ": '" + t.name[0] + "' is not field type!");
                             }
                         } else {
                             if (t.child[0].child[0] != null) {
@@ -254,7 +265,7 @@ namespace CompilationPrinciple {
                     }
                 }
             } else {
-                Console.WriteLine("is not declarations");
+                SemError("[ERROR] line " + t.lineno + ": '" + t.name[0] + "' have not been declared.");
             }
             return Eptr;
         }
@@ -282,7 +293,7 @@ namespace CompilationPrinciple {
                             if (present) {
                                 /*id不是变量*/
                                 if (FindAttr(entry).typeKind != IdKind.varKind) {
-                                    Console.WriteLine("is not variable error");
+                                    SemError("[ERROR] '" + t.name[0] + "' is not a variable!");
                                     Eptr = null;
                                 } else {
                                     Eptr = entry.attrIR.idType;
@@ -292,7 +303,7 @@ namespace CompilationPrinciple {
                                 }
                             } else {
                                 //标识符无声明
-                                Console.WriteLine("is not declarations");
+                                SemError("[ERROR] line " + t.lineno + ": '" + t.name[0] + "' have not been declared.");
                             }
                         } else {
                             if(t.attr.expAttr.varKind == SyntaxTreeNode.Attr.ExpAttr.VarKind.ArrayMembV) {
@@ -390,10 +401,10 @@ namespace CompilationPrinciple {
             t.table[0] = entry;
             /*未查到表示变量无声明*/
             if(present == false) {
-                Console.WriteLine("not declarationed !");
+                SemError("[ERROR] line " + t.lineno + ": '" + t.name[0] + "' have not been declared.");
             } else {
                 if(entry.attrIR.typeKind != IdKind.varKind) {
-                    Console.WriteLine("not var name !");
+                    SemError("[ERROR] line " + t.lineno + ": '" + t.name[0] + "' is not a var name !");
                 }
             }
         }
@@ -403,7 +414,8 @@ namespace CompilationPrinciple {
             TypeIR Etp = Expr(t.child[0], Ekind, false);
             if(Etp != null) {
                 if(Etp.typeKind == TypeKind.boolTy) {
-                    Console.WriteLine("exprssion type error!");
+
+                    SemError("[ERROR] line " + t.lineno + ": exprssion type error!");
                 }
             }
         }
@@ -411,7 +423,7 @@ namespace CompilationPrinciple {
         public void returnstatement(SyntaxTreeNode t) {
             /*如果返回语句出现在主程序中，报错*/
             if (level == 0) {
-                Console.WriteLine ("return statement error!");
+                SemError("[ERROR] line " + t.lineno + ": return statement error!");
             }
         }
 
@@ -425,7 +437,7 @@ namespace CompilationPrinciple {
             t.child[0].table[0] = entry;
 
             if (present == false) {
-                Console.WriteLine("function is not declarationed!");
+                SemError("[ERROR] line " + t.lineno + ": '" + t.name[0] + "' have not been declared.");
             } else {
                 if (FindAttr(entry).typeKind != IdKind.procKind) {
                     Console.WriteLine("is not function name!");
@@ -436,16 +448,16 @@ namespace CompilationPrinciple {
                         SymTableItem paraEntry = param.entry;
                         TypeIR Etp = Expr(p, Ekind, true);
                         if (FindAttr(paraEntry).varAttr.accessKind == AccessKind.indir && (Ekind == AccessKind.dir)) {
-                            Console.WriteLine("param kind is not match!");
+                            SemError("[ERROR] line " + t.lineno + ": param kind is not match!");
                         } else {
                             if (FindAttr(paraEntry).idType != Etp) {
-                                Console.WriteLine("param type is not match!");
+                                SemError("[ERROR] line " + t.lineno + ": param type is not match!");
                             }
                         }
                         p = p.sibling;
                         param = param.next;
                         if ((p != null) || param != null) {
-                            Console.WriteLine("param num is not match!");
+                            SemError("[ERROR] line " + t.lineno + ": param num is not match!");
                         }
                     }
                 }
@@ -469,14 +481,14 @@ namespace CompilationPrinciple {
                 present = FindEntry(child1.name[0], entry);
                 if(present != false) {
                     if(FindAttr(entry).typeKind != IdKind.varKind) {
-                        Console.WriteLine("is not variable error!");
+                        SemError("[ERROR] line " + child1.lineno + ": '" + child1.name[0] + "' is not variable error!");
                         Eptr = null;
                     } else {
                         Eptr = entry.attrIR.idType;
                         child1.table[0] = entry;
                     }
                 } else {
-                    Console.WriteLine("is not declarations!");
+                    SemError("[ERROR] line " + child1.lineno + ": '" + child1.name[0] + "' have not been declared.");
                 }
             } else {
                 if(child1.attr.expAttr.varKind == SyntaxTreeNode.Attr.ExpAttr.VarKind.ArrayMembV) {
@@ -491,7 +503,7 @@ namespace CompilationPrinciple {
                 if((t.nodeKind == NodeKind.StmLK) && (t.stmtKind == StmtKind.AssignK)) {
                     ptr = Expr(child2, Ekind, false);
                     if (!Compat(ptr, Eptr)) {
-                        Console.WriteLine("ass_expression error!");
+                        SemError("[ERROR] line " + t.lineno + ": assign type not match!");
                     }
                 }
             }
@@ -643,7 +655,7 @@ namespace CompilationPrinciple {
             if(present == false) {
                 entry = null;
             } else {
-                entry .copyItem( findentry);
+                entry.copyItem(findentry);
             }
             return present;
         }
@@ -654,12 +666,12 @@ namespace CompilationPrinciple {
             bool present = FindEntry(p.typeName,entry);
             if (present == true) { 
                 if(entry.attrIR.typeKind != IdKind.typeKind) {
-                    Console.WriteLine("used before typed!");
+                    SemError("[ERROR] line " + p.lineno + ": " + p.name[0] + "' used before typed!");
                 } else {
                     typeIR = entry.attrIR.idType;
                 }
             } else {
-                Console.WriteLine("type name is not declared!");
+                 SemError("[ERROR] line " + p.lineno + ": " + p.name[0] + "' type name is not declared!");
             }
             return typeIR;            
         }
@@ -669,7 +681,7 @@ namespace CompilationPrinciple {
             TypeIR ptr1 = null;
             TypeIR ptr = null;
             if((p.attr.arrayAttr.low) > (p.attr.arrayAttr.up)) {
-                Console.WriteLine("array subscript error!");
+                SemError("[ERROR] line " + p.lineno + ": array subscript error!");
             } else {
                 ptr0 = TypeProcess(p, DecKind.IntegerK);
                 ptr1 = TypeProcess(p, p.attr.arrayAttr.childType);
@@ -741,7 +753,7 @@ namespace CompilationPrinciple {
                     /*登记该变量的属性及名字,并返回其类型内部指针*/
                     Enter(ref present, attributeIR, symTableItem, p.name[i]);
                     if (present) {
-                        Console.WriteLine("defined repetation");
+                        SemError("[ERROR] line " + p.lineno + ": " + p.name[i] + "' variable  defined repetation");
                     } else {
                         p.table[i] = symTableItem;
                     }
