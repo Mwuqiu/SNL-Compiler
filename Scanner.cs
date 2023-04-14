@@ -94,7 +94,7 @@ namespace CompilationPrinciple {
                             diBuff += line[index].ToString();
                             index++;
                         }
-                        String err = "ERROR FOUND IN LINE " + lineNumber + ", Col " + index + " NEAR TOKEN '" + diBuff + "': NUMBERS SHOULD NOT BE STATRED AS VARIABLES.";
+                        String err = "[ERROR] LINE  " + lineNumber + ", Col " + index + " NEAR TOKEN '" + diBuff + "': NUMBERS SHOULD NOT BE STATRED AS VARIABLES.";
                         Console.WriteLine(err);
                         getWorng = true;
                         errorList.Add(err);
@@ -122,7 +122,7 @@ namespace CompilationPrinciple {
                             if (index + 1 < line.Length) {
                                 char nextChar = line[++index];
                                 if (nextChar != '=') {
-                                    String err = "ERROR FOUND IN LINE " + lineNumber + " MISS FOUND \"=\" AFTER \":\"";
+                                    String err = "[ERROR] LINE  " + lineNumber + ", Col " + index + ": MISS FOUND \"=\" AFTER \":\"";
                                     Console.WriteLine(err);
                                     getWorng = true;
                                     errorList.Add(err);
@@ -131,7 +131,7 @@ namespace CompilationPrinciple {
                                     index++;
                                 }
                             } else {
-                                String err = "ERROR FOUND IN LINE " + lineNumber + " MISS FOUND \"=\" AFTER \":\"";
+                                String err = "[ERROR] LINE " + lineNumber + ", Col " + index + ": MISS FOUND \"=\" AFTER \":\"";
                                 Console.WriteLine(err);
                                 getWorng = true;
                                 errorList.Add(err);
@@ -180,19 +180,19 @@ namespace CompilationPrinciple {
                                         tokenList.Add(new Token { line = lineNumber,column = index, lex = LexType.CHAR_T, sem = nextChar.ToString() });
                                         index += 3;
                                     } else {
-                                        String err = "ERROE : More than one character after a single quote or  MISSing another single quote";
+                                        String err = "[ERROR] LINE " + lineNumber + ", Col " + index + ": More than one character after a single quote or  MISSing another single quote";
                                         Console.WriteLine(err);
                                         getWorng = true;
                                         errorList.Add(err);
                                     }
                                 } else {
-                                    String err = "No characters after single quotes";
+                                    String err = "[ERROR] LINE " + lineNumber + ", Col " + index + ": No characters after single quotes";
                                     Console.WriteLine(err);
                                     getWorng = true;
                                     errorList.Add(err);
                                 }
                             } else {
-                                String err = "ERROE : More than one character after a single quote or  MISSing another single quote";
+                                String err = "[ERROR] LINE " + lineNumber + ", Col " + index + ": More than one character after a single quote or  MISSing another single quote";
                                 Console.WriteLine(err);
                                 getWorng = true;
                                 errorList.Add(err);
@@ -200,7 +200,7 @@ namespace CompilationPrinciple {
                             break;
                         default:
                             if (' ' != line[index] && 32 != line[index] && 9 != line[index]) {
-                                String err = "Unexpected Char : " + line[index] + "in line : " + lineNumber;
+                                String err = "[ERROR] LINE " + lineNumber + ", Col " + index + ": Unexpected Char : " + line[index];
                                 Console.WriteLine(err);
                                 getWorng = true;
                                 errorList.Add(err);

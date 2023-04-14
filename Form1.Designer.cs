@@ -34,6 +34,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.comboBox = new System.Windows.Forms.ComboBox();
+            this.LineLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // LogoLabel
@@ -118,11 +119,22 @@
             this.comboBox.TabIndex = 5;
             this.comboBox.SelectedIndexChanged += new System.EventHandler(this.comboBox_SelectedIndexChanged);
             // 
+            // LineLabel
+            // 
+            this.LineLabel.AutoSize = true;
+            this.LineLabel.Location = new System.Drawing.Point(0, 65);
+            this.LineLabel.Name = "LineLabel";
+            this.LineLabel.Size = new System.Drawing.Size(129, 20);
+            this.LineLabel.TabIndex = 6;
+            this.LineLabel.Text = "当前光标所在行：";
+            this.LineLabel.Click += new System.EventHandler(this.label1_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1383, 861);
+            this.Controls.Add(this.LineLabel);
             this.Controls.Add(this.comboBox);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
@@ -147,5 +159,6 @@
         private Button button1;
         private Button button2;
         private ComboBox comboBox;
+        private Label LineLabel;
     }
 }

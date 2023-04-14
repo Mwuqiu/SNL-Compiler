@@ -2,18 +2,17 @@ using System.Reflection;
 using System.Windows.Forms;
 using Windows.ApplicationModel.Resources.Core;
 
-namespace CompilationPrinciple
-{
-    public partial class Form1 : Form
-    {
-        public Form1()
-        {
+namespace CompilationPrinciple {
+    public partial class Form1 : Form {
+        public Form1() {
             InitializeComponent();
             CodeBox.KeyPress += Codebox_KeyPress;
+            CodeBox.KeyUp += CodeBox_KeyUp;
+            CodeBox.MouseDown += CodeBox_MouseDown;
             CodeBox.Text = Properties.Resources.bubble.Replace("\t", new string(' ', 4));
             comboBox.DrawItem += comboBox_DrawItem;
             List<string> examples = new List<string> {
-                "bubble.txt", "C1.TXT", "C2.TXT",  "C6.TXT", "C7.TXT", 
+                "bubble.txt", "C1.TXT", "C2.TXT",  "C6.TXT", "C7.TXT",
                 "CONST.TXT", "ECCEXAM1.TXT","EXP.TXT","LOOP2.TXT",
                 "LOOP3.TXT", "SCAN.TXT"
             };
@@ -23,7 +22,7 @@ namespace CompilationPrinciple
             comboBox.SelectedIndex = 0;
             On_form_resize(null, null);
             Resize += On_form_resize;
-            
+
         }
         void comboBox_DrawItem(object? sender, DrawItemEventArgs e) {
             float size = comboBox.ItemHeight;
@@ -32,7 +31,7 @@ namespace CompilationPrinciple
             e.DrawBackground();
 
             // Draw each string in the items
-            if(e.Index >= 0)
+            if (e.Index >= 0)
                 e.Graphics.DrawString(comboBox.Items[e.Index].ToString(),
             this.comboBox.Font,
             System.Drawing.Brushes.Black,
@@ -42,11 +41,26 @@ namespace CompilationPrinciple
             e.DrawFocusRectangle();
 
         }
+        protected override bool ProcessDialogKey(Keys keycode) {
+            switch (keycode) {
+                case Keys.Left:
+                case Keys.Up:
+                case Keys.Right:
+                case Keys.Down:
+                case Keys.Enter:
+                    return false;
+            }
+            return true;
+        }
+        void CodeBox_KeyUp(object? sender, KeyEventArgs e) {
+            CodeBox_MouseDown(null, null);
+        }
         void Codebox_KeyPress(object? sender, KeyPressEventArgs e) {
             if (e.KeyChar == (char)Keys.Tab) {
                 e.Handled = true;
                 CodeBox.SelectedText = new string(' ', 4);
             }
+            CodeBox_MouseDown(null, null);
         }
         private void On_form_resize(object? sender, EventArgs? e) {
             CodeBox.Width = (int)(0.55 * Width);
@@ -54,6 +68,7 @@ namespace CompilationPrinciple
             MessageBox.Width = Width - CodeBox.Width - 30;
             CodeBox.Height = Height - CodeBox.Location.Y - 50;
             MessageBox.Height = CodeBox.Height;
+            comboBox.ItemHeight = button1.Height - 6;
             comboBox.Location = new Point(MessageBox.Location.X, comboBox.Location.Y);
             button1.Location = new Point(comboBox.Location.X + comboBox.Width + 30, comboBox.Location.Y);
             button2.Location = new Point(button1.Location.X + button1.Width + 30, button1.Location.Y);
@@ -66,7 +81,7 @@ namespace CompilationPrinciple
             String errStr = "";
             if (scanner.getWorng) {
                 errStr += "[LEXICAL ERROR!] \r\n";
-                foreach(String str in scanner.errorList) {
+                foreach (String str in scanner.errorList) {
                     errStr += str + "\r\n";
                 }
                 MessageBox.Text = errStr;
@@ -84,7 +99,7 @@ namespace CompilationPrinciple
                 errStr += "[SYNTAX NO ERROR.] \r\n\r\n";
                 syntaxTreeRD = syntaxTreeNode.PrintTree(0).Replace("\t", new string(' ', 4));
             } else {
-                errStr += "[SYNTAX ERROR!] \r\n\r\n";
+                errStr += "[SYNTAX ERROR!] \r\n";
                 foreach (string str in s.errorList) {
                     errStr += str + "\r\n";
                 }
@@ -102,13 +117,21 @@ namespace CompilationPrinciple
             SemanticAnalysiser semanticAnalysiser = new SemanticAnalysiser();
             semanticAnalysiser.analyze(ll1.root);
             List<List<String>> symbTable = semanticAnalysiser.PrintSymbTable();
-            
 
-            ResultForm resultForm = new ResultForm(tokenList, syntaxTreeRD, syntaxTreeLL, symbTable);
-            //ResultForm resultForm = new ResultForm(tokenList, syntaxTreeRD, "", new List<List<string>>());
+
+            if (semanticAnalysiser.errorList.Count != 0) {
+                errStr += "[SEMANTIC ERROR!]\r\n";
+                foreach (String str in semanticAnalysiser.errorList) {
+                    errStr += str + "\r\n";
+                }
+                MessageBox.Text = errStr;
+                return;
+            }
+
             errStr += "[SEMANTIC NO ERROR.]";
             MessageBox.Text = errStr;
 
+            ResultForm resultForm = new ResultForm(tokenList, syntaxTreeRD, syntaxTreeLL, symbTable);
             resultForm.Show();
         }
 
@@ -142,10 +165,29 @@ namespace CompilationPrinciple
         private void comboBox_SelectedIndexChanged(object sender, EventArgs e) {
             Console.WriteLine(comboBox.Text);
             string txt = Properties.Resources.ResourceManager.GetObject(comboBox.Text.Split('.')[0]) as string;
-            if(txt != null) {
+            if (txt != null) {
                 txt = txt.Replace("\t", new string(' ', 4));
                 CodeBox.Text = txt;
             }
+
+        }
+        private void CodeBox_MouseDown(object? sender, object? e) {
+            /*int cur = CodeBox.SelectionStart;
+            string str = CodeBox.Text.Substring(0, cur).Split("\r\n").Last();
+            int len = 0;
+            while (len < str.Length && str[len] == ' ' )
+                len++;
+            if (len == str.Length)
+                len = 0;
+            CodeBox.Text = CodeBox.Text.Substring(0, cur) + new string(' ', len) + CodeBox.Text.Substring(cur);
+            CodeBox.SelectionStart = CodeBox.Text.Length;*/
+            int cur = CodeBox.SelectionStart;
+            int line = (CodeBox.Text + " ").Substring(0, cur).Split("\n").Length;
+            LineLabel.Text = "当前光标所在行：" + line;
+            //Console.WriteLine(line);
+        }
+
+        private void label1_Click(object sender, EventArgs e) {
 
         }
     }
