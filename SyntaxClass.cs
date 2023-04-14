@@ -207,7 +207,7 @@ namespace CompilationPrinciple {
                         }
                     }
                 }
-
+                Console.Write( lineno +"  ");
                 Console.WriteLine();
                 res += "\r\n";
                 for (int i = 0; i < 3; i++) {

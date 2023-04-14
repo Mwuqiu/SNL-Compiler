@@ -32,16 +32,19 @@ namespace CompilationPrinciple {
             off = 0;
             level = -1;
             scope = new SymTableItem[50];
+            errorList = new List<string>();
         }
 
         public void CreateTable() {
             level = level + 1;    
             off = initOff;
         }
+
         public void SemError(String str) {
             errorList.Add(str);
             Console.WriteLine(str);
         }
+
         public void analyze(SyntaxTreeNode root) {
             CreateTable();
             initialize();
@@ -62,6 +65,13 @@ namespace CompilationPrinciple {
             if(p.nodeKind == NodeKind.StmLK) {
                 Body(p);
             }
+            if(level != -1) {
+                DestoryTable();
+            }            
+        }
+
+        void DestoryTable() {
+            level = level - 1;
         }
 
         public void TypeDecPart(SyntaxTreeNode p) {
@@ -70,7 +80,6 @@ namespace CompilationPrinciple {
             SymTableItem entry = new SymTableItem();
             attr.typeKind = IdKind.typeKind;
             while (p != null) {                          
-                //attr.idType = TypeProcess(p, p.decKind);
                 Enter(ref present, attr, entry , p.name[0]);
                 if (present) {
                     SemError("[ERROR] line " + p.lineno + ": variable '" + p.name[0] + "'"  + " repetation declared!");
@@ -88,6 +97,7 @@ namespace CompilationPrinciple {
 
         public void ProcDecPart(SyntaxTreeNode t) {
             SyntaxTreeNode p = new SyntaxTreeNode();
+            p.DeepCopy(t);
             /*处理过程头*/
             SymTableItem entry = HeadProcess(t);
             t = t.child[1];
@@ -118,7 +128,11 @@ namespace CompilationPrinciple {
                 ProcDecPart(t);
                 t = t.sibling;
             }
-            t = p;            
+            t = p;
+            Body(t.child[2]);
+            if(level != -1) {
+                DestoryTable();
+            }
         }
 
         public void Body(SyntaxTreeNode t) { 
@@ -167,7 +181,7 @@ namespace CompilationPrinciple {
 
         public bool Compat(TypeIR tp1, TypeIR tp2) {
             bool present;
-            if(tp1 == tp2) {
+            if(tp1 != tp2) {
                 present = false;
             } else {
                 present = true;
@@ -177,7 +191,7 @@ namespace CompilationPrinciple {
 
         public TypeIR arrayVar(SyntaxTreeNode t) {
             bool present = false;
-            SymTableItem entry = null;
+            SymTableItem entry = new SymTableItem();
             TypeIR Eptr0 = null;
             TypeIR Eptr1 = null;
             TypeIR Eptr = null;
@@ -189,28 +203,43 @@ namespace CompilationPrinciple {
                 if (FindAttr(entry).typeKind != IdKind.varKind) {
                     SemError("[ERROR] line " + t.lineno + ": '" + t.name[0] + "' is not a variable!");
                     Eptr = null;
-                } else if (FindAttr(entry).idType.typeKind != TypeKind.arrayTy) {
-                    // 不是数组类型变量
-                    SemError("[ERROR] line " + t.lineno + ": '" + t.name[0] + "' is not a array variable!");
+                } 
+                else {
+                    if (FindAttr(entry).idType != null) {
+                        if (FindAttr(entry).idType.typeKind != TypeKind.arrayTy) {
+                            // 不是数组类型变量
+                            SemError("[ERROR] line " + t.lineno + ": '" + t.name[0] + "' is not a array variable!");
 
-                } else {
-                    /*检查E的类型是否与下标类型相符*/
-                    Eptr0 = entry.attrIR.idType.arrayAttr.indexTy;
-                    if(Eptr0 == null) {
-                        return null;
-                    }
-                    AccessKind Ekind = new AccessKind();
-                    Eptr1 = Expr(t.child[0], Ekind,false);
-                    if(Eptr == null) {
-                        return null;
-                    }
-                    present = Compat(Eptr0, Eptr1);
-                    if (present) {
-                        SemError("[ERROR] line " + t.lineno + ": array member type is not matched!");
-                        Eptr = null;
-                    } else {
-                        Eptr = entry.attrIR.idType.arrayAttr.elementType;
-                    }
+                        } else {
+                            /*检查E的类型是否与下标类型相符 */
+                            Eptr0 = entry.attrIR.idType.arrayAttr.indexTy;
+                            if (Eptr0 == null) {
+                                return null;
+                            }
+                            int constIndex = 0;
+                            if (t.child[0].expKind == ExpKind.ConstK) {
+                                constIndex = t.child[0].attr.expAttr.val;
+                                if(constIndex < entry.attrIR.idType.arrayAttr.low || constIndex > entry.attrIR.idType.arrayAttr.up) {
+                                    SemError("[ERROR] line " + t.lineno + ": array index out of range!");
+                                }
+                            }
+
+                            AccessKind Ekind = new AccessKind();
+                            Eptr1 = Expr(t.child[0], Ekind, false);
+                            if (Eptr1 == null) {
+                                return null;
+                            }
+                            present = Compat(Eptr0, Eptr1);
+                            if (!present) {
+                                SemError("[ERROR] line " + t.lineno + ": array member type is not matched!");
+                                Eptr = null;
+                            } else {
+                                Eptr = entry.attrIR.idType.arrayAttr.elementType;
+                            }
+
+                        }
+
+                    }                                                         
                 }
             } else {
                 SemError("[ERROR] line " + t.lineno + ": '" + t.name[0] + "' have not been declared.");
@@ -272,7 +301,7 @@ namespace CompilationPrinciple {
 
         public TypeIR Expr(SyntaxTreeNode t, AccessKind Ekind, bool hasEKind) {
             bool present = false;
-            SymTableItem entry = null;
+            SymTableItem entry = new SymTableItem();
             TypeIR Eptr0 = null;
             TypeIR Eptr1 = null;
             TypeIR Eptr = null;
@@ -289,7 +318,6 @@ namespace CompilationPrinciple {
                         if (t.child[0] == null) {
                             present = FindEntry(t.name[0], entry);
                             t.table[0] = entry;
-
                             if (present) {
                                 /*id不是变量*/
                                 if (FindAttr(entry).typeKind != IdKind.varKind) {
@@ -316,7 +344,6 @@ namespace CompilationPrinciple {
                         }
                          break;
                     case ExpKind.OpK:
-
                         /*递归调用儿子节点*/
                         Eptr0 = Expr(t.child[0], Ekind, false);
                         if(Eptr0 == null) {
@@ -326,7 +353,6 @@ namespace CompilationPrinciple {
                         if (Eptr1 == null) {
                             return null;
                         }
-
                         /*类型判别*/
                         present = Compat(Eptr0, Eptr1);
                         if(present != false) {
@@ -355,9 +381,7 @@ namespace CompilationPrinciple {
         }
 
         public void ifstatment(SyntaxTreeNode t) {
-
             AccessKind Ekind = AccessKind.dir;
-
             TypeIR Etp = Expr(t.child[0],Ekind,false);
             if(Etp != null) {
                 /*处理条件表达式*/
@@ -382,19 +406,21 @@ namespace CompilationPrinciple {
         public void whilestatement(SyntaxTreeNode t) {
             AccessKind Ekind = AccessKind.dir;
             TypeIR Etp = Expr(t.child[0], Ekind, false);
-            if(Etp != null) {
-                Console.WriteLine("condition expression error!\n");
-            } else {
-                t = t.child[1];
-                while(t != null) {
-                    statement(t);
-                    t = t.sibling;
+            if (Etp != null) {
+                if (Etp.typeKind != TypeKind.boolTy) {
+                    Console.WriteLine("condition expression error!\n");
+                } else {
+                    t = t.child[1];
+                    while (t != null) {
+                        statement(t);
+                        t = t.sibling;
+                    }
                 }
             }
         }
 
         public void readstatement(SyntaxTreeNode t) {
-            SymTableItem entry = null;
+            SymTableItem entry = new SymTableItem();
             bool present = false;
             /*用id检查整个符号表*/
             present = FindEntry(t.name[0], entry);
@@ -474,8 +500,8 @@ namespace CompilationPrinciple {
             SyntaxTreeNode child1;
             SyntaxTreeNode child2;
 
-            child1 = t.child[1];
-            child2 = t.child[2];
+            child1 = t.child[0];
+            child2 = t.child[1];
 
             if (child1.child[0] == null) {
                 present = FindEntry(child1.name[0], entry);
@@ -500,7 +526,7 @@ namespace CompilationPrinciple {
                 }
             }
             if(Eptr != null) {
-                if((t.nodeKind == NodeKind.StmLK) && (t.stmtKind == StmtKind.AssignK)) {
+                if((t.nodeKind == NodeKind.StmtK) && (t.stmtKind == StmtKind.AssignK)) {
                     ptr = Expr(child2, Ekind, false);
                     if (!Compat(ptr, Eptr)) {
                         SemError("[ERROR] line " + t.lineno + ": assign type not match!");

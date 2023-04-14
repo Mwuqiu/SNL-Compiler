@@ -111,6 +111,7 @@ namespace CompilationPrinciple {
                 case 3:
                     symbolStack.Push(LexType.ID);
                     currentP.name[0] = tokenList.First().sem;
+                    currentP.lineno = tokenList.First().line;                    
                     currentP.idnum++;
                     break;
                 //<DeclarePart> ::= TypeDec VarDec FuncDec
@@ -169,6 +170,7 @@ namespace CompilationPrinciple {
                 case 11:
                     symbolStack.Push(LexType.ID);
                     currentP.name[0] = tokenList.First().sem;
+                    currentP.lineno = tokenList.First().line;
                     currentP.idnum++;
                     break;
                 //<TypeDef> ::= BaseType
@@ -184,6 +186,7 @@ namespace CompilationPrinciple {
                     symbolStack.Push(LexType.ID);
                     currentP.decKind = DecKind.IdK;
                     currentP.typeName = tokenList.First().sem;
+                    currentP.lineno = tokenList.First().line;
                     break;
                 //<BaseType> ::= INTEGER 
                 case 15:
@@ -230,6 +233,7 @@ namespace CompilationPrinciple {
                         currentP.attr = new SyntaxTreeNode.Attr("array");
                     }
                     currentP.attr.arrayAttr.low = int.Parse(tokenList.First().sem);
+                    currentP.lineno = tokenList.First().line;
                     break;
                 //<Top> ::= INTC
                 case 21:
@@ -238,6 +242,7 @@ namespace CompilationPrinciple {
                         currentP.attr = new SyntaxTreeNode.Attr("array");
                     }
                     currentP.attr.arrayAttr.up = int.Parse(tokenList.First().sem);
+                    currentP.lineno = tokenList.First().line;
                     break;
                 //<RecType > ::= RECORD FieldDecList END
                 case 22:
@@ -292,6 +297,7 @@ namespace CompilationPrinciple {
                     symbolStack.Push(LexType.IdMore);
                     symbolStack.Push(LexType.ID);
                     currentP.name[currentP.idnum] = tokenList.First().sem;
+                    currentP.lineno = tokenList.First().line;
                     currentP.idnum++;
                     break;
                 //<IdMore > ::= ε
@@ -315,6 +321,7 @@ namespace CompilationPrinciple {
                     symbolStack.Push(LexType.VAR);
                     currentP = syntaxTreeStack.Pop();
                     currentP.nodeKind = NodeKind.VarK;
+                    currentP.lineno = tokenList.First().line;
                     currentP.sibling = new SyntaxTreeNode();
                     currentP.child[0] = new SyntaxTreeNode();
                     syntaxTreeStack.Push(currentP.sibling);
@@ -347,6 +354,7 @@ namespace CompilationPrinciple {
                     symbolStack.Push(LexType.ID);
 
                     currentP.name[currentP.idnum] = tokenList.First().sem;
+                    currentP.lineno = tokenList.First().line;
                     currentP.idnum++;
                     break;
                 //<VarIdMore > ::= ε
@@ -401,6 +409,7 @@ namespace CompilationPrinciple {
                 case 44:
                     symbolStack.Push(LexType.ID);
                     currentP.name[0] = tokenList.First().sem;
+                    currentP.lineno = tokenList.First().line;
                     currentP.idnum++;
                     break;
                 //<ParamList> ::= ε
@@ -460,6 +469,7 @@ namespace CompilationPrinciple {
                     symbolStack.Push(LexType.FidMore);
                     symbolStack.Push(LexType.ID);
                     currentP.name[currentP.idnum] = tokenList.First().sem;
+                    currentP.lineno = tokenList.First().line;
                     currentP.idnum++;
                     break;
                 //<FidMore> ::= ε 
@@ -486,6 +496,7 @@ namespace CompilationPrinciple {
                     syntaxTreeStack.Pop();
                     currentP = syntaxTreeStack.Pop();
                     currentP.nodeKind =NodeKind.StmLK;
+                    currentP.lineno = tokenList.First().line;
                     currentP.child[0] = new SyntaxTreeNode();
                     syntaxTreeStack.Push(currentP.child[0]);
                     break;
@@ -509,6 +520,7 @@ namespace CompilationPrinciple {
                     currentP = syntaxTreeStack.Pop();
                     currentP.nodeKind = NodeKind.StmtK;
                     currentP.stmtKind = StmtKind.IfK;
+                    currentP.lineno = tokenList.First().line;
                     currentP.sibling = new SyntaxTreeNode();
                     syntaxTreeStack.Push(currentP.sibling);
                     break;
@@ -518,6 +530,7 @@ namespace CompilationPrinciple {
                     currentP = syntaxTreeStack.Pop();
                     currentP.nodeKind = NodeKind.StmtK;
                     currentP.stmtKind = StmtKind.WhileK;
+                    currentP.lineno = tokenList.First().line;
                     currentP.sibling = new SyntaxTreeNode();
                     syntaxTreeStack.Push(currentP.sibling);
                     break;
@@ -527,6 +540,7 @@ namespace CompilationPrinciple {
                     currentP = syntaxTreeStack.Pop();
                     currentP.nodeKind = NodeKind.StmtK;
                     currentP.stmtKind = StmtKind.ReadK;
+                    currentP.lineno = tokenList.First().line;
                     currentP.sibling = new SyntaxTreeNode();
                     syntaxTreeStack.Push(currentP.sibling);
                     break;
@@ -536,6 +550,7 @@ namespace CompilationPrinciple {
                     currentP = syntaxTreeStack.Pop();
                     currentP.nodeKind = NodeKind.StmtK;
                     currentP.stmtKind = StmtKind.WriteK;
+                    currentP.lineno = tokenList.First().line;
                     currentP.sibling = new SyntaxTreeNode();
                     syntaxTreeStack.Push(currentP.sibling);
                     //currentP.sibling = new SyntaxTreeNode();
@@ -546,6 +561,7 @@ namespace CompilationPrinciple {
                     currentP = syntaxTreeStack.Pop();
                     currentP.nodeKind = NodeKind.StmLK;
                     currentP.stmtKind = StmtKind.ReturnK;
+                    currentP.lineno = tokenList.First().line;
                     currentP.sibling = new SyntaxTreeNode();
                     syntaxTreeStack.Push(currentP.sibling);
                     break;
@@ -562,6 +578,7 @@ namespace CompilationPrinciple {
                     }                    
                     variableExpression.attr.expAttr.varKind = SyntaxTreeNode.Attr.ExpAttr.VarKind.IdV;*/
                     variableExpression.name[0] = tokenList.First().sem;
+                    variableExpression.lineno = tokenList.First().line;
                     variableExpression.idnum++;
                     
                     currentP = syntaxTreeStack.Pop();
@@ -575,6 +592,7 @@ namespace CompilationPrinciple {
                 case 67:
                     symbolStack.Push(LexType.AssignmentRest);
                     currentP.stmtKind = StmtKind.AssignK;
+                    currentP.lineno = tokenList.First().line;
                     break;
                 //<AssCall> ::= CallStmRest
                 case 68:
@@ -584,6 +602,7 @@ namespace CompilationPrinciple {
                     }
                     currentP.child[0].attr.expAttr.varKind = SyntaxTreeNode.Attr.ExpAttr.VarKind.IdV;
                     currentP.stmtKind = StmtKind.CallK;
+                    currentP.lineno = tokenList.First().line;
                     break;
                 //<AssignmentRest> ::= VariMore := Exp 
                 case 69:
@@ -649,6 +668,7 @@ namespace CompilationPrinciple {
                 case 73:
                     symbolStack.Push(LexType.ID);
                     currentP.name[0] = tokenList.First().sem;
+                    currentP.lineno = tokenList.First().line;
                     currentP.idnum++;
                     break;
                 //<OutputStm> ::= WRITE( Exp ) 
@@ -738,6 +758,7 @@ namespace CompilationPrinciple {
                         currentP.attr = new SyntaxTreeNode.Attr("exp");
                     }
                     currentP.attr.expAttr.op = Enum.GetName(typeof(LexType), tokenList.First().lex);
+                    currentP.lineno = tokenList.First().line;
                     LexType sTop = (LexType)Enum.Parse(typeof(LexType), opStack.Peek().attr.expAttr.op);
                     //Compare the priority of the top-of-stack operator and this operator
                     while (priosity(sTop) >= priosity(tokenList.First().lex)) {
@@ -821,6 +842,7 @@ namespace CompilationPrinciple {
                         opAddNode.attr = new SyntaxTreeNode.Attr("exp");
                     }
                     opAddNode.attr.expAttr.op = Enum.GetName(typeof(LexType), tokenList.First().lex);
+                    opAddNode.lineno = tokenList.First().line;
                     sTop = (LexType)Enum.Parse(typeof(LexType), opStack.Peek().attr.expAttr.op);
                     while (priosity(sTop) >= priosity(tokenList.First().lex)) {
                         SyntaxTreeNode temp = opStack.Pop();
@@ -852,6 +874,7 @@ namespace CompilationPrinciple {
                         currentP.attr = new SyntaxTreeNode.Attr("exp");
                     }
                     currentP.attr.expAttr.op = Enum.GetName(typeof(LexType), tokenList.First().lex);
+                    currentP.lineno = tokenList.First().line;
                     sTop = (LexType)Enum.Parse(typeof(LexType), opStack.Peek().attr.expAttr.op);
                     while (priosity(sTop) >= priosity(tokenList.First().lex)) {
                         SyntaxTreeNode temp = opStack.Pop();
@@ -876,6 +899,7 @@ namespace CompilationPrinciple {
                         leftBracketNode.attr = new SyntaxTreeNode.Attr("exp");
                     }
                     leftBracketNode.attr.expAttr.op = Enum.GetName(typeof(LexType), tokenList.First().lex);
+                    leftBracketNode.lineno = tokenList.First().line;
                     opStack.Push(leftBracketNode);
                     expflag++;
                     break;
@@ -889,6 +913,8 @@ namespace CompilationPrinciple {
                         numNode.attr = new SyntaxTreeNode.Attr("exp");
                     }
                     numNode.attr.expAttr.val = int.Parse(tokenList.First().sem);
+                    numNode.lineno = tokenList.First().line;
+
                     numStack.Push(numNode);
                     break;
                 //<Factor> ::= Variable 
@@ -911,6 +937,7 @@ namespace CompilationPrinciple {
                     currentP = new SyntaxTreeNode(NodeKind.ExpK);
                     currentP.expKind = ExpKind.IdK;
                     currentP.name[0] = tokenList.First().sem;
+                    currentP.lineno = tokenList.First().line;
                     if (currentP.attr == null) {
                         currentP.attr = new SyntaxTreeNode.Attr("exp");
                         currentP.attr.expAttr.varKind = SyntaxTreeNode.Attr.ExpAttr.VarKind.IdV;
@@ -982,6 +1009,7 @@ namespace CompilationPrinciple {
                     currentP.nodeKind = NodeKind.ExpK;
                     currentP.expKind = ExpKind.IdK;
                     currentP.name[0] = tokenList.First().sem;
+                    currentP.lineno = tokenList.First().line;
                     currentP.idnum++;
 
                     break;
@@ -991,6 +1019,7 @@ namespace CompilationPrinciple {
                         currentP.attr = new SyntaxTreeNode.Attr("exp");
                     }
                     currentP.attr.expAttr.varKind = SyntaxTreeNode.Attr.ExpAttr.VarKind.IdV;
+                    currentP.lineno = tokenList.First().line;
                     break;
                 //<FieldVarMore> ::= [ Exp ]
                 case 98:
