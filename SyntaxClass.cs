@@ -149,6 +149,7 @@ namespace CompilationPrinciple {
                 return t;
             }
             public String PrintTree(int tab) {
+                //Debug.Assert(lineno != 0);
                 String res = "";
                 for (int i = 0; i < tab; i++) {
                     res += "\t";
@@ -207,7 +208,8 @@ namespace CompilationPrinciple {
                         }
                     }
                 }
-                Console.Write( lineno +"  ");
+                Console.Write(" " + lineno +"  ");
+                res += " " + lineno + "  ";
                 Console.WriteLine();
                 res += "\r\n";
                 for (int i = 0; i < 3; i++) {

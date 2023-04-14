@@ -90,6 +90,7 @@ namespace CompilationPrinciple {
         SyntaxTreeNode? SyntaxProgram() {
 
             SyntaxTreeNode root = new SyntaxTreeNode(NodeKind.ProK);
+            root.lineno = 0;
             root.child[0] = ProgramHead();
             root.child[1] = DeclarePart();
             root.child[2] = ProgramBody();
@@ -98,6 +99,7 @@ namespace CompilationPrinciple {
         }
         public SyntaxTreeNode ProgramHead() {
             SyntaxTreeNode pheadK = new SyntaxTreeNode(NodeKind.PheadK);
+            pheadK.lineno = GetCurrent().line;
             Match(LexType.PROGRAM);
             pheadK.name[pheadK.idnum++] = GetCurrent().sem;
             Match(LexType.ID);
@@ -107,12 +109,12 @@ namespace CompilationPrinciple {
             /*注意, 为null不算错误*/
             SyntaxTreeNode? typeP = new SyntaxTreeNode(NodeKind.TypeK);
             SyntaxTreeNode pp = typeP;
-
             typeP.child[0] = TypeDec();
             if (typeP.child[0] == null)
                 typeP = null;
 
             SyntaxTreeNode? varP = new SyntaxTreeNode(NodeKind.VarK);
+            varP.lineno = GetCurrent().line;
             varP.child[0] = VarDec();
             if (varP.child[0] == null)
                 varP = null;
@@ -159,6 +161,7 @@ namespace CompilationPrinciple {
         public SyntaxTreeNode? TypeDecList() {
             SyntaxTreeNode decK = new SyntaxTreeNode(NodeKind.DecK);
             TypeId(decK);
+            decK.lineno = GetCurrent().line;
             Match(LexType.EQ);
             TypeName(decK);
             Match(LexType.SEMI);
@@ -172,6 +175,7 @@ namespace CompilationPrinciple {
             if (GetCurrent().lex == LexType.ID) {
                 t.name[t.idnum++] = GetCurrent().sem;
             }
+            t.lineno = GetCurrent().line;
             Match(LexType.ID);
         }
         public void TypeName(SyntaxTreeNode t) { // TypeDef 
@@ -190,6 +194,7 @@ namespace CompilationPrinciple {
                     t.decKind = DecKind.IdK;
                     // t.name[t.idnum++] = GetCurrent().sem;
                     t.typeName = GetCurrent().sem;
+                    t.lineno = GetCurrent().line;
                     Match(LexType.ID);
                     break;
                 default:
@@ -202,10 +207,12 @@ namespace CompilationPrinciple {
         public void BaseType(SyntaxTreeNode t) {
             switch (GetCurrent().lex) {
                 case LexType.INTEGER_T:
+                    t.lineno = GetCurrent().line;
                     Match(LexType.INTEGER_T);
                     t.decKind = DecKind.IntegerK;
                     break;
                 case LexType.CHAR_T:
+                    t.lineno = GetCurrent().line;
                     Match(LexType.CHAR_T);
                     t.decKind = DecKind.CharK;
                     break;
@@ -233,6 +240,7 @@ namespace CompilationPrinciple {
             }
         }
         public void ArrayType(SyntaxTreeNode t) {
+            t.lineno = GetCurrent().line;
             Match(LexType.ARRAY);
             Match(LexType.LMIDPAREN);
             if (GetCurrent().lex == LexType.INTC_VAL) {
@@ -252,6 +260,7 @@ namespace CompilationPrinciple {
             t.decKind = DecKind.ArrayK;
         }
         public void RecType(SyntaxTreeNode t) {
+            t.lineno = GetCurrent().line;
             Match(LexType.RECORD);
             SyntaxTreeNode p = FieldDecList();
             if (p != null) {
@@ -299,6 +308,7 @@ namespace CompilationPrinciple {
         public void IdList(SyntaxTreeNode t) {
             if (GetCurrent().lex == LexType.ID) {
                 t.name[t.idnum++] = GetCurrent().sem;
+                t.lineno = GetCurrent().line;
                 Match(LexType.ID);
             }
             IdMore(t);
@@ -416,6 +426,7 @@ namespace CompilationPrinciple {
             switch (GetCurrent().lex) {
                 case LexType.ID:
                     t.name[t.idnum++] = GetCurrent().sem;
+                    t.lineno = GetCurrent().line;
                     Match(LexType.ID);
                     break;
                 default:
@@ -469,6 +480,7 @@ namespace CompilationPrinciple {
             Match(LexType.PROCEDURE);
             if (GetCurrent().lex == LexType.ID) {
                 t.name[t.idnum++] = GetCurrent().sem;
+                t.lineno = GetCurrent().line;
                 Match(LexType.ID);
             }
             Match(LexType.LPAREN);
@@ -561,6 +573,7 @@ namespace CompilationPrinciple {
         public void FormList(SyntaxTreeNode t) {
             if (GetCurrent().lex == LexType.ID) {
                 t.name[t.idnum++] = GetCurrent().sem;
+                t.lineno = GetCurrent().line;
                 Match(LexType.ID);
             }
             FidMore(t);
@@ -600,6 +613,7 @@ namespace CompilationPrinciple {
         // 
         public SyntaxTreeNode ProgramBody() {
             SyntaxTreeNode t = new SyntaxTreeNode(NodeKind.StmLK);
+            t.lineno = GetCurrent().line;
             Match(LexType.BEGIN);
             t.child[0] = StmList();
             Match(LexType.END);
@@ -688,6 +702,8 @@ namespace CompilationPrinciple {
             child0.name[child0.idnum++] = tmp;
             VariMore(child0);
             t.child[0] = child0;
+            t.child[0].lineno = GetCurrent().line;
+            t.lineno = GetCurrent().line;
             Match(LexType.ASSIGN);
             t.child[1] = Exp();
             return t;
@@ -696,8 +712,8 @@ namespace CompilationPrinciple {
             SyntaxTreeNode t = new SyntaxTreeNode(NodeKind.StmtK) {
                 stmtKind = StmtKind.IfK
             };
-            Match(LexType.IF);
             t.lineno = GetCurrent().line;
+            Match(LexType.IF);
             t.child[0] = Exp(); // IF语句的条件表达式
             Match(LexType.THEN);
             t.child[1] = StmList();
@@ -715,8 +731,11 @@ namespace CompilationPrinciple {
             SyntaxTreeNode t = new SyntaxTreeNode(NodeKind.StmtK) {
                 stmtKind = StmtKind.WhileK
             };
+            t.lineno = GetCurrent().line;
             Match(LexType.WHILE);
+            int line = GetCurrent().line;
             t.child[0] = Exp(); // WHILE语句的条件表达式
+            t.child[0].lineno = line;
             Match(LexType.DO);
             t.child[1] = StmList(); // 循环语句部分
             return t;
@@ -727,6 +746,7 @@ namespace CompilationPrinciple {
             SyntaxTreeNode t = new SyntaxTreeNode(NodeKind.StmtK) {
                 stmtKind = StmtKind.ReadK
             };
+            t.lineno = GetCurrent().line;
             Match(LexType.READ);
             Match(LexType.LPAREN);
             t.name[t.idnum++] = GetCurrent().sem;
@@ -738,6 +758,7 @@ namespace CompilationPrinciple {
             SyntaxTreeNode t = new SyntaxTreeNode(NodeKind.StmtK) {
                 stmtKind = StmtKind.WriteK
             };
+            t.lineno = GetCurrent().line;
             Match(LexType.WRITE);
             Match(LexType.LPAREN);
             t.child[0] = Exp();
@@ -748,6 +769,7 @@ namespace CompilationPrinciple {
             SyntaxTreeNode t = new SyntaxTreeNode(NodeKind.StmtK) {
                 stmtKind = StmtKind.ReturnK
             };
+            t.lineno = GetCurrent().line;
             Match(LexType.RETURN);
             return t;
         }
@@ -755,6 +777,7 @@ namespace CompilationPrinciple {
             SyntaxTreeNode t = new SyntaxTreeNode(NodeKind.StmtK) {
                 stmtKind = StmtKind.CallK
             };
+            t.lineno = GetCurrent().line;
             Match(LexType.LPAREN);
             /*函数名为Exp结点*/
             t.child[0] = new SyntaxTreeNode(NodeKind.ExpK) {
@@ -763,6 +786,7 @@ namespace CompilationPrinciple {
             t.child[0].name[t.child[0].idnum++] = tmp;
             t.child[0].attr = new SyntaxTreeNode.Attr("exp");
             t.child[0].attr.expAttr.varKind = ExpAttr.VarKind.IdV;
+            t.child[0].lineno = GetCurrent().line;
             t.child[1] = ActParamList();
             Match(LexType.RPAREN);
             return t;
@@ -816,7 +840,9 @@ namespace CompilationPrinciple {
                 p.child[0] = t; // 运算表达式的左运算简式
                 p.attr.expAttr.op = GetCurrent().sem;
                 t = p;
+                t.lineno = GetCurrent().line;
                 index++; // 匹配当前单词LT/EQ
+
                 if (t != null) {
                     t.child[1] = Simple_exp(); // 右运算简式
                 }
@@ -836,6 +862,7 @@ namespace CompilationPrinciple {
                     p.child[0] = t; // 左运算项
                     p.attr.expAttr.op = GetCurrent().sem;
                     t = p;
+                    t.lineno = GetCurrent().line;
                     index++; // 匹配当前单词 + -
                     t.child[1] = Term(); // 右运算项
                 } else {
@@ -857,6 +884,7 @@ namespace CompilationPrinciple {
                     p.child[0] = t; // 左运算项
                     p.attr.expAttr.op = GetCurrent().sem;
                     t = p;
+                    t.lineno = GetCurrent().line;
                     index++; // 匹配当前单词 * /
                     t.child[1] = Factor(); // 右运算项
                 } else {
@@ -874,6 +902,7 @@ namespace CompilationPrinciple {
                     t.attr = new SyntaxTreeNode.Attr("exp");
                     t.expKind = ExpKind.ConstK;
                     t.attr.expAttr.val = int.Parse(GetCurrent().sem);
+                    t.lineno = GetCurrent().line;
                     Match(LexType.INTC_VAL);
                     break;
                 case LexType.ID:
@@ -897,6 +926,7 @@ namespace CompilationPrinciple {
 
             if (GetCurrent().lex == LexType.ID) {
                 t.name[t.idnum++] = GetCurrent().sem;
+                t.lineno = GetCurrent().line;
                 Match(LexType.ID);
                 VariMore(t);
             }
