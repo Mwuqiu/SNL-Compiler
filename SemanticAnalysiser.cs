@@ -467,7 +467,7 @@ namespace CompilationPrinciple {
                 SemError("[ERROR] line " + t.lineno + ": '" + t.name[0] + "' have not been declared.");
             } else {
                 if (FindAttr(entry).typeKind != IdKind.procKind) {
-                    Console.WriteLine("is not function name!");
+                    SemError("[ERROR] line " + t.lineno + ": '" + t.child[0].name[0] + "' is not function name!");
                 } else {
                     p = t.child[1];
                     ParamTable param = FindAttr(entry).procAttr.param;
