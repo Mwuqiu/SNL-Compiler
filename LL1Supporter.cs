@@ -46,7 +46,7 @@ namespace CompilationPrinciple {
         void createTable() {
             LL1Table[(int)LexType.Program, (int)LexType.PROGRAM] = 1;
             LL1Table[(int)LexType.ProgramHead, (int)LexType.PROGRAM] = 2;
-            LL1Table[(int)LexType.ProgramName, (int)LexType.ID] = 3;
+            LL1Table[(int)LexType.ProgramName, (int)LexType.ID] = 3; 
             LL1Table[(int)LexType.DeclarePart, (int)LexType.TYPE] = 4;
             LL1Table[(int)LexType.DeclarePart, (int)LexType.VAR] = 4;
             LL1Table[(int)LexType.DeclarePart, (int)LexType.PROCEDURE] = 4;
@@ -107,7 +107,7 @@ namespace CompilationPrinciple {
             LL1Table[(int)LexType.ProcDec, (int)LexType.PROCEDURE] = 40;
             LL1Table[(int)LexType.ProcDec, (int)LexType.BEGIN] = 39;
             LL1Table[(int)LexType.ProcDeclaration, (int)LexType.PROCEDURE] = 41;
-            LL1Table[(int)LexType.ProcDecMore, (int)LexType.PROCEDURE] = 41;
+            LL1Table[(int)LexType.ProcDecMore, (int)LexType.PROCEDURE] = 43;
             LL1Table[(int)LexType.ProcDecMore, (int)LexType.BEGIN] = 42;
             LL1Table[(int)LexType.ProcName, (int)LexType.ID] = 44;
             LL1Table[(int)LexType.ParamList, (int)LexType.INTEGER_T] = 46;
@@ -116,7 +116,7 @@ namespace CompilationPrinciple {
             LL1Table[(int)LexType.ParamList, (int)LexType.RECORD] = 46;
             LL1Table[(int)LexType.ParamList, (int)LexType.VAR] = 46;
             LL1Table[(int)LexType.ParamList, (int)LexType.ID] = 46;
-            LL1Table[(int)LexType.ParamList, (int)LexType.RMIDPAREN] = 45;
+            LL1Table[(int)LexType.ParamList, (int)LexType.RPAREN] = 45;
             LL1Table[(int)LexType.ParamDecList, (int)LexType.INTEGER_T] = 47;
             LL1Table[(int)LexType.ParamDecList, (int)LexType.CHAR_T] = 47;
             LL1Table[(int)LexType.ParamDecList, (int)LexType.ARRAY] = 47;

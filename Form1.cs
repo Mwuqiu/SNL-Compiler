@@ -118,7 +118,6 @@ namespace CompilationPrinciple {
             semanticAnalysiser.analyze(ll1.root);
             List<List<String>> symbTable = semanticAnalysiser.PrintSymbTable();
 
-
             if (semanticAnalysiser.errorList.Count != 0) {
                 errStr += "[SEMANTIC ERROR!]\r\n";
                 foreach (String str in semanticAnalysiser.errorList) {

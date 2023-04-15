@@ -38,6 +38,7 @@ namespace CompilationPrinciple {
         public void CreateTable() {
             level = level + 1;    
             off = initOff;
+            scope[level] = null;
         }
 
         public void SemError(String str) {
@@ -129,8 +130,8 @@ namespace CompilationPrinciple {
                 t = t.sibling;
             }
             t = p;
-            Body(t.child[2]);
-            if(level != -1) {
+            Body(t.child[2]);            
+            if (level != -1) {
                 DestoryTable();
             }
         }
@@ -364,7 +365,7 @@ namespace CompilationPrinciple {
                                 case "PLUS":
                                 case "MINUS":
                                 case "TIMES":
-                                case "OVER":
+                                case "DIVIDE":
                                     Eptr = intPtr;
                                     break;
                             }
