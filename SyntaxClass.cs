@@ -16,40 +16,29 @@ namespace CompilationPrinciple {
             // 指向子语法树节点指针，为语法树节点指针类型
             public SyntaxTreeNode? sibling { get; set; }
             // 指向兄弟语法树节点指针，为语法树节点指针类型。
-
             public int lineno;
             // 记录源程序行号，为整数类型
-
-
             public NodeKind nodeKind;
             // 记录语法树节点类型，取值 ProK, PheadK, TypeK, VarK,
             // ProcDecK, StmLK, DecK, StmtK, ExpK,为语法树节点类型。
-
             public DecKind decKind;
             //记录语法树节点的声明类型，当 nodekind = DecK 时有效，取
             //值 ArrayK, CharK, IntegerK, RecordK, IdK，为语法树节点声明
             //类型。
-
             public StmtKind stmtKind;
             //记录语法树节点的语句类型，当 nodekind = StmtK 时有效，
             //取值 IfK, WhileK, AssignK, ReadK, WriteK, CallK, ReturnK，为语法树节点语句类型。
-
             public ExpKind expKind;
             //记录语法树节点的表达式类型，当 nodekind=ExpK 时有效，
             //取值 OpK, ConstK, IdK，为语法树节点表达式类型。
-
             public int idnum;
             //记录一个节点中的标志符的个数
-
             public string[] name;
             //字符串数组，数组成员是节点中的标志符的名字
-
             public SymTableItem[] table;
             // TODO 标志符在符号表的入口
-
             public string? typeName;
             //记录类型名，当节点为声明类型，且类型是由类型标志符表示时有效。
-
             public class Attr {
                 //记录语法树节点其他属性,为结构体类型。
                 public class ArrayAttr {
