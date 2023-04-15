@@ -715,7 +715,11 @@ namespace CompilationPrinciple {
             t.lineno = GetCurrent().line;
             Match(LexType.IF);
             t.child[0] = Exp(); // IF语句的条件表达式
-            Match(LexType.THEN);
+            if (t.child[0].attr.expAttr.op is "<" or "=") {
+            } else {
+                errorList.Add("[Error] line: " + t.lineno + ", op in while should be '<' or '=' ");
+            }
+                Match(LexType.THEN);
             t.child[1] = StmList();
             //条件为真的处理语句
             if (GetCurrent().lex == LexType.ELSE) {
@@ -736,9 +740,14 @@ namespace CompilationPrinciple {
             int line = GetCurrent().line;
             t.child[0] = Exp(); // WHILE语句的条件表达式
             t.child[0].lineno = line;
-            Match(LexType.DO);
-            t.child[1] = StmList(); // 循环语句部分
-            return t;
+            if (t.child[0].attr.expAttr.op is "<" or "=") {
+                Match(LexType.DO);
+                t.child[1] = StmList(); // 循环语句部分
+                return t;
+            } else {
+                errorList.Add("[Error] line: " + line + ", op in while should be '<' or '=' ");
+                return t;
+            }
         }
 
         public SyntaxTreeNode InputStm() {

@@ -373,7 +373,7 @@ namespace CompilationPrinciple {
                                 Ekind = AccessKind.dir;
                             }
                         } else {
-                            Console.WriteLine("operator is not compat!");
+                            SemError("[ERROR] line " + t.lineno + ": operator is not compat!");
                         }
                         break;
                 }
@@ -464,7 +464,7 @@ namespace CompilationPrinciple {
             t.child[0].table[0] = entry;
 
             if (present == false) {
-                SemError("[ERROR] line " + t.lineno + ": '" + t.name[0] + "' have not been declared.");
+                SemError("[ERROR] line " + t.lineno + ": '" + t.child[0].name[0] + "' have not been declared.");
             } else {
                 if (FindAttr(entry).typeKind != IdKind.procKind) {
                     SemError("[ERROR] line " + t.lineno + ": '" + t.child[0].name[0] + "' is not function name!");
@@ -697,12 +697,12 @@ namespace CompilationPrinciple {
             bool present = FindEntry(p.typeName,entry);
             if (present == true) { 
                 if(entry.attrIR.typeKind != IdKind.typeKind) {
-                    SemError("[ERROR] line " + p.lineno + ": " + p.name[0] + "' used before typed!");
+                    SemError("[ERROR] line " + p.lineno + ": '" + p.name[0] + "' used before typed!");
                 } else {
                     typeIR = entry.attrIR.idType;
                 }
             } else {
-                 SemError("[ERROR] line " + p.lineno + ": " + p.name[0] + "' type name is not declared!");
+                 SemError("[ERROR] line " + p.lineno + ": '" + p.name[0] + "' type name is not declared!");
             }
             return typeIR;            
         }

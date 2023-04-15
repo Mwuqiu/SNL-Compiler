@@ -75,63 +75,68 @@ namespace CompilationPrinciple {
             //Console.WriteLine("!!");
         }
         private void button1_Click(object sender, EventArgs e) {
-            Console.Write(CodeBox.Text);
-            Scanner scanner = new Scanner(CodeBox.Text);
-            scanner.DirectSteeringMethod();
-            String errStr = "";
-            if (scanner.getWorng) {
-                errStr += "[LEXICAL ERROR!] \r\n";
-                foreach (String str in scanner.errorList) {
-                    errStr += str + "\r\n";
+            try {
+                Console.Write(CodeBox.Text);
+                Scanner scanner = new Scanner(CodeBox.Text);
+                scanner.DirectSteeringMethod();
+                String errStr = "";
+                if (scanner.getWorng) {
+                    errStr += "[LEXICAL ERROR!] \r\n";
+                    foreach (String str in scanner.errorList) {
+                        errStr += str + "\r\n";
+                    }
+                    MessageBox.Text = errStr;
+                    return;
                 }
-                MessageBox.Text = errStr;
-                return;
-            }
 
-            errStr += "[LEXICAL NO ERROR.] \r\n\r\n";
+                errStr += "[LEXICAL NO ERROR.] \r\n\r\n";
 
-            String tokenList = scanner.outPutTokenList();
+                String tokenList = scanner.outPutTokenList();
 
-            SyntaxAnalysiser s = new SyntaxAnalysiser(scanner.tokenList);
-            SyntaxClass.SyntaxTreeNode? syntaxTreeNode = s.Parse();
-            String syntaxTreeRD = "";
-            if (syntaxTreeNode != null) {
-                errStr += "[SYNTAX NO ERROR.] \r\n\r\n";
-                syntaxTreeRD = syntaxTreeNode.PrintTree(0).Replace("\t", new string(' ', 4));
-            } else {
-                errStr += "[SYNTAX ERROR!] \r\n";
-                foreach (string str in s.errorList) {
-                    errStr += str + "\r\n";
+                SyntaxAnalysiser s = new SyntaxAnalysiser(scanner.tokenList);
+                SyntaxClass.SyntaxTreeNode? syntaxTreeNode = s.Parse();
+                String syntaxTreeRD = "";
+                if (syntaxTreeNode != null) {
+                    errStr += "[SYNTAX NO ERROR.] \r\n\r\n";
+                    syntaxTreeRD = syntaxTreeNode.PrintTree(0).Replace("\t", new string(' ', 4));
+                } else {
+                    errStr += "[SYNTAX ERROR!] \r\n";
+                    foreach (string str in s.errorList) {
+                        errStr += str + "\r\n";
+                    }
+                    MessageBox.Text = errStr;
+                    return;
                 }
-                MessageBox.Text = errStr;
-                return;
-            }
 
-            String syntaxTreeLL = "";
-            LL1SyntaxAnalysis ll1 = new LL1SyntaxAnalysis(scanner.tokenList);
-            ll1.parse();
-            syntaxTreeLL = ll1.root.PrintTree(0).Replace("\t", new string(' ', 4));
+                String syntaxTreeLL = "";
+                LL1SyntaxAnalysis ll1 = new LL1SyntaxAnalysis(scanner.tokenList);
+                ll1.parse();
+                syntaxTreeLL = ll1.root.PrintTree(0).Replace("\t", new string(' ', 4));
 
 
 
-            SemanticAnalysiser semanticAnalysiser = new SemanticAnalysiser();
-            semanticAnalysiser.analyze(ll1.root);
-            List<List<String>> symbTable = semanticAnalysiser.PrintSymbTable();
+                SemanticAnalysiser semanticAnalysiser = new SemanticAnalysiser();
+                semanticAnalysiser.analyze(ll1.root);
+                List<List<String>> symbTable = semanticAnalysiser.PrintSymbTable();
 
-            if (semanticAnalysiser.errorList.Count != 0) {
-                errStr += "[SEMANTIC ERROR!]\r\n";
-                foreach (String str in semanticAnalysiser.errorList) {
-                    errStr += str + "\r\n";
+                if (semanticAnalysiser.errorList.Count != 0) {
+                    errStr += "[SEMANTIC ERROR!]\r\n";
+                    foreach (String str in semanticAnalysiser.errorList) {
+                        errStr += str + "\r\n";
+                    }
+                    MessageBox.Text = errStr;
+                    return;
                 }
+
+                errStr += "[SEMANTIC NO ERROR.]";
                 MessageBox.Text = errStr;
-                return;
+
+                ResultForm resultForm = new ResultForm(tokenList, syntaxTreeRD, syntaxTreeLL, symbTable);
+                resultForm.Show();
+            } catch (Exception ex) {
+
             }
-
-            errStr += "[SEMANTIC NO ERROR.]";
-            MessageBox.Text = errStr;
-
-            ResultForm resultForm = new ResultForm(tokenList, syntaxTreeRD, syntaxTreeLL, symbTable);
-            resultForm.Show();
+            
         }
 
         private void button2_Click(object sender, EventArgs e) {
