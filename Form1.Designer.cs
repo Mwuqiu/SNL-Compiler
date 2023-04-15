@@ -144,7 +144,7 @@
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.MinimumSize = new System.Drawing.Size(1399, 899);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "SNL Compiler";
             this.ResumeLayout(false);
             this.PerformLayout();
 
