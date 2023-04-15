@@ -12,34 +12,6 @@ namespace CompilationPrinciple {
 
     public enum AccessKind { dir, indir }
 
-    public class IntPtr {
-        public int size { get; set; }
-        public TypeKind kind { get; set; }
-    }
-
-    public class CharPtr {
-        public int size { get; set; }
-        public TypeKind kind { get; set; }
-    }
-
-    public class BoolPtr {
-        public int size { get; set; }
-        public TypeKind kind { get; set; }
-    }
-
-    public class ArrayPtr {
-        int size;
-        TypeKind kind;
-        TypeKind indexType;
-        TypeKind elementType;
-    }
-
-    public class RecordPtr {
-        int size;
-        TypeKind kind;
-        List<FieldChain> recordBody;
-    }
-
     public class FieldChain {
         public string id { get; set; }
         public int off { get; set; }
@@ -71,6 +43,15 @@ namespace CompilationPrinciple {
     public class ParamTable {
         public SymTableItem entry { get; set; }
         public ParamTable next { get; set; }
+
+        public void copyItem(ParamTable paramTable) {
+            if(paramTable != null) {
+                entry.copyItem(paramTable.entry);
+                if (paramTable.next != null) {
+                    next.copyItem(paramTable.next);
+                }
+            }
+        }
 
         public ParamTable() {
             entry = new SymTableItem();

@@ -582,7 +582,6 @@ namespace CompilationPrinciple {
                     res += "\r\n" + sibling.GenerateCode(tab, fa);
                 }*/
                 return res;
-
             }
 
             public String PrintName() {

@@ -225,7 +225,7 @@ namespace CompilationPrinciple {
                             }
 
                             AccessKind Ekind = new AccessKind();
-                            Eptr1 = Expr(t.child[0], Ekind, false);
+                            Eptr1 = Expr(t.child[0], ref Ekind, false);
                             if (Eptr1 == null) {
                                 return null;
                             }
@@ -250,7 +250,7 @@ namespace CompilationPrinciple {
         public TypeIR recordVar(SyntaxTreeNode t) {
             bool present = false;
             bool result = true;
-            SymTableItem entry = null;
+            SymTableItem entry = new SymTableItem();
 
             TypeIR Eptr0 = null;
             TypeIR Eptr1 = null;
@@ -284,7 +284,7 @@ namespace CompilationPrinciple {
                         if(currentP == null) {
                             if(result != false) {
                                 Eptr = null;
-                                SemError("[ERROR] line " + t.lineno + ": '" + t.name[0] + "' is not field type!");
+                                SemError("[ERROR] line " + t.lineno + ": '" + t.child[0].name[0] + "' is not field type!");
                             }
                         } else {
                             if (t.child[0].child[0] != null) {
@@ -299,7 +299,7 @@ namespace CompilationPrinciple {
             return Eptr;
         }
 
-        public TypeIR Expr(SyntaxTreeNode t, AccessKind Ekind, bool hasEKind) {
+        public TypeIR Expr(SyntaxTreeNode t, ref AccessKind Ekind, bool hasEKind) {
             bool present = false;
             SymTableItem entry = new SymTableItem();
             TypeIR Eptr0 = null;
@@ -345,11 +345,11 @@ namespace CompilationPrinciple {
                          break;
                     case ExpKind.OpK:
                         /*递归调用儿子节点*/
-                        Eptr0 = Expr(t.child[0], Ekind, false);
+                        Eptr0 = Expr(t.child[0], ref Ekind, false);
                         if(Eptr0 == null) {
                             return null;
                         }
-                        Eptr1 = Expr(t.child[1], Ekind, false);
+                        Eptr1 = Expr(t.child[1], ref Ekind, false);
                         if (Eptr1 == null) {
                             return null;
                         }
@@ -382,7 +382,7 @@ namespace CompilationPrinciple {
 
         public void ifstatment(SyntaxTreeNode t) {
             AccessKind Ekind = AccessKind.dir;
-            TypeIR Etp = Expr(t.child[0],Ekind,false);
+            TypeIR Etp = Expr(t.child[0],ref Ekind,false);
             if(Etp != null) {
                 /*处理条件表达式*/
                 if (Etp.typeKind != TypeKind.boolTy) {
@@ -405,7 +405,7 @@ namespace CompilationPrinciple {
 
         public void whilestatement(SyntaxTreeNode t) {
             AccessKind Ekind = AccessKind.dir;
-            TypeIR Etp = Expr(t.child[0], Ekind, false);
+            TypeIR Etp = Expr(t.child[0], ref Ekind, false);
             if (Etp != null) {
                 if (Etp.typeKind != TypeKind.boolTy) {
                     Console.WriteLine("condition expression error!\n");
@@ -437,7 +437,7 @@ namespace CompilationPrinciple {
 
         public void writestatement(SyntaxTreeNode t) {
             AccessKind Ekind = AccessKind.dir;
-            TypeIR Etp = Expr(t.child[0], Ekind, false);
+            TypeIR Etp = Expr(t.child[0], ref Ekind, false);
             if(Etp != null) {
                 if(Etp.typeKind == TypeKind.boolTy) {
 
@@ -472,7 +472,7 @@ namespace CompilationPrinciple {
                     ParamTable param = FindAttr(entry).procAttr.param;
                     while ((p != null) && (param != null)) {
                         SymTableItem paraEntry = param.entry;
-                        TypeIR Etp = Expr(p, Ekind, true);
+                        TypeIR Etp = Expr(p, ref Ekind, true);
                         if (FindAttr(paraEntry).varAttr.accessKind == AccessKind.indir && (Ekind == AccessKind.dir)) {
                             SemError("[ERROR] line " + t.lineno + ": param kind is not match!");
                         } else {
@@ -482,9 +482,9 @@ namespace CompilationPrinciple {
                         }
                         p = p.sibling;
                         param = param.next;
-                        if ((p != null) || param != null) {
-                            SemError("[ERROR] line " + t.lineno + ": param num is not match!");
-                        }
+                    }
+                    if ((p != null) || param != null) {
+                        SemError("[ERROR] line " + t.lineno + ": param num is not match!");
                     }
                 }
             }
@@ -527,7 +527,7 @@ namespace CompilationPrinciple {
             }
             if(Eptr != null) {
                 if((t.nodeKind == NodeKind.StmtK) && (t.stmtKind == StmtKind.AssignK)) {
-                    ptr = Expr(child2, Ekind, false);
+                    ptr = Expr(child2, ref Ekind, false);
                     if (!Compat(ptr, Eptr)) {
                         SemError("[ERROR] line " + t.lineno + ": assign type not match!");
                     }
@@ -572,9 +572,13 @@ namespace CompilationPrinciple {
                 while (ptr0 != null) {
                     /*构造形参符号表，并使其连接至符号表的param项*/
                     ptr2 = NewParam();
-                    if (head == null) {
+                    if (head == null) {/*
+                        head = new ParamTable();
+                        head.copyItem(ptr1);
+                        ptr1.copyItem(ptr2);*/
                         head = ptr1 = ptr2;
                     }
+                    //ptr2.entry.copyItem(ptr0);
                     ptr2.entry = ptr0;
                     ptr2.next = null;
                     if (ptr2 != ptr1) {
@@ -923,10 +927,75 @@ namespace CompilationPrinciple {
                     default : Console.Write("error  ");
                         break;
                 }
+                if(attribute.idType != null)
+                    switch (attribute.idType.typeKind) {
+                        case TypeKind.arrayTy:
+                            arrayInnerShow(attribute.idType);
+/*                            Console.WriteLine("");
+                            Console.Write("   size   " + attribute.idType.arrayAttr.elementType.size * (attribute.idType.arrayAttr.up - attribute.idType.arrayAttr.low + 1));
+                            Console.Write("   elementType   " + Enum.GetName(typeof(TypeKind), attribute.idType.arrayAttr.elementType.typeKind));
+                            Console.Write("   low   " + attribute.idType.arrayAttr.low);
+                            Console.Write("   up   " + attribute.idType.arrayAttr.up);*/
+                            break;
+                        case TypeKind.recordTy:
+                            recordInnerShow(attribute.idType);
+/*                            Console.WriteLine("");
+                            FieldChain fieldChain = attribute.idType.next;
+                            while (fieldChain != null) {
+                                Console.Write("   id   " + fieldChain.id);
+                                Console.Write("   off   " + fieldChain.off);
+                                Console.Write("   unitType   " + Enum.GetName(typeof(TypeKind), fieldChain.unitType.typeKind));
+                                Console.WriteLine("");
+                                fieldChain = fieldChain.next;
+                            }*/
+                            break;
+                    }                
                 t = t.nextItem;
                 Console.WriteLine("");
                 list.Add(line);
             }
+        }
+        
+        public void recordInnerShow(TypeIR idType) {
+            Console.WriteLine("");
+            FieldChain fieldChain = idType.next;
+            while (fieldChain != null) {
+                Console.Write("   id   " + fieldChain.id);
+                Console.Write("   off   " + fieldChain.off);
+                switch (fieldChain.unitType.typeKind) {
+                    case TypeKind.arrayTy:
+                        Console.Write("   unitType   " + Enum.GetName(typeof(TypeKind), fieldChain.unitType.typeKind));
+                        arrayInnerShow(fieldChain.unitType);
+                        break;
+                    case TypeKind.recordTy:
+                        Console.Write("   unitType   " + Enum.GetName(typeof(TypeKind), fieldChain.unitType.typeKind));
+                        recordInnerShow(fieldChain.unitType);
+                        break;
+                    default:
+                        Console.Write("   unitType   " + Enum.GetName(typeof(TypeKind), fieldChain.unitType.typeKind));
+                        break;
+                }                
+                Console.WriteLine("");
+                fieldChain = fieldChain.next;
+            }
+        }
+
+        public void arrayInnerShow(TypeIR idType) {
+            Console.WriteLine("");
+            Console.Write("   size   " + idType.arrayAttr.elementType.size * (idType.arrayAttr.up - idType.arrayAttr.low + 1));
+            switch (idType.arrayAttr.elementType.typeKind) {
+                case TypeKind.arrayTy:
+                    arrayInnerShow(idType);
+                    break;
+                case TypeKind.recordTy:
+                    recordInnerShow(idType);
+                    break;
+                default:
+                    Console.Write("   elementType   " + Enum.GetName(typeof(TypeKind), idType.arrayAttr.elementType.typeKind));
+                    break;
+            }            
+            Console.Write("   low   " + idType.arrayAttr.low);
+            Console.Write("   up   " + idType.arrayAttr.up);
         }
     }
 }
