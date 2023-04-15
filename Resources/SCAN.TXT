@@ -3,8 +3,8 @@ type  t = integer;
 var  t  V1 ;
      char  v2;
 begin 
-   read(v1);
+   read(V1);
    V1:=V1+10;
-   write(v1)
+   write(V1)
 end.
    
