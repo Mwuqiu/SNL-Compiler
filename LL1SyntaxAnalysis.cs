@@ -428,7 +428,7 @@ namespace CompilationPrinciple {
                 //<ParamMore> ::= ε
                 case 48:
                     syntaxTreeStack.Pop();
-                    currentP = saveP;
+                    //currentP = saveP;
                     //TODO : TEMP assiignment is used to store the address of a member of a function 
                     break;
                 //<ParamMore> ::= ; ParamDecList
