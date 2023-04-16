@@ -91,6 +91,7 @@ namespace CompilationPrinciple {
     }
 
     public class SymTableItem {
+        public int level { get; set; }
         public string idname { get; set; }
         public AttributeIR attrIR { get; set; }
         public SymTableItem ? nextItem { get; set; }
@@ -102,6 +103,7 @@ namespace CompilationPrinciple {
         }
 
         public void copyItem(SymTableItem item) {
+            this.level = item.level;
             this.idname = item.idname;
             this.attrIR = item.attrIR;
             this.nextItem = item.nextItem;
