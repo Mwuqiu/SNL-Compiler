@@ -405,12 +405,18 @@ namespace CompilationPrinciple {
                             res += ");";
                             Console.Write(");");
                         }
-                        for(int i= 1; i < 3; i++) {
+                        c = child[1];
+                        while(c != null) {
                             Console.Write("\r\n");
-                            if (child[i] != null) {
-                                res += "\r\n" + child[i].GenerateCode(tab + 1, this);
-                            }
+                            res += "\r\n" + c.GenerateCode(tab + 1, this);
+                            c = c.sibling;
                         }
+                        c = child[2];
+                        if (child[2] != null) {
+                            Console.Write("\r\n");
+                            res += "\r\n" + child[2].GenerateCode(tab + 1, this);
+                        }
+                        
                         break;
                     case NodeKind.StmLK:
                         res += "begin";

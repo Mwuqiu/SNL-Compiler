@@ -22,6 +22,7 @@ namespace CompilationPrinciple {
         private int id;
         private int initOff;
         private SymTableItem[] scope;
+        private List<SymTableItem> scope_vec;
         public List<String> errorList;
         public SemanticAnalysiser() {
             StoreNoff = 0;
@@ -33,6 +34,7 @@ namespace CompilationPrinciple {
             level = -1;
             scope = new SymTableItem[50];
             errorList = new List<string>();
+            scope_vec = new List<SymTableItem>();
         }
 
         public void CreateTable() {
@@ -549,6 +551,10 @@ namespace CompilationPrinciple {
             if(t != null) {
                 /*登记函数的符号表项*/
                 Enter(ref present, attr, entry, t.name[0]);
+                entry.level = level;
+                SymTableItem tmp = new SymTableItem();
+                tmp.copyItem(entry);
+                scope_vec.Add(tmp);
                 t.table[0] = entry;
                 /*处理形参声明表*/
             }
@@ -786,6 +792,10 @@ namespace CompilationPrinciple {
                     if (present) {
                         SemError("[ERROR] line " + p.lineno + ": " + p.name[i] + "' variable  defined repetation");
                     } else {
+                        symTableItem.level = level;
+                        SymTableItem tmp = new SymTableItem();
+                        tmp.copyItem(symTableItem);
+                        scope_vec.Add(tmp);
                         p.table[i] = symTableItem;
                     }
                 }
@@ -851,24 +861,23 @@ namespace CompilationPrinciple {
         public List<List<String>> PrintSymbTable() {
             int lev = 0;
             List<List<String>> list = new List<List<String>>();
-            while (scope[lev] != null) {
+            /*while (scope[lev] != null) {
                 PrintOneLayer(list, lev);
                 lev++;
-            }
+            }*/
+            PrintOneLayer(list);
             return list;
         }
 
-        public void PrintOneLayer(List<List<String>> list, int lev) {
-            SymTableItem t = scope[lev];
-            Console.WriteLine("-------SymbTable  in level " + lev + " ---------");
-            while (t != null) {
+        public void PrintOneLayer(List<List<String>> list) {
+            foreach(SymTableItem t in scope_vec) {
                 List<String> line = new List<String>(new String[7]);
-                line[0] = lev.ToString();
+                line[0] = t.level.ToString();
                 Console.Write(t.idname + "     ");
                 line[1] = t.idname;
                 AttributeIR attribute = t.attrIR;
                 if (attribute != null) {
-                    if(attribute.idType == null) {
+                    if (attribute.idType == null) {
                         Console.Write("undefined  ");
                         line[3] = "undefined";
                     } else {
@@ -894,7 +903,7 @@ namespace CompilationPrinciple {
                                 line[3] = "error type!";
                                 break;
                         }
-                    }                    
+                    }
                 }
                 switch (attribute.typeKind) {
                     case IdKind.typeKind:
@@ -925,38 +934,137 @@ namespace CompilationPrinciple {
                         Console.Write("Noff  " + attribute.procAttr.nOff);
                         line[4] = attribute.procAttr.nOff.ToString();
                         break;
-                    default : Console.Write("error  ");
+                    default:
+                        Console.Write("error  ");
                         break;
                 }
-                if(attribute.idType != null)
+                if (attribute.idType != null)
                     switch (attribute.idType.typeKind) {
                         case TypeKind.arrayTy:
                             arrayInnerShow(attribute.idType);
-/*                            Console.WriteLine("");
-                            Console.Write("   size   " + attribute.idType.arrayAttr.elementType.size * (attribute.idType.arrayAttr.up - attribute.idType.arrayAttr.low + 1));
-                            Console.Write("   elementType   " + Enum.GetName(typeof(TypeKind), attribute.idType.arrayAttr.elementType.typeKind));
-                            Console.Write("   low   " + attribute.idType.arrayAttr.low);
-                            Console.Write("   up   " + attribute.idType.arrayAttr.up);*/
+                            /*                            Console.WriteLine("");
+                                                        Console.Write("   size   " + attribute.idType.arrayAttr.elementType.size * (attribute.idType.arrayAttr.up - attribute.idType.arrayAttr.low + 1));
+                                                        Console.Write("   elementType   " + Enum.GetName(typeof(TypeKind), attribute.idType.arrayAttr.elementType.typeKind));
+                                                        Console.Write("   low   " + attribute.idType.arrayAttr.low);
+                                                        Console.Write("   up   " + attribute.idType.arrayAttr.up);*/
                             break;
                         case TypeKind.recordTy:
                             recordInnerShow(attribute.idType);
-/*                            Console.WriteLine("");
-                            FieldChain fieldChain = attribute.idType.next;
-                            while (fieldChain != null) {
-                                Console.Write("   id   " + fieldChain.id);
-                                Console.Write("   off   " + fieldChain.off);
-                                Console.Write("   unitType   " + Enum.GetName(typeof(TypeKind), fieldChain.unitType.typeKind));
-                                Console.WriteLine("");
-                                fieldChain = fieldChain.next;
-                            }*/
+                            /*                            Console.WriteLine("");
+                                                        FieldChain fieldChain = attribute.idType.next;
+                                                        while (fieldChain != null) {
+                                                            Console.Write("   id   " + fieldChain.id);
+                                                            Console.Write("   off   " + fieldChain.off);
+                                                            Console.Write("   unitType   " + Enum.GetName(typeof(TypeKind), fieldChain.unitType.typeKind));
+                                                            Console.WriteLine("");
+                                                            fieldChain = fieldChain.next;
+                                                        }*/
                             break;
-                    }                
+                    }
+                Console.WriteLine("");
+                list.Add(line);
+            }
+        }
+        public void PrintOneLayer_Old(List<List<String>> list, int lev) {
+            SymTableItem t = scope[lev];
+            Console.WriteLine("-------SymbTable  in level " + lev + " ---------");
+            while (t != null) {
+                List<String> line = new List<String>(new String[7]);
+                line[0] = lev.ToString();
+                Console.Write(t.idname + "     ");
+                line[1] = t.idname;
+                AttributeIR attribute = t.attrIR;
+                if (attribute != null) {
+                    if (attribute.idType == null) {
+                        Console.Write("undefined  ");
+                        line[3] = "undefined";
+                    } else {
+                        switch (attribute.idType.typeKind) {
+                            case TypeKind.intTy:
+                                Console.Write("intTy  ");
+                                line[3] = "intTy";
+                                break;
+                            case TypeKind.charTy:
+                                Console.Write("charTy  ");
+                                line[3] = "charTy";
+                                break;
+                            case TypeKind.arrayTy:
+                                Console.Write("arrayTy  ");
+                                line[3] = "arrayTy";
+                                break;
+                            case TypeKind.recordTy:
+                                Console.Write("recordTy  ");
+                                line[3] = "recordTy";
+                                break;
+                            default:
+                                Console.Write("error  type!  ");
+                                line[3] = "error type!";
+                                break;
+                        }
+                    }
+                }
+                switch (attribute.typeKind) {
+                    case IdKind.typeKind:
+                        Console.Write("typekind  ");
+                        line[2] = "typekind";
+                        break;
+                    case IdKind.varKind:
+                        Console.Write("varkind  ");
+                        line[2] = "varkind";
+                        Console.Write("Level " + attribute.varAttr.level + "   ");
+                        Console.Write("Offset " + attribute.varAttr.off + "   ");
+                        line[5] = attribute.varAttr.off.ToString();
+                        switch (attribute.varAttr.accessKind) {
+                            case AccessKind.dir:
+                                Console.Write("dir  ");
+                                line[6] = "dir";
+                                break;
+                            case AccessKind.indir:
+                                Console.Write("indir  ");
+                                line[6] = "indir";
+                                break;
+                        }
+                        break;
+                    case IdKind.procKind:
+                        Console.Write("funckind  ");
+                        line[2] = "funckind";
+                        Console.Write("level  " + attribute.procAttr.level);
+                        Console.Write("Noff  " + attribute.procAttr.nOff);
+                        line[4] = attribute.procAttr.nOff.ToString();
+                        break;
+                    default:
+                        Console.Write("error  ");
+                        break;
+                }
+                if (attribute.idType != null)
+                    switch (attribute.idType.typeKind) {
+                        case TypeKind.arrayTy:
+                            arrayInnerShow(attribute.idType);
+                            /*                            Console.WriteLine("");
+                                                        Console.Write("   size   " + attribute.idType.arrayAttr.elementType.size * (attribute.idType.arrayAttr.up - attribute.idType.arrayAttr.low + 1));
+                                                        Console.Write("   elementType   " + Enum.GetName(typeof(TypeKind), attribute.idType.arrayAttr.elementType.typeKind));
+                                                        Console.Write("   low   " + attribute.idType.arrayAttr.low);
+                                                        Console.Write("   up   " + attribute.idType.arrayAttr.up);*/
+                            break;
+                        case TypeKind.recordTy:
+                            recordInnerShow(attribute.idType);
+                            /*                            Console.WriteLine("");
+                                                        FieldChain fieldChain = attribute.idType.next;
+                                                        while (fieldChain != null) {
+                                                            Console.Write("   id   " + fieldChain.id);
+                                                            Console.Write("   off   " + fieldChain.off);
+                                                            Console.Write("   unitType   " + Enum.GetName(typeof(TypeKind), fieldChain.unitType.typeKind));
+                                                            Console.WriteLine("");
+                                                            fieldChain = fieldChain.next;
+                                                        }*/
+                            break;
+                    }
                 t = t.nextItem;
                 Console.WriteLine("");
                 list.Add(line);
             }
         }
-        
+
         public void recordInnerShow(TypeIR idType) {
             Console.WriteLine("");
             FieldChain fieldChain = idType.next;

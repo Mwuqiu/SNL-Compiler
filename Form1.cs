@@ -134,7 +134,7 @@ namespace CompilationPrinciple {
                 ResultForm resultForm = new ResultForm(tokenList, syntaxTreeRD, syntaxTreeLL, symbTable);
                 resultForm.Show();
             } catch (Exception ex) {
-
+                Console.WriteLine("WRONG!" + ex.Message);
             }
             
         }
